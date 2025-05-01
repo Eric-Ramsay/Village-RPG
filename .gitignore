@@ -1,4 +1,5 @@
 .vs
 .suo
-*.vcxproj
-*.vcxproj.*
+.vshistory
+Debug
+Release
