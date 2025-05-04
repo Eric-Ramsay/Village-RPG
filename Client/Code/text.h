@@ -1,20 +1,13 @@
 #pragma once
 
-const int TEXT_SMALL_X = 0;
-const int TEXT_MEDIUM_X = 0;
-const int TEXT_LARGE_X = 0;
-
-const int TEXT_SMALL_Y = 576;
-const int TEXT_MEDIUM_Y = 544;
-const int TEXT_LARGE_Y = 480;
-
 void charInfo(char c, int& sX, int& sY, int& sW) {
 	sW = 5;
 	sX = TEXT_SMALL_X;
 	sY = TEXT_SMALL_Y;
 	if (c == '.') {
 		sW = 1;
-		sY += 25;
+		sX = 26;
+		sY = 48;
 	}
 	else if (c == '+') {
 		sY += 16;
@@ -24,14 +17,14 @@ void charInfo(char c, int& sX, int& sY, int& sW) {
 		sX += 8;
 	}
 	else if (c >= 65 && c <= 90) {
-		sX += (c - 65) * 6;
+		sX = (c - 65) * 6;
 	}
 	else if (c >= 97 && c <= 122) {
-		sX += (c - 97) * 6;
+		sX = (c - 97) * 6;
 	}
 	else if (c >= 48 && c <= 57) {
-		sY += 8;
-		sX += 6 * (c - 48);
+		sY = 8;
+		sX = 6 * (c - 48);
 	}
 }
 
