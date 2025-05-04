@@ -45,6 +45,8 @@ void Draw(int sX, int sY, int w, int h, int dX, int dY, int scale = 1, sf::Color
 	Draw(sX, sY, w, h, dX, dY, scale, scale, color, flip);
 }
 
+
+
 const int PIXEL_SPOT_X = 413;
 const int PIXEL_SPOT_Y = 0;
 
@@ -59,86 +61,6 @@ void DrawSquare(int dX, int dY, int w, int h) {
 	fillRect(dX, dY + h - 3, w, 3, sf::Color::White);
 }
 
-sf::Color getColor(std::string text = "") {
-	text = low(text);
-	if (text == "gold") {
-		return sf::Color(255, 223, 0);
-	}
-	else if (text == "red") {
-		return sf::Color(220, 30, 40);
-	}
-	else if (text == "alt_red") {
-		return sf::Color(220, 75, 70);
-	}
-	else if (text == "green") {
-		return sf::Color(25, 225, 30);
-	}
-	else if (text == "alt_green") {
-		return sf::Color(55, 205, 75);
-	}
-	else if (text == "blue") {
-		return sf::Color(0, 0, 255);
-	}
-	else if (text == "orange") {
-		return sf::Color(255, 165, 0);
-	}
-	else if (text == "grey") {
-		return sf::Color(200, 200, 200);
-	}
-	else if (text == "brown") {
-		return sf::Color(160, 83, 45);
-	}
-
-	return sf::Color(255, 255, 255);
-}
-
-enum ALIGN {
-	LEFT, CENTER, RIGHT
-};
-
-//Prints text onto the screen
-void Print(std::string text, int dX, int dY, ALIGN align = LEFT, int scale = 1, int textSize = 2, sf::Color textColor = sf::Color(255, 255, 255)) {
-	int sX, sY, sW, sH;
-	bool printChar = true;
-	bool skipping = false;
-	sf::Color shade = textColor;
-	std::string color = "";
-	if (align != LEFT) {
-		int textWidth = measureText(text, scale, textSize);
-		if (align == CENTER) {
-			dX -= textWidth / 2.0;
-			charInfo('0', sX, sY, sW, sH, printChar, textSize);
-			dY -= sH / 2;
-		}
-		else {
-			dX -= textWidth;
-		}
-	}
-	for (char c : text) {
-		if (c == '*') {
-			skipping = !skipping;
-			if (!skipping) {
-				if (getColor(color) != shade) {
-					shade = getColor(color);
-				}
-				else {
-					shade = textColor;
-				}
-				color = "";
-			}
-		}
-		else if (!skipping) {
-			charInfo(c, sX, sY, sW, sH, printChar, textSize);
-			if (printChar) {
-				Draw(sX, sY, sW, sH, dX, dY, scale, shade);
-			}
-			dX += scale * (sW + 1);
-		}
-		else {
-			color += c;
-		}
-	}
-}
 
 void drawPosition(float x, float y, int size = 1, sf::Color color = sf::Color(255, 255, 255)) {
 	Draw(448, 16, 1, 1, x, y, size, color);

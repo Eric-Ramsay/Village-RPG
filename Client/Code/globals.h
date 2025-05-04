@@ -18,6 +18,8 @@ std::vector<sf::Vertex> vertices;
 int numVertices = 0;
 int vertSize = 200000;
 
+Player player;
+
 
 float min(float a, float b) {
 	if (a < b) {

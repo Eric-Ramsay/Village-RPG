@@ -188,7 +188,6 @@ void Input() {
 	}
 }
 
-
 int main() {
 	std::cout << "Initializing Server. . ." << std::endl;
 	srand(time(NULL));

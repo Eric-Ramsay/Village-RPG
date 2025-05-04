@@ -100,3 +100,8 @@ struct UIState {
 	C ClaimIcon = C(0, 0);
 	C TopScores = C(0, 0);
 };
+
+struct Player {
+	int x = 0;
+	int y = 0;
+};

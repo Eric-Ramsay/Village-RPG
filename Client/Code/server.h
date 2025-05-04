@@ -35,6 +35,12 @@ void processMessages() {
 				WIDTH = readInt(msg);
 				HEIGHT = readInt(msg)
 			}*/
+			if (type == "TEXT") {
+				DATA = msg;
+			}
+			if (type == "GOLD") {
+				//player.gold = readInt(message);
+			}
 			Message* temp = firstProcess;
 			firstProcess = firstProcess->next;
 			delete temp;

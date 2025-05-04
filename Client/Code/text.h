@@ -8,10 +8,8 @@ const int TEXT_SMALL_Y = 576;
 const int TEXT_MEDIUM_Y = 544;
 const int TEXT_LARGE_Y = 480;
 
-void charInfoSmall(char c, int& sX, int& sY, int& sW, int& sH, bool& printChar) {
-	printChar = true;
+void charInfo(char c, int& sX, int& sY, int& sW) {
 	sW = 5;
-	sH = 7;
 	sX = TEXT_SMALL_X;
 	sY = TEXT_SMALL_Y;
 	if (c == '.') {
@@ -37,88 +35,6 @@ void charInfoSmall(char c, int& sX, int& sY, int& sW, int& sH, bool& printChar) 
 	}
 }
 
-void charInfoMedium(char c, int& sX, int& sY, int& sW, int& sH, bool& printChar) {
-	printChar = true;
-	sW = 8;
-	sH = 11;
-	sX = TEXT_MEDIUM_X;
-	sY = TEXT_MEDIUM_Y;
-	if (c == '.') {
-		sW = 2; sX += 94; sY += 22;
-	}
-	else if (c == '+') {
-
-	}
-	else if (c == '-') {
-
-	}
-	else if (c >= 65 && c <= 90) {
-		sX += (c - 65) * 9;
-	}
-	else if (c >= 97 && c <= 122) {
-		sX += (c - 97) * 9;
-	}
-	else if (c >= 48 && c <= 57) {
-		sY += 12;
-		sX += 9 * (c - 48);
-		if (c == 49) {
-			sW = 6;
-		}
-	}
-}
-
-void charInfoLarge(char c, int& sX, int& sY, int& sW, int& sH, bool& printChar) {
-	printChar = true;
-	sW = 10;
-	sH = 14;
-	sX = TEXT_LARGE_X;
-	sY = TEXT_LARGE_Y;
-	if (c == '.') {
-		sW = 5; sX += 144; sY += 40;
-	}
-	else if (c == '+') {
-
-	}
-	else if (c == '-') {
-
-	}
-	else if (c >= 65 && c <= 90) {
-		sX += (c - 65) * 12;
-	}
-	else if (c >= 97 && c <= 122) {
-		sX += (c - 97) * 12;
-		sY += 18;
-		switch (c) {
-		case 'i': case 'l': sW = 2; break;
-		case 't': sW = 6; break;
-		case 'k': sW = 7; break;
-		case 'z': sW = 8; break;
-		case 'g': case 'j': case 'y': case 'p': case 'q': sH = 19; break;
-		}
-	}
-	else if (c >= 48 && c <= 57) {
-		sY += 40;
-		if (c == 49) {
-			sW = 6;
-		}
-		sX += 11 * (c - 48);
-	}
-}
-
-void charInfo(char c, int& sX, int& sY, int& sW, int& sH, bool& printChar, int textSize) {
-	if (c == ' ') {
-		printChar = false;
-		return;
-	}
-	if (textSize == 0) {
-		return charInfoSmall(c, sX, sY, sW, sH, printChar);
-	}
-	if (textSize == 1) {
-		return charInfoMedium(c, sX, sY, sW, sH, printChar);
-	}
-	return charInfoLarge(c, sX, sY, sW, sH, printChar);
-}
-
 //Returns size of text in pixels
 int measureText(std::string text, float scale = 1, int textSize = 2) {
 	bool skipping = false;
@@ -130,7 +46,7 @@ int measureText(std::string text, float scale = 1, int textSize = 2) {
 			skipping = !skipping;
 		}
 		else if (!skipping) {
-			charInfo(c, sX, sY, sW, sH, printChar, textSize);
+			charInfo(c, sX, sY, sW);
 			if (c != '\n') {
 				size += sW + 1;
 			}
@@ -211,4 +127,88 @@ std::string low(std::string a) {
 		}
 	}
 	return word;
+}
+
+
+sf::Color getColor(std::string text = "") {
+	text = low(text);
+	if (text == "gold") {
+		return sf::Color(255, 223, 0);
+	}
+	else if (text == "red") {
+		return sf::Color(220, 30, 40);
+	}
+	else if (text == "alt_red") {
+		return sf::Color(220, 75, 70);
+	}
+	else if (text == "green") {
+		return sf::Color(25, 225, 30);
+	}
+	else if (text == "alt_green") {
+		return sf::Color(55, 205, 75);
+	}
+	else if (text == "blue") {
+		return sf::Color(0, 0, 255);
+	}
+	else if (text == "orange") {
+		return sf::Color(255, 165, 0);
+	}
+	else if (text == "grey") {
+		return sf::Color(200, 200, 200);
+	}
+	else if (text == "brown") {
+		return sf::Color(160, 83, 45);
+	}
+
+	return sf::Color(255, 255, 255);
+}
+
+enum ALIGN {
+	LEFT, CENTER, RIGHT
+};
+
+//Prints text onto the screen
+void Print(std::string text, int dX, int dY, ALIGN align = LEFT, int scale = 1, int textSize = 2, sf::Color textColor = sf::Color(255, 255, 255)) {
+	int sX, sY;
+	int sW = 5;
+	int sH = 8;
+	bool printChar = true;
+	bool skipping = false;
+	sf::Color shade = textColor;
+	std::string color = "";
+	if (align != LEFT) {
+		int textWidth = measureText(text, scale, textSize);
+		if (align == CENTER) {
+			dX -= textWidth / 2.0;
+			charInfo('0', sX, sY, sW);
+			dY -= sH / 2;
+		}
+		else {
+			dX -= textWidth;
+		}
+	}
+	for (char c : text) {
+		if (c == '*') {
+			skipping = !skipping;
+			if (!skipping) {
+				if (getColor(color) != shade) {
+					shade = getColor(color);
+				}
+				else {
+					shade = textColor;
+				}
+				color = "";
+			}
+		}
+		else if (!skipping) {
+			charInfo(c, sX, sY, sW);
+			if (printChar) {
+				Draw(sX, sY, sW, sH, dX, dY, scale, shade);
+			}
+			dX += scale * (sW + 1);
+		}
+		else {
+			color += c;
+		}
+	}
 }

@@ -28,16 +28,19 @@ template <typename Type> std::string to_str(const Type& t) {
 	return os.str();
 }
 
+std::string DATA = "";
+
 #include "miniaudio.h"
 #include "types.h"
 #include "globals.h"
 #include "server.h"
-#include "text.h"
 #include "draw.h"
+#include "text.h"
 #include "audio.h"
 
 int SCREEN_X = 1;
 int SCREEN_Y = 1;
+
 
 int main()
 {
@@ -77,14 +80,31 @@ int main()
 			updateFPS = true;
 		}
 
-		//Drawing Code is handled here
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+			player.y--;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			player.y++;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			player.x--;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			player.x++;
+		}
+
+
 		sf::Sprite sprite;
 		sprite.setPosition(0, 0);
-		texture.clear(sf::Color::Red);
+		texture.clear(sf::Color::Black);
 		SCREEN_X = texture.getSize().x;
 		SCREEN_Y = texture.getSize().y;
 
-		//Draw()
+		
+		//PUT ALL YOUR DRAWING CODE HERE!
+		//Print(DATA, 100, 100, LEFT, 4);
+		Draw(0, 434, 13, 13, player.x, player.y, 2);
+
 
 		if (numVertices > vertSize) {
 			vertSize = numVertices + 1000;
