@@ -65,7 +65,9 @@ void Connect() {
 		std::cout << "Error #" << error << " Retrying Connection. . ." << std::endl;
 		Connect();
 	}
-	std::cout << "Connected!" << std::endl;
+	char myhostname[256];
+	int rc = gethostname(myhostname, sizeof myhostname);
+	std::cout << myhostname << std::endl;
 }
 
 bool endsWith(std::string stringOne, std::string stringTwo) {

@@ -41,6 +41,7 @@ int nextMessage(std::vector<Message>& msgs) {
 
 void Send() {
 	for (;;) {
+		Sleep(1);
 		if (processing != nullptr) {
 			// This gets a list of all clients which are currently available
 			for (int i = 0; i < master.fd_count; i++) {
@@ -134,6 +135,7 @@ void Listen() {
 	FD_ZERO(&master);
 	FD_SET(listening, &master);
 	for (;;) {
+		Sleep(1);
 		fd_set copy = master;
 		int socketCount = select(0, &copy, nullptr, nullptr, nullptr);
 		for (int i = 0; i < socketCount; i++) {
@@ -195,6 +197,7 @@ void Listen() {
 
 void Input() {
 	for (;;) {
+		Sleep(1);
 		std::cout << "Enter Command: ";
 		std::string text;
 		std::getline(std::cin, text);
@@ -235,7 +238,9 @@ int main() {
 
 	std::cout << std::endl << "Server started!" << std::endl;
 
-	for (;;) {}
+	for (;;) {
+		Sleep(1000);
+	}
 
 	return 0;
 }
