@@ -25,14 +25,16 @@ struct Message {
 
 struct Player {
 	SOCKET socket;
-	int turn = 0;
-	bool active = true;
-	bool loading = true;
+	std::string IP;
+
+	Character character;
 	std::vector<Message> messages = {};
 
-	Player(SOCKET s, int t) {
-		turn = t;
+	bool connected = true;
+
+	Player(SOCKET s, std::string ip) {
 		socket = s;
+		IP = ip;
 	}
 };
 

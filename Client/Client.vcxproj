@@ -149,12 +149,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\audio.h" />
+    <ClInclude Include="Code\commands.h" />
     <ClInclude Include="Code\draw.h" />
     <ClInclude Include="Code\globals.h" />
+    <ClInclude Include="Code\init.h" />
     <ClInclude Include="Code\miniaudio.h" />
     <ClInclude Include="Code\server.h" />
     <ClInclude Include="Code\text.h" />
-    <ClInclude Include="Code\types.h" />
+    <ClInclude Include="Code\structures.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

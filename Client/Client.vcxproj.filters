@@ -32,13 +32,19 @@
     <ClInclude Include="Code\globals.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\types.h">
+    <ClInclude Include="Code\structures.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\draw.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\text.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\commands.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\init.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

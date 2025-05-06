@@ -2,29 +2,52 @@
 
 void charInfo(char c, int& sX, int& sY, int& sW) {
 	sW = 5;
-	sX = TEXT_SMALL_X;
-	sY = TEXT_SMALL_Y;
+	sX = 0;
+	sY = 0;
 	if (c == '.') {
 		sW = 1;
 		sX = 26;
 		sY = 48;
 	}
+	if (c == ' ') {
+		sX = 156;
+	}
 	else if (c == '+') {
-		sY += 16;
+		sY = 16;
 	}
 	else if (c == '-') {
-		sY += 16;
-		sX += 8;
+		sY = 16;
+		sX = 8;
+	}
+	else if (c == '?') {
+		sX = 31; sY = 48;
+	}
+	else if (c == '!') {
+		sX = 27; sY = 48; sW = 1;
+	}
+	else if (c == ',') {
+		sX = 18; sY = 48; sW = 2;
+	}
+	else if (c == '.') {
+		sX = 23; sY = 48; sW = 1;
 	}
 	else if (c >= 65 && c <= 90) {
+		sY = 0;
 		sX = (c - 65) * 6;
 	}
 	else if (c >= 97 && c <= 122) {
+		sY = 16;
 		sX = (c - 97) * 6;
 	}
 	else if (c >= 48 && c <= 57) {
-		sY = 8;
+		sY = 32;
 		sX = 6 * (c - 48);
+	}
+	if (c == 'i' || c == 't' || c == 'l') {
+		sW = 3;
+	}
+	if (c == 'j' || c == 'k' || c == 'f') {
+		sW = 4;
 	}
 }
 
@@ -122,86 +145,67 @@ std::string low(std::string a) {
 	return word;
 }
 
-
 sf::Color getColor(std::string text = "") {
 	text = low(text);
-	if (text == "gold") {
+	if (text == "yellow") {
 		return sf::Color(255, 223, 0);
 	}
 	else if (text == "red") {
 		return sf::Color(220, 30, 40);
 	}
-	else if (text == "alt_red") {
-		return sf::Color(220, 75, 70);
-	}
 	else if (text == "green") {
 		return sf::Color(25, 225, 30);
 	}
-	else if (text == "alt_green") {
-		return sf::Color(55, 205, 75);
+	else if (text == "purple") {
+		return sf::Color(140, 90, 240);
 	}
 	else if (text == "blue") {
-		return sf::Color(0, 0, 255);
+		return sf::Color(65, 140, 255);
+	}
+	else if (text == "teal") {
+		return sf::Color(45, 155, 145);
 	}
 	else if (text == "orange") {
 		return sf::Color(255, 165, 0);
 	}
 	else if (text == "grey") {
-		return sf::Color(200, 200, 200);
+		return sf::Color(100, 85, 85);
 	}
 	else if (text == "brown") {
-		return sf::Color(160, 83, 45);
+		return sf::Color(140, 75, 40);
 	}
 
-	return sf::Color(255, 255, 255);
+	return sf::Color(245, 245, 240);
 }
 
-enum ALIGN {
-	LEFT, CENTER, RIGHT
-};
-
-//Prints text onto the screen
-void Print(std::string text, int dX, int dY, ALIGN align = LEFT, int scale = 1, int textSize = 2, sf::Color textColor = sf::Color(255, 255, 255)) {
-	int sX, sY;
-	int sW = 5;
-	int sH = 8;
-	bool printChar = true;
-	bool skipping = false;
-	sf::Color shade = textColor;
-	std::string color = "";
-	if (align != LEFT) {
-		int textWidth = measureText(text, scale, textSize);
-		if (align == CENTER) {
-			dX -= textWidth / 2.0;
-			charInfo('0', sX, sY, sW);
-			dY -= sH / 2;
-		}
-		else {
-			dX -= textWidth;
-		}
-	}
+// Print Function
+void Print(std::string text, int dX, int dY, int scale) {
+	int drawX = dX;
+	int drawY = dY;
+	bool printing = true;
+	std::string color = "white";
 	for (char c : text) {
-		if (c == '*') {
-			skipping = !skipping;
-			if (!skipping) {
-				if (getColor(color) != shade) {
-					shade = getColor(color);
-				}
-				else {
-					shade = textColor;
-				}
+		if (printing) {
+			if (c == '*') {
+				printing = false;
 				color = "";
 			}
-		}
-		else if (!skipping) {
-			charInfo(c, sX, sY, sW);
-			if (printChar) {
-				Draw(sX, sY, sW, sH, dX, dY, scale, shade);
+			else {
+				int sX = 0;
+				int sY = 0;
+				int sW = 0;
+				charInfo(c, sX, sY, sW);
+				Draw(sX, sY, sW, 8, drawX, drawY, scale, getColor(color));
+				drawX += (sW + 1) * scale;
 			}
-			dX += scale * (sW + 1);
 		}
 		else {
-			color += c;
+			if (c == '*') {
+				printing = true;
+			}
+			else {
+				color += c;
+			}
 		}
 	}
 }

@@ -20,6 +20,8 @@
 #include <WS2tcpip.h>
 #pragma comment (lib, "ws2_32.lib")
 
+#include "structures.h"
+#include "init.h"
 #include "server.h"
 
 SOCKET listening;
@@ -70,7 +72,7 @@ void Send() {
 									send(players[j].socket, str.c_str(), str.length(), 0);
 								}
 							}
-							else if (j > 0 && players[j].active) {
+							else if (j > 0 && players[j].connected) {
 								newList.push_back(j);
 							}
 						}
@@ -95,6 +97,39 @@ void Send() {
 	}
 }
 
+void AddConnection() {
+	SOCKADDR_IN client_info = { 0 };
+	int addrsize = sizeof(client_info);
+
+	SOCKET new_client = accept(listening, (struct sockaddr*)&client_info, &addrsize);
+	FD_SET(new_client, &master);
+
+
+	char ipBuf[64];
+	int bufSize = sizeof(ipBuf);
+
+	inet_ntop(AF_INET, &client_info.sin_addr, ipBuf, bufSize);
+
+	std::string ip(ipBuf);
+
+	int index = -1;
+	for (int i = 0; i < players.size(); i++) {
+		if (players[i].IP == ip) {
+			std::cout << "Reconnecting Client with IP: " << ip << std::endl;
+			index = i;
+			players[i].socket = new_client;
+			players[i].connected = true;
+		}
+	}
+	if (index == -1) {
+		std::cout << "Adding New Client with IP: " << ip << std::endl;
+		index = players.size();
+		players.push_back(Player(new_client, ip));
+	}
+	
+	EVERYONE.push_back(index);
+}
+
 void Listen() {
 	FD_ZERO(&master);
 	FD_SET(listening, &master);
@@ -104,27 +139,7 @@ void Listen() {
 		for (int i = 0; i < socketCount; i++) {
 			SOCKET current = copy.fd_array[i];
 			if (current == listening) {
-				// Player Connection
-				std::cout << "Server is paused so a player can load in . . ." << std::endl;
-
-				SOCKET new_client = accept(listening, nullptr, nullptr);
-				FD_SET(new_client, &master);
-
-				int found = -1;
-				for (int i = 1; i < players.size(); i++) {
-					if (!players[i].active) {
-						found = i;
-						std::cout << "Reconnecting Player. . ." << std::endl;
-						players[i].socket = new_client;
-						players[i].active = true;
-					}
-				}
-				if (found == -1) {
-					std::cout << "Adding Player. . ." << std::endl;
-					found = players.size();
-					players.push_back(Player(new_client, players.size()));
-				}
-				EVERYONE.push_back(found);
+				AddConnection();
 			}
 			else {
 				// Receive Message From Player
@@ -148,7 +163,7 @@ void Listen() {
 						else {
 							std::cout << "Player Disconnected" << std::endl;
 							RemoveFromEveryone(i);
-							players[i].active = false;
+							players[i].connected = false;
 							closesocket(current);
 							FD_CLR(current, &master);
 						}

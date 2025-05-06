@@ -20,6 +20,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="structures.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\init.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="Code\server.h">
       <Filter>Source Files</Filter>
     </ClInclude>

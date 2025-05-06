@@ -1,0 +1,53 @@
+Client 
+
+SERVER FUNCTIONS
+	Connect() - Connects to the Server
+
+	Listen()
+	- Listens for incoming messages. Messages may not be received all at once, so it stores them in a buffer. Messages from the server end with 'stop!', once that's received, the message is completed and added to a linked list to be processed in processMessages()
+	- Supporting Functions: 
+		- endsWith() - used to see if the incoming messages end with 'stop!'
+		- nextMessage() - loops through the messageBuffer to see which one is waiting for further input from the server
+
+	Connect()
+	- Connects to the server. This is basically code I copied from a Socket tutorial. I don't have a great idea of how it works.
+
+	processMessages()
+	- Loops through messages that have been completely received, and interprets them. Messages will have two fields: type, and data.
+	- Supporting Functions: 
+		- readInt() - Reads an int from a string received by the server. (Basically just checks for an integer that ends with '!')
+	
+DRAW FUNCTIONS
+	Draw()
+	- Draws from sprites.png
+
+	DrawPosition()
+	- Draws a single pixel. Requires a specific pixel to be white on the sprite sheet.
+
+	FillRect()
+	- Draws a colored rectangle. Requires a specific pixel to be white on the sprite sheet.
+
+	DrawSquare()
+	- Draws an empty rectangle, depends on FillRect to work.
+
+	mix()
+	- Mixes two colors together.
+
+AUDIO FUNCTIONS - Need to be reworked. It has some TG3 specific stuff like manaaging ambience.
+	playSound()
+	- Plays a sound effect, assuming it's been pre-loaded in the sfx array and exists in the Sounds folder. Warning: MP3's will have a tiny skip at the start, so looped mp3 audio will sound off 
+
+TEXT FUNCTIONS 
+	Print() - Prints text. Supports different alignments (LEFT, RIGHT, CENTER), fonts, and text wrapping. You can also add colored text by putting the color in asterisks ie *YELLOW*
+	- Supporting Functions:
+		- measureText() - measures the length of text, for wrapping purposes
+		- getColor() - converts text colors into sf::Colors
+		- charInfo() - returns information about where and how to draw letters on the sprite sheet
+	
+	low() - Converts text to lowercase
+	
+	trimNum() - Converts numbers into shorter text. Ie 1300 = 1.3k
+
+MAIN FUNCTION
+	main() - Runs when you start the program, as always in C++
+	- First it initializes things, like the Window, and the Texture that gets drawn to the Window. It has a main loop that runs while the window is open. In here it handles events like mouse/keyboard input, Updates the FPS, and draws to the screen.

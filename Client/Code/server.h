@@ -31,10 +31,6 @@ void processMessages() {
 			static int numMessages = 0;
 			std::string msg = firstProcess->data;
 			std::string type = firstProcess->type;
-			/*if (type == "MAPDATA") {
-				WIDTH = readInt(msg);
-				HEIGHT = readInt(msg)
-			}*/
 			if (type == "TEXT") {
 				DATA = msg;
 			}
