@@ -24,7 +24,7 @@
   <ItemGroup>
     <ClInclude Include="Code\init.h" />
     <ClInclude Include="Code\server.h" />
-    <ClInclude Include="structures.h" />
+    <ClInclude Include="Code\structures.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

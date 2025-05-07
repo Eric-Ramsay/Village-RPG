@@ -51,7 +51,7 @@ void Send() {
 						if (j < players.size()) {
 							// The current client is one of the clients this message should be sent to
 							if (master.fd_array[i] == players[j].socket) {
-								std::string data = processing->type + "!" + processing->data + "stop!";
+								std::string data = processing->type + "!" + processing->data + "!STOP!";
 								std::vector<std::string> dataToSend = {};
 
 								int numStrings = 1 + (int)data.length() / 8000;
@@ -98,37 +98,43 @@ void Send() {
 	}
 }
 
-void AddConnection() {
-	SOCKADDR_IN client_info = { 0 };
-	int addrsize = sizeof(client_info);
-
-	SOCKET new_client = accept(listening, (struct sockaddr*)&client_info, &addrsize);
-	FD_SET(new_client, &master);
-
-
-	char ipBuf[64];
-	int bufSize = sizeof(ipBuf);
-
-	inet_ntop(AF_INET, &client_info.sin_addr, ipBuf, bufSize);
-
-	std::string ip(ipBuf);
-
-	int index = -1;
-	for (int i = 0; i < players.size(); i++) {
-		if (players[i].IP == ip) {
-			std::cout << "Reconnecting Client with IP: " << ip << std::endl;
-			index = i;
-			players[i].socket = new_client;
-			players[i].connected = true;
+bool endsWith(std::string stringOne, std::string stringTwo) {
+	if (stringOne.size() < stringTwo.size()) {
+		return false;
+	}
+	for (int i = 0; i < stringTwo.size(); i++) {
+		if (stringTwo[stringTwo.size() - i] != stringOne[stringOne.size() - i]) {
+			return false;
 		}
 	}
-	if (index == -1) {
-		std::cout << "Adding New Client with IP: " << ip << std::endl;
-		index = players.size();
-		players.push_back(Player(new_client, ip));
+	return true;
+}
+
+// Interpret Completed Messages from Clients
+void ProcessMessages() {
+	Sleep(1);
+	for (int i = 0; i < players.size(); i++) {
+		std::vector<Message> newMessages = {};
+		for (int j = 0; j < players[i].messages.size(); j++) {
+			if (players[i].messages[j].done) {
+				if (players[i].messages[j].data.size() > 0) {
+					std::string data = players[i].messages[j].data;
+					std::string type = players[i].messages[j].type;
+					std::cout << type << " " << data << std::endl;
+					if (type == "LOG_IN") {
+						// Loop through the saved characters and return the one that belongs to them
+					}
+					else if (type == "TEXT") {
+						SendData(type, data, { i });
+					}
+				}
+			}
+			else {
+				newMessages.push_back(players[i].messages[j]);
+			}
+		}
+		players[i].messages = newMessages;
 	}
-	
-	EVERYONE.push_back(index);
 }
 
 void Listen() {
@@ -138,34 +144,64 @@ void Listen() {
 		Sleep(1);
 		fd_set copy = master;
 		int socketCount = select(0, &copy, nullptr, nullptr, nullptr);
+		if (socketCount > 1) {
+			std::cout << socketCount << std::endl;
+		}
 		for (int i = 0; i < socketCount; i++) {
 			SOCKET current = copy.fd_array[i];
 			if (current == listening) {
-				AddConnection();
+				std::cout << "Connecting Player" << std::endl;
+				SOCKET new_client = accept(listening, nullptr, nullptr);
+				if (new_client == SOCKET_ERROR) {
+					int error = WSAGetLastError();
+					std::cout << "Error #" << error << std::endl;
+				}
+				FD_SET(new_client, &master);
+				FD_SET(new_client, &copy);
+
+				players.push_back(Player(new_client));
+				SendData("READY", "", { (int)players.size() - 1 });
 			}
 			else {
 				// Receive Message From Player
-				for (int i = 1; i < players.size(); i++) {
+				for (int i = 0; i < players.size(); i++) {
 					if (players[i].socket == current) {
 						char buf[2048];
 						ZeroMemory(buf, 2048);
 						int bytesReceived = recv(players[i].socket, buf, 2048, 0);
 						if (bytesReceived >= 1) {
 							int index = nextMessage(players[i].messages);
+							std::string buffer = players[i].messages[index].data;
 							for (int j = 0; j < bytesReceived; j++) {
-								if (buf[j] == -128) {
+								buffer += buf[j];
+								if (endsWith(buffer, "!STOP!")) {
+									std::string type = "";
+									std::string data = "";
+									bool setType = true;
+									for (int j = 0; j < buffer.size() - 6; j++) {
+										char c = buffer[j];
+										if (setType) {
+											if (c == '!') {
+												setType = false;
+											}
+											else {
+												type += c;
+											}
+										}
+										else {
+											data += c;
+										}
+									}
+									players[i].messages[index].data = data;
+									players[i].messages[index].type = type;
 									players[i].messages[index].done = true;
 									index = nextMessage(players[i].messages);
-								}
-								else {
-									players[i].messages[index].data.push_back((char)(buf[j] + 127));
 								}
 							}
 						}
 						else {
 							std::cout << "Player Disconnected" << std::endl;
-							RemoveFromEveryone(i);
-							players[i].connected = false;
+							players.erase(players.begin() + i);
 							closesocket(current);
 							FD_CLR(current, &master);
 						}
@@ -173,36 +209,16 @@ void Listen() {
 				}
 			}
 		}
-		// Interpret Completed Messages from Clients
-		for (int i = 1; i < players.size(); i++) {
-			std::vector<Message> newMessages = {};
-			for (int j = 0; j < players[i].messages.size(); j++) {
-				if (players[i].messages[j].done) {
-					if (players[i].messages[j].data.size() > 0) {
-						std::string msg = players[i].messages[j].data;
-						std::string type = players[i].messages[j].type;
-						if (type == "") {
-
-						}
-					}
-				}
-				else {
-					newMessages.push_back(players[i].messages[j]);
-				}
-			}
-			players[i].messages = newMessages;
-		}
+		ProcessMessages();
 	}
 }
 
 void Input() {
 	for (;;) {
 		Sleep(1);
-		std::cout << "Enter Command: ";
 		std::string text;
 		std::getline(std::cin, text);
-		sendData(Message("TEXT", text));
-		std::cout << text << std::endl;
+		SendData("TEXT", text);
 	}
 }
 

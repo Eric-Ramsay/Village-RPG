@@ -1,5 +1,15 @@
 #pragma once
 
+void SendData(std::string type, std::string data) {
+	std::string str = type + "!" + data + "!STOP!";
+	const int len = str.length();
+	char* arr = new char[len + 1];
+	for (int i = 0; i < len; i++) {
+		arr[i] = str[i];
+	}
+	send(sock, arr, len, 0);
+}
+
 int readInt(std::deque<char>& msg) {
 	int total = 0;
 	char c = 48;
@@ -24,15 +34,32 @@ int nextMessage(std::deque<Message>& msgs) {
 	return msgIndex;
 }
 
-void processMessages() {
+void Input() {
+	for (;;) {
+		Sleep(1);
+		std::string text;
+		std::getline(std::cin, text);
+		SendData("TEXT", text);
+	}
+}
+
+void ProcessMessages() {
 	for (;;) {
 		Sleep(1);
 		while (firstProcess != nullptr) {
 			static int numMessages = 0;
-			std::string msg = firstProcess->data;
+			std::string data = firstProcess->data;
 			std::string type = firstProcess->type;
+			std::cout << type << " " << data << std::endl;
 			if (type == "TEXT") {
-				DATA = msg;
+				DATA = data;
+				//std::cout << data << std::endl;
+			}
+			if (type == "READY") {
+				char myhostname[256];
+				int rc = gethostname(myhostname, sizeof myhostname);
+				std::cout << myhostname << std::endl;
+				SendData("LOG_IN", std::string(myhostname));
 			}
 			if (type == "GOLD") {
 				//player.gold = readInt(message);
@@ -59,15 +86,14 @@ void Connect() {
 	inet_pton(AF_INET, IP.c_str(), &hint.sin_addr);
 
 	sock = socket(AF_INET, SOCK_STREAM, 0);
+
 	int connection = connect(sock, (sockaddr*)&hint, sizeof(hint));
 	if (connection == SOCKET_ERROR) {
 		int error = WSAGetLastError();
 		std::cout << "Error #" << error << " Retrying Connection. . ." << std::endl;
 		Connect();
 	}
-	char myhostname[256];
-	int rc = gethostname(myhostname, sizeof myhostname);
-	std::cout << myhostname << std::endl;
+	std::cout << "Connected." << std::endl;
 }
 
 bool endsWith(std::string stringOne, std::string stringTwo) {
@@ -94,12 +120,12 @@ void Listen() {
 			disconnects = 0;
 			int index = nextMessage(messageBuffer);
 			for (int i = 0; i < bytesReceived; i++) {
-				messageBuffer[index].data.push_back(buf[i]);
-				if (endsWith(messageBuffer[index].data, "stop!")) {
+				messageBuffer[index].data += buf[i];
+				if (endsWith(messageBuffer[index].data, "!STOP!")) {
 					std::string type = "";
 					std::string data = "";
 					bool setType = true;
-					for (int j = 0; j < messageBuffer[index].data.size() - 5; j++) {
+					for (int j = 0; j < messageBuffer[index].data.size() - 6; j++) {
 						char c = messageBuffer[index].data[j];
 						if (setType) {
 							if (c == '!') {
@@ -161,9 +187,10 @@ void Listen() {
 void serverInit() {
 	std::cout << "Beginning Connection. . ." << std::endl;
 	Connect();
-	std::thread listener(Listen);
-	listener.detach();
-	std::thread processor(processMessages);
-	processor.detach();
-	std::cout << "Connection Complete!" << std::endl;
+	std::thread thread1(Listen);
+	std::thread thread2(ProcessMessages);
+	std::thread thread3(Input);
+	thread1.detach();
+	thread2.detach();
+	thread3.detach();
 }

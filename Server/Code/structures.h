@@ -11,6 +11,25 @@ struct Item {
 	bool rare = false;
 };
 
+struct Weapon : Item {
+	std::string type = "weapon";
+	std::string subclass = "";
+	int attacks;
+	int maxAttacks;
+	int chance;
+	int min;
+	int max;
+	int AP;
+	int range;
+	int hands;
+};
+
+struct Armor : Item {
+	std::string type = "armor";
+	int AP;
+	int armor[2];
+};
+
 
 struct Effect {
 	std::string name;
@@ -113,4 +132,39 @@ struct Location {
 
 	bool dungeon = false;
 	bool canTravel = true;
+};
+
+struct Message {
+	std::vector<int> players = {};
+	std::string type = "";
+	std::string data = "";
+	Message* next = nullptr;
+	bool done = false;
+
+	Message(std::string t = "", std::string d = "", std::vector<int> p = {}) {
+		type = t;
+		data = d;
+		players = p;
+	}
+
+	template<typename T>
+	Message& operator &=(const T& rhs)
+	{
+		this.data += to_str(rhs);
+		return *this;
+	}
+};
+
+struct Player {
+	SOCKET socket;
+	std::string ID;
+
+	Character character;
+	std::vector<Message> messages = {};
+
+	bool connected = true;
+
+	Player(SOCKET s) {
+		socket = s;
+	}
 };
