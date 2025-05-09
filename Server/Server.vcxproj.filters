@@ -29,5 +29,11 @@
     <ClInclude Include="Code\structures.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Code\data.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\functions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

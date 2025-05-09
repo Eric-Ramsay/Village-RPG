@@ -32,6 +32,7 @@ void SendData(std::string type, std::string data, std::vector<int> sendList = {}
 	SENDING = FALSE;
 }
 
-std::string str(int num) {
-	return std::to_string(num) + "!";
+void SendCharacter(int playerIndex) {
+	std::string data = serializeCharacter(players[playerIndex].character);
+	SendData("CHARACTER", data);
 }

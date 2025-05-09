@@ -31,3 +31,5 @@ float max(float a, float b) {
 	}
 	return a;
 }
+
+Character C;

@@ -78,6 +78,7 @@ bool range(int x1, int y1, int x2, int y2, int width, int height) {
 	return (x1 >= x2 && y1 >= y2 && x1 <= x2 + width && y1 <= y2 + height);
 }
 
+
 std::string trimNum(float x) {
 	char append = '!';
 	int excess = 0;

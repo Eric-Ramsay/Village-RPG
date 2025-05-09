@@ -17,11 +17,14 @@
 #include <thread>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <WS2tcpip.h>
 #pragma comment (lib, "ws2_32.lib")
 
 #include "structures.h"
+#include "functions.h"
 #include "init.h"
+#include "data.h"
 #include "server.h"
 
 SOCKET listening;
@@ -98,18 +101,6 @@ void Send() {
 	}
 }
 
-bool endsWith(std::string stringOne, std::string stringTwo) {
-	if (stringOne.size() < stringTwo.size()) {
-		return false;
-	}
-	for (int i = 0; i < stringTwo.size(); i++) {
-		if (stringTwo[stringTwo.size() - i] != stringOne[stringOne.size() - i]) {
-			return false;
-		}
-	}
-	return true;
-}
-
 // Interpret Completed Messages from Clients
 void ProcessMessages() {
 	Sleep(1);
@@ -122,6 +113,10 @@ void ProcessMessages() {
 					std::string type = players[i].messages[j].type;
 					std::cout << type << " " << data << std::endl;
 					if (type == "LOG_IN") {
+						if (fileExists("Saves/" + data + ".txt")) {
+							players[i].character = loadCharacter(data);
+							SendCharacter(i);
+						}
 						// Loop through the saved characters and return the one that belongs to them
 					}
 					else if (type == "TEXT") {
@@ -223,6 +218,21 @@ void Input() {
 }
 
 int main() {
+	Character Bob;
+	Item weapon("Axe", "axe", "An axe", 2, 1, 50, 75, 2, 8, 4, 6, 1);
+	Item armor("Chainmail", "Some old chainmail.", 50, 6, 25, 4, 2);
+	Bob.INVENTORY.push_back(&weapon);
+	Bob.INVENTORY.push_back(&armor);
+	Bob.NAME = "Bob";
+	Bob.ID = "Bob1234";
+	Bob.DESCRIPTION = "Bob is an Ape";
+	Bob.LEVEL = 10;
+	Bob.XP = 150;
+	Bob.SP = 3;
+
+	saveChar(Bob);
+	Bob = loadChar("Bob1234");
+	//std::cout << ((Weapon*)Bob.INVENTORY[0])->min << std::endl;
 	std::cout << "Initializing Server. . ." << std::endl;
 	srand(time(NULL));
 	int num = rand() % 99999;

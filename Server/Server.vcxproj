@@ -22,6 +22,8 @@
     <ClCompile Include="Code\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\data.h" />
+    <ClInclude Include="Code\functions.h" />
     <ClInclude Include="Code\init.h" />
     <ClInclude Include="Code\server.h" />
     <ClInclude Include="Code\structures.h" />

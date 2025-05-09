@@ -21,17 +21,10 @@ namespace Gdiplus {
 
 #include <SFML\Graphics.hpp>
 
-template <typename Type> std::string to_str(const Type& t) {
-	std::ostringstream os;
-	os << t;
-	return os.str();
-}
-
-std::string DATA = "";
-
 #include "miniaudio.h"
 #include "structures.h"
 #include "globals.h"
+#include "functions.h"
 #include "server.h"
 #include "draw.h"
 #include "text.h"
@@ -43,6 +36,12 @@ int SCREEN_Y = 1;
 
 int main()
 {
+	std::string integers = "3!478!-5214!0!";
+	int one = readInt(integers);
+	int two = readInt(integers);
+	int three = readInt(integers);
+	int four = readInt(integers);
+	std::cout << one << " " << two << " " << three << " " << four << std::endl;
 	sf::RenderWindow window;
 	sf::RenderTexture texture;
 	serverInit();

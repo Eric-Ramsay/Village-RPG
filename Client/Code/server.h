@@ -10,17 +10,6 @@ void SendData(std::string type, std::string data) {
 	send(sock, arr, len, 0);
 }
 
-int readInt(std::deque<char>& msg) {
-	int total = 0;
-	char c = 48;
-	while (msg.size() > 0 && c != '!') {
-		total *= 10;
-		total += (int)(c - 48);
-		c = msg.front();
-		msg.pop_front();
-	}
-	return total;
-}
 
 int nextMessage(std::deque<Message>& msgs) {
 	int msgIndex = 0;
@@ -43,6 +32,144 @@ void Input() {
 	}
 }
 
+void parseItem(Item* item, std::string data) {
+	while (data.length() > 0) {
+		std::string type = readStr(data);
+		if (type == "TYPE") {
+			item->type = readStr(data);
+		}
+		if (type == "NAME") {
+			item->name = readStr(data);
+		}
+		if (type == "DESCRIPTION") {
+			item->description = readStr(data);
+		}
+		if (type == "VALUE") {
+			item->value = readInt(data);
+		}
+		if (type == "EQUIPPED") {
+			item->equipped = (bool)readInt(data);
+		}
+		if (type == "RARE") {
+			item->rare = (bool)readInt(data);
+		}
+		if (item->type == "weapon") {
+			if (type == "SUBCLASS") {
+				item->subclass = readStr(data);
+			}
+			if (type == "ATTACKS") {
+				item->attacks = readInt(data);
+			}
+			if (type == "MAX_ATTACKS") {
+				item->maxAttacks = readInt(data);
+			}
+			if (type == "CHANCE") {
+				item->chance = readInt(data);
+			}
+			if (type == "MIN") {
+				item->min = readInt(data);
+			}
+			if (type == "MAX") {
+				item->max = readInt(data);
+			}
+			if (type == "AP") {
+				item->AP = readInt(data);
+			}
+			if (type == "RANGE") {
+				item->range = readInt(data);
+			}
+			if (type == "HANDS") {
+				item->hands = readInt(data);
+			}
+		}
+		else if (item->type == "armor") {
+			if (type == "AP") {
+				item->AP = readInt(data);
+			}
+			if (type == "STAMINA") {
+				item->stamina = readInt(data);
+			}
+			if (type == "PHYSICAL_DEFENSE") {
+				item->physical = readInt(data);
+			}
+			if (type == "MAGICAL_DEFENSE") {
+				item->magical = readInt(data);
+			}
+		}
+	}
+}
+
+
+void CharacterChange(Character& character, std::string type, std::string data) {
+	if (type == "NAME") {
+		character.NAME = readStr(data);
+	}
+	if (type == "ID") {
+		character.ID = readStr(data);
+	}
+	if (type == "DESCRIPTION") {
+		character.DESCRIPTION = readStr(data);
+	}
+	if (type == "COLOR") {
+		character.COLOR = readStr(data);
+	}
+	if (type == "LOCATION") {
+		character.LOCATION = readStr(data);
+	}
+	if (type == "BUILDING") {
+		character.BUILDING = readStr(data);
+	}
+	if (type == "LEVEL") {
+		character.LEVEL = readInt(data);
+	}
+	if (type == "XP") {
+		character.XP = readInt(data);
+	}
+	if (type == "SP") {
+		character.SP = readInt(data);
+	}
+	if (type == "GOLD") {
+		character.GOLD = readInt(data);
+	}
+	if (type == "HP") {
+		character.HP = readInt(data);
+	}
+	if (type == "BACKPACK") {
+		character.BACKPACK = (bool)readInt(data);
+	}
+	if (type == "HITS") {
+		character.HITS[0] = readInt(data);
+		character.HITS[1] = readInt(data);
+	}
+	if (type == "MISSES") {
+		character.MISSES[0] = readInt(data);
+		character.MISSES[1] = readInt(data);
+	}
+	if (type == "ROW") {
+		character.ROW = readInt(data);
+	}
+	if (type == "ROW_PREFERENCE") {
+		character.ROW_PREFERENCE = readInt(data);
+	}
+	if (type == "LEFT") {
+		character.LEFT = readInt(data);
+	}
+	if (type == "RIGHT") {
+		character.RIGHT = readInt(data);
+	}
+	if (type == "ATTACKS") {
+		character.ATTACKS = readInt(data);
+	}
+	if (type == "CASTS") {
+		character.CASTS = readInt(data);
+	}
+	if (type == "ITEM") {
+		Item* item = new Item();
+		character.INVENTORY.push_back(item);
+		parseItem(item, data);
+	}
+}
+
 void ProcessMessages() {
 	for (;;) {
 		Sleep(1);
@@ -52,8 +179,7 @@ void ProcessMessages() {
 			std::string type = firstProcess->type;
 			std::cout << type << " " << data << std::endl;
 			if (type == "TEXT") {
-				DATA = data;
-				//std::cout << data << std::endl;
+				std::cout << data << std::endl;
 			}
 			if (type == "READY") {
 				char myhostname[256];
@@ -61,8 +187,12 @@ void ProcessMessages() {
 				std::cout << myhostname << std::endl;
 				SendData("LOG_IN", std::string(myhostname));
 			}
-			if (type == "GOLD") {
-				//player.gold = readInt(message);
+			if (type == "CHARACTER") {
+				std::vector<std::string> strings = split(data, '\n');
+				for (std::string str : strings) {
+					std::string type = readStr(str);
+					CharacterChange(C, type, str);
+				}
 			}
 			Message* temp = firstProcess;
 			firstProcess = firstProcess->next;
@@ -94,18 +224,6 @@ void Connect() {
 		Connect();
 	}
 	std::cout << "Connected." << std::endl;
-}
-
-bool endsWith(std::string stringOne, std::string stringTwo) {
-	if (stringOne.size() < stringTwo.size()) {
-		return false;
-	}
-	for (int i = 0; i < stringTwo.size(); i++) {
-		if (stringTwo[stringTwo.size() - i] != stringOne[stringOne.size() - i]) {
-			return false;
-		}
-	}
-	return true;
 }
 
 void Listen() {

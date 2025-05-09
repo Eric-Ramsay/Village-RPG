@@ -3,31 +3,58 @@
 struct Item {
 	std::string name = "";
 	std::string description = "";
-	std::string alias = "";
 	std::string type = "";
 	std::vector<std::string> runes;
 	int value = 0;
 	bool equipped = false;
 	bool rare = false;
-};
+	int AP = 0;
 
-struct Weapon : Item {
-	std::string type = "weapon";
+	// Weapon Properties
 	std::string subclass = "";
-	int attacks;
-	int maxAttacks;
-	int chance;
-	int min;
-	int max;
-	int AP;
-	int range;
-	int hands;
-};
+	int attacks = 0;
+	int maxAttacks = 0;
+	int chance = 0;
+	int min = 0;
+	int max = 0;
+	int pen = 0;
+	int range = 0;
+	int hands = 0;
 
-struct Armor : Item {
-	std::string type = "armor";
-	int AP;
-	int armor[2];
+	// Armor Properties
+	int stamina;
+	int physical;
+	int magical;
+
+	Item() {}
+
+	Item(std::string n, std::string sC, std::string d, int h, int a, int v, int c, int mn, int mx, int p, int ap, int rnge, bool rar = false) {
+		type = "weapon";
+		name = n;
+		subclass = sC;
+		description = d;
+		hands = h;
+		attacks = a;
+		value = v;
+		chance = c;
+		min = mn;
+		max = mx;
+		pen = p;
+		AP = ap;
+		range = rnge;
+		rare = rar;
+	}
+
+	Item(std::string n, std::string desc, int val, int ap, int sta, int phys, int mag) {
+		AP = ap;
+		stamina = sta;
+		physical = phys;
+		magical = mag;
+		value = val;
+		name = n;
+		description = desc;
+		type = "armor";
+	}
 };
 
 
@@ -56,10 +83,10 @@ struct Fighter {
 	std::string DESCRIPTION;
 	std::string NAME;
 
-	int HP;
+	int HP = 0;
 	int ARMOR[2] = { 0, 0 };
 	int ROW = 0;
-	int LEVEL;
+	int LEVEL = 0;
 
 	std::vector<Effect> effects;
 };
@@ -89,12 +116,11 @@ struct Enemy : Fighter {
 
 struct Character : Fighter {
 	std::string COLOR = "";
-	std::vector<Item> INVENTORY;
+	std::vector<Item*> INVENTORY;
 	int LEFT = -1;
 	int RIGHT = -1;
 
 	int SP = 0;
-	int MANA = 0;
 	int GOLD = 0;
 	int STAMINA = 0;
 	int AP = 0;
@@ -103,15 +129,15 @@ struct Character : Fighter {
 	std::string LOCATION = "";
 	std::string BUILDING = "";
 
-	int INVENTORY_SLOTS = 5;
 	bool BACKPACK = false;
 
 	int HITS[2] = { 0, 0 };
-	int ATTEMPTS[2] = { 0, 0 };
+	int MISSES[2] = { 0, 0 };
 
 	int ATTACKS = 0;
 	int CASTS = 0;
 	int ROW = 0;
+	int ROW_PREFERENCE = 0;
 };
 
 struct NPC {
