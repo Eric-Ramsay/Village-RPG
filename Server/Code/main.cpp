@@ -116,6 +116,7 @@ void ProcessMessages() {
 						if (fileExists("Saves/" + data + ".txt")) {
 							players[i].character = loadChar(data);
 							SendCharacter(i);
+							SendData("STAT", "GOLD!!!" + str(150), { i });
 						}
 						// Loop through the saved characters and return the one that belongs to them
 					}

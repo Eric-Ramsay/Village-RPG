@@ -100,7 +100,7 @@ int main()
 
 		
 		//PUT ALL YOUR DRAWING CODE HERE!
-		Print("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 50, 100, 1);
+		/*Print("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 50, 100, 1);
 		Print(low("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 50, 125, 1);
 		Print("0123456789", 50, 150, 1);
 		Print(". , ! ?", 50, 175, 1);
@@ -109,6 +109,24 @@ int main()
 		Print("*RED*the *YELLOW*quick *GREEN*brown *BLUE*fox *ORANGE*jumps *PURPLE*over *GREY*the *TEAL*lazy *BROWN*dog. . .", 400, 100, 1);
 		Print("sphinx of black quartz, hear my vow!", 400, 125, 1);
 		Print("Do Androids Dream of Electric Sheep?", 400, 150, 1);
+		*/
+		Print(C.NAME, 10, 10);
+		Print(C.DESCRIPTION, 10, 30);
+		Print(C.ID, 10, 50);
+		Print(C.TYPE, 10, 70);
+		Print(C.LOCATION, 10, 90);
+		Print(C.BUILDING, 10, 110);
+		Print(to_str(C.LEVEL), 10, 130);
+		Print(to_str(C.XP), 10, 150);
+		Print(to_str(C.SP), 10, 170);
+		Print("Gold " + to_str(C.GOLD), 10, 190);
+		Print(to_str(C.HP), 10, 210);
+		Print(to_str(C.AP), 10, 230);
+		Print(to_str(C.BACKPACK), 10, 250);
+		Print(to_str(C.HITS[0]), 10, 270);
+		Print(to_str(C.HITS[1]), 10, 290);
+		Print(to_str(C.MISSES[0]), 10, 310);
+		Print(to_str(C.MISSES[1]), 10, 330);
 
 
 		if (numVertices > vertSize) {
@@ -126,7 +144,7 @@ int main()
 		sprite.setScale((UI.W) / texture.getSize().x, UI.H / texture.getSize().y);
 		window.draw(sprite);
 
-		Print(to_str((int)FPS), 0, 0, 8);
+		//Print(to_str((int)FPS), 0, 0, 8);
 
 		if (numVertices > 0) {
 			window.draw(&vertices[0], numVertices, sf::Quads, &sprites);

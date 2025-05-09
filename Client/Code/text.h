@@ -180,7 +180,7 @@ sf::Color getColor(std::string text = "") {
 }
 
 // Print Function
-void Print(std::string text, int dX, int dY, int scale) {
+void Print(std::string text, int dX, int dY, int scale = 1) {
 	int drawX = dX;
 	int drawY = dY;
 	bool printing = true;

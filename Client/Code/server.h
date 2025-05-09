@@ -177,7 +177,7 @@ void ProcessMessages() {
 			static int numMessages = 0;
 			std::string data = firstProcess->data;
 			std::string type = firstProcess->type;
-			std::cout << type << " " << data << std::endl;
+			std::cout << type << " " << std::endl;
 			if (type == "TEXT") {
 				std::cout << data << std::endl;
 			}
@@ -193,6 +193,10 @@ void ProcessMessages() {
 					std::string type = readStr(str);
 					CharacterChange(C, type, str);
 				}
+			}
+			if (type == "STAT") {
+				std::string stat = readStr(data);
+				CharacterChange(C, stat, data);
 			}
 			Message* temp = firstProcess;
 			firstProcess = firstProcess->next;
