@@ -114,7 +114,7 @@ void ProcessMessages() {
 					std::cout << type << " " << data << std::endl;
 					if (type == "LOG_IN") {
 						if (fileExists("Saves/" + data + ".txt")) {
-							players[i].character = loadCharacter(data);
+							players[i].character = loadChar(data);
 							SendCharacter(i);
 						}
 						// Loop through the saved characters and return the one that belongs to them
