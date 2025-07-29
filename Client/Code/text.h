@@ -226,13 +226,22 @@ int measureText(std::string text, int scale) {
 }
 
 void replace(std::string& str, std::string findText, std::string replaceText) {
-	if (findText == replaceText) {
-		return;
+	std::string newStr = "";
+	int len = findText.length();
+	int strLen = str.length();
+	for (int i = 0; i < strLen; i += len) {
+		std::string segment = "";
+		for (int j = 0; j < len; j++) {
+			if (i + j < strLen) {
+				segment += str[i + j];
+			}
+		}
+		if (segment == findText) {
+			segment = replaceText;
+		}
+		newStr += segment;
 	}
-	std::size_t index = 0;
-	while (index = str.find(index, findText) && index != std::string::npos) {
-		str.replace(index, findText.length(), replaceText);
-	}
+	str = newStr;
 }
 
 std::string splitLines(std::string text, int maxLength, int scale) {

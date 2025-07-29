@@ -107,111 +107,113 @@ int main()
 				}
 			}
 		}
-		if (updateFPS) {
-			FPS = 1.f / clock.getElapsedTime().asSeconds();
-			updateFPS = false;
-		}
-		elapsedTime += clock.getElapsedTime().asSeconds();
-		clock.restart();
-		if (elapsedTime >= targetTime) {
-			elapsedTime -= targetTime;
-			UI.timer++;
-			if (UI.timer % 15 == 0) {
-				UI.blink = !UI.blink;
+		if (UI.inGame) {
+			if (updateFPS) {
+				FPS = 1.f / clock.getElapsedTime().asSeconds();
+				updateFPS = false;
 			}
-			if (UI.timer % 200 == 0) {
-				UI.timer = 0;
-			}
-			updateFPS = true;
-			if (input.length() > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
-				if (holdingBackspace > 5) {
-					input.pop_back();
+			elapsedTime += clock.getElapsedTime().asSeconds();
+			clock.restart();
+			if (elapsedTime >= targetTime) {
+				elapsedTime -= targetTime;
+				UI.timer++;
+				if (UI.timer % 15 == 0) {
+					UI.blink = !UI.blink;
+				}
+				if (UI.timer % 200 == 0) {
+					UI.timer = 0;
+				}
+				updateFPS = true;
+				if (input.length() > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
+					if (holdingBackspace > 5) {
+						input.pop_back();
+					}
+					else {
+						holdingBackspace++;
+					}
 				}
 				else {
-					holdingBackspace++;
+					holdingBackspace = 0;
 				}
 			}
-			else {
-				holdingBackspace = 0;
+
+
+			sf::Sprite sprite;
+			sprite.setPosition(0, 0);
+			texture.clear(sf::Color(0, 0, 10));
+			SCREEN_X = texture.getSize().x;
+			SCREEN_Y = texture.getSize().y;
+
+
+			//PUT ALL YOUR DRAWING CODE HERE!
+			/*Print("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 50, 100, 1);
+			Print(low("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 50, 125, 1);
+			Print("0123456789", 50, 150, 1);
+			Print(". , ! ?", 50, 175, 1);
+			//Draw(0, 434, 13, 13, player.x, player.y, 2);
+
+			Print("*RED*the *YELLOW*quick *GREEN*brown *BLUE*fox *ORANGE*jumps *PURPLE*over *GREY*the *TEAL*lazy *BROWN*dog. . .", 400, 100, 1);
+			Print("sphinx of black quartz, hear my vow!", 400, 125, 1);
+			Print("Do Androids Dream of Electric Sheep?", 400, 150, 1);
+			Print(C.NAME, 10, 10);
+			Print(C.DESCRIPTION, 10, 30);
+			Print(C.ID, 10, 50);
+			Print(C.TYPE, 10, 70);
+			Print(C.LOCATION, 10, 90);
+			Print(C.BUILDING, 10, 110);
+			Print(to_str(C.LEVEL), 10, 130);
+			Print(to_str(C.XP), 10, 150);
+			Print(to_str(C.SP), 10, 170);
+			Print("Gold " + to_str(C.GOLD), 10, 190);
+			Print(to_str(C.HP), 10, 210);
+			Print(to_str(C.AP), 10, 230);
+			Print(to_str(C.BACKPACK), 10, 250);
+			Print(to_str(C.HITS[0]), 10, 270);
+			Print(to_str(C.HITS[1]), 10, 290);
+			Print(to_str(C.MISSES[0]), 10, 310);
+			Print(to_str(C.MISSES[1]), 10, 330);
+			*/
+
+			//fillRect(0, 0, 320, 360, sf::Color::Red);
+
+			//fillRect(319, 0, 2, 360, sf::Color::Red);
+
+			//fillRect(638, 0, 2, 360, sf::Color::Red);
+
+			RoomDescription();
+
+
+			for (int i = 1; i <= 3; i++) {
+				if (logs.size() >= i) {
+					Print(logs[logs.size() - i], 10, HEIGHT - (50 + i * 15));
+				}
 			}
-		}
+			Print("> " + input + "_", 10, HEIGHT - 50);
 
-
-		sf::Sprite sprite;
-		sprite.setPosition(0, 0);
-		texture.clear(sf::Color(0, 0, 10));
-		SCREEN_X = texture.getSize().x;
-		SCREEN_Y = texture.getSize().y;
-
-		
-		//PUT ALL YOUR DRAWING CODE HERE!
-		/*Print("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 50, 100, 1);
-		Print(low("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 50, 125, 1);
-		Print("0123456789", 50, 150, 1);
-		Print(". , ! ?", 50, 175, 1);
-		//Draw(0, 434, 13, 13, player.x, player.y, 2);
-
-		Print("*RED*the *YELLOW*quick *GREEN*brown *BLUE*fox *ORANGE*jumps *PURPLE*over *GREY*the *TEAL*lazy *BROWN*dog. . .", 400, 100, 1);
-		Print("sphinx of black quartz, hear my vow!", 400, 125, 1);
-		Print("Do Androids Dream of Electric Sheep?", 400, 150, 1);
-		Print(C.NAME, 10, 10);
-		Print(C.DESCRIPTION, 10, 30);
-		Print(C.ID, 10, 50);
-		Print(C.TYPE, 10, 70);
-		Print(C.LOCATION, 10, 90);
-		Print(C.BUILDING, 10, 110);
-		Print(to_str(C.LEVEL), 10, 130);
-		Print(to_str(C.XP), 10, 150);
-		Print(to_str(C.SP), 10, 170);
-		Print("Gold " + to_str(C.GOLD), 10, 190);
-		Print(to_str(C.HP), 10, 210);
-		Print(to_str(C.AP), 10, 230);
-		Print(to_str(C.BACKPACK), 10, 250);
-		Print(to_str(C.HITS[0]), 10, 270);
-		Print(to_str(C.HITS[1]), 10, 290);
-		Print(to_str(C.MISSES[0]), 10, 310);
-		Print(to_str(C.MISSES[1]), 10, 330);
-		*/
-
-		//fillRect(0, 0, 320, 360, sf::Color::Red);
-
-		//fillRect(319, 0, 2, 360, sf::Color::Red);
-
-		//fillRect(638, 0, 2, 360, sf::Color::Red);
-
-		RoomDescription();
-
-
-		for (int i = 1; i <= 3; i++) {
-			if (logs.size() >= i) {
-				Print(logs[logs.size() - i], 10, HEIGHT - (50 + i * 15));
+			if (numVertices > vertSize) {
+				vertSize = numVertices + 1000;
+				vertices.resize(vertSize);
+				std::cout << "Resizing to store " << vertSize << " elements. . ." << std::endl;
 			}
-		}	
-		Print("> " + input + "_", 10, HEIGHT - 50);
 
-		if (numVertices > vertSize) {
-			vertSize = numVertices + 1000;
-			vertices.resize(vertSize);
-			std::cout << "Resizing to store " << vertSize << " elements. . ." << std::endl;
+			if (numVertices > 0) {
+				texture.draw(&vertices[0], numVertices, sf::Quads, &sprites);
+				numVertices = 0;
+			}
+			texture.display();
+			sprite.setTexture(texture.getTexture());
+			sprite.setScale((UI.W) / texture.getSize().x, UI.H / texture.getSize().y);
+			window.draw(sprite);
+
+
+			//Print(to_str((int)FPS), 0, 0, 8);
+
+			if (numVertices > 0) {
+				window.draw(&vertices[0], numVertices, sf::Quads, &sprites);
+				numVertices = 0;
+			}
+			window.display();
 		}
-
-		if (numVertices > 0) {
-			texture.draw(&vertices[0], numVertices, sf::Quads, &sprites);
-			numVertices = 0;
-		}
-		texture.display();
-		sprite.setTexture(texture.getTexture());
-		sprite.setScale((UI.W) / texture.getSize().x, UI.H / texture.getSize().y);
-		window.draw(sprite);
-
-
-		//Print(to_str((int)FPS), 0, 0, 8);
-
-		if (numVertices > 0) {
-			window.draw(&vertices[0], numVertices, sf::Quads, &sprites);
-			numVertices = 0;
-		}
-		window.display();
 	}
 	closesocket(sock);
 	WSACleanup();
