@@ -1,7 +1,7 @@
 NAME!!!Bob!!!
 ID!!!Bob1234!!!
 DESCRIPTION!!!Bob is an Ape!!!
-LOCATION!!!Harbor!!!
+LOCATION!!!!!!
 BUILDING!!!!!!
 LEVEL!!!10!
 XP!!!150!

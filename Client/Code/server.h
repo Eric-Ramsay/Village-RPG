@@ -116,9 +116,6 @@ void CharacterChange(Character& character, std::string type, std::string data) {
 	if (type == "LOCATION") {
 		character.LOCATION = readStr(data);
 	}
-	if (type == "BUILDING") {
-		character.BUILDING = readStr(data);
-	}
 	if (type == "LEVEL") {
 		character.LEVEL = readInt(data);
 	}

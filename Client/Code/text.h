@@ -12,12 +12,33 @@ void charInfo(char c, int& sX, int& sY, int& sW) {
 	if (c == ' ') {
 		sX = 156;
 	}
+	else if (c == '_') {
+		sX = 40;
+		sY = 48;
+		if (UI.blink) {
+			sW = 0;
+		}
+	}
+	else if (c == '>') {
+		sX = 46;
+		sY = 48;
+	}
+	else if (c == '<') {
+		sX = 52;
+		sY = 48;
+	}
 	else if (c == '+') {
-		sY = 16;
+		sY = 48;
+		sX = 6;
 	}
 	else if (c == '-') {
-		sY = 16;
-		sX = 8;
+		sY = 48;
+		sX = 12;
+	}
+	else if (c == '\'') {
+		sX = 37;
+		sY = 48;
+		sW = 2;
 	}
 	else if (c == '?') {
 		sX = 31; sY = 48;
@@ -55,7 +76,7 @@ void charInfo(char c, int& sX, int& sY, int& sW) {
 int measureText(std::string text, float scale = 1, int textSize = 2) {
 	bool skipping = false;
 	int sX, sY, sW, sH;
-	int size = -1;
+	int size = 0;
 	bool printChar = true;
 	for (char& c : text) {
 		if (c == '*') {
@@ -170,7 +191,7 @@ sf::Color getColor(std::string text = "") {
 		return sf::Color(255, 165, 0);
 	}
 	else if (text == "grey") {
-		return sf::Color(100, 85, 85);
+		return sf::Color(245, 245, 240);
 	}
 	else if (text == "brown") {
 		return sf::Color(140, 75, 40);
@@ -179,17 +200,94 @@ sf::Color getColor(std::string text = "") {
 	return sf::Color(245, 245, 240);
 }
 
-// Print Function
-void Print(std::string text, int dX, int dY, int scale = 1) {
-	int drawX = dX;
-	int drawY = dY;
+int measureText(std::string text, int scale) {
+	int lineLength = 0;
+	int sX;
+	int sY;
+	int sW;
 	bool printing = true;
-	std::string color = "white";
 	for (char c : text) {
 		if (printing) {
 			if (c == '*') {
 				printing = false;
+			}
+			else {
+				charInfo(c, sX, sY, sW);
+				lineLength += (sW + 1) * scale;
+			}
+		}
+		else {
+			if (c == '*') {
+				printing = true;
+			}
+		}
+	}
+	return lineLength;
+}
+
+void replace(std::string& str, std::string findText, std::string replaceText) {
+	if (findText == replaceText) {
+		return;
+	}
+	std::size_t index = 0;
+	while (index = str.find(index, findText) && index != std::string::npos) {
+		str.replace(index, findText.length(), replaceText);
+	}
+}
+
+std::string splitLines(std::string text, int maxLength, int scale) {
+	std::vector<std::string> lines = split(text, '\n');
+	std::string merged = "";
+	int sX;
+	int sY;
+	int sW;
+	for (std::string line : lines) {
+		int lineLength = 0;
+		std::vector<std::string> words = split(line);
+		for (int i = 0; i < words.size(); i++) {
+			if (words[i] == "or") {
+				int ape = 3;
+			}
+			int len = measureText(words[i] + " ");
+			if (lineLength + len >= maxLength) {
+				lineLength = len;
+				merged.pop_back();
+				merged += "\n";
+			}
+			else {
+				lineLength += len;
+			}
+			merged += words[i] + " ";
+		}
+		merged += "\n";
+	}
+
+	return merged;
+}
+
+// Print Function
+void Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1) {
+	int drawX = dX;
+	int drawY = dY;
+	bool printing = true;
+	std::string color = "white";
+	std::string lines = splitLines(text, maxLength, scale);
+	int dYT = dY + 10 * scale;
+	/*std::vector<std::string> splitLines = split(lines, '\n');
+	for (std::string line : splitLines) {
+		fillRect(dX, dYT, measureText(line, scale), scale, sf::Color::White);
+		dYT += 11 * scale;
+	}*/
+
+	for (char c : lines) {
+		if (printing) {
+			if (c == '*') {
+				printing = false;
 				color = "";
+			}
+			else if (c == '\n') {
+				drawX = dX;
+				drawY += 11 * scale;
 			}
 			else {
 				int sX = 0;

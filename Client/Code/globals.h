@@ -33,3 +33,14 @@ float max(float a, float b) {
 }
 
 Character C;
+
+std::vector<Location> LOCATIONS = {};
+std::vector<Location> BUILDINGS = {};
+
+int WIDTH = 16 * 53;
+int HEIGHT = 9 * 53;
+
+std::string input = "";
+int holdingBackspace = 0;
+
+std::vector<std::string> logs = {};

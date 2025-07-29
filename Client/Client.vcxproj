@@ -158,6 +158,8 @@
     <ClInclude Include="Code\server.h" />
     <ClInclude Include="Code\text.h" />
     <ClInclude Include="Code\structures.h" />
+    <ClInclude Include="Code\UI.h" />
+    <ClInclude Include="Code\utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

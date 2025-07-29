@@ -47,7 +47,7 @@ void Draw(int sX, int sY, int w, int h, int dX, int dY, int scale = 1, sf::Color
 
 
 
-const int PIXEL_SPOT_X = 413;
+const int PIXEL_SPOT_X = 1;
 const int PIXEL_SPOT_Y = 0;
 
 void fillRect(int dX, int dY, int w, int h, sf::Color color) {
@@ -78,8 +78,4 @@ sf::Color mix(sf::Color a, sf::Color b) {
 
 sf::Color mix(sf::Color a, float aStr, sf::Color b, float bStr) {
 	return mix(sf::Color(a.r, a.g, a.b, aStr), sf::Color(b.r, b.g, b.b, bStr));
-}
-
-void DrawUI() {
-	
 }

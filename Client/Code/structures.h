@@ -53,6 +53,7 @@ struct UIState {
 	C boxTile = C(0, 0);
 
 	int timer = 0;
+	bool blink = true;
 	//Ambient Audio Settings
 	AmbientSound sounds[3];
 
@@ -228,7 +229,6 @@ struct Character : Fighter {
 	int XP = 0;
 
 	std::string LOCATION = "";
-	std::string BUILDING = "";
 
 	bool BACKPACK = false;
 
@@ -248,15 +248,30 @@ struct NPC {
 	std::vector<Item> ITEMS;
 };
 
+struct Connection {
+	std::string direction = "";
+	std::string location = "";
+	Connection(std::string d, std::string loc) {
+		direction = d;
+		location = loc;
+	}
+};
+
 struct Location {
 	std::string id = "";
 	std::string description = "";
 
-	std::vector<std::string> connections;
+	std::string parent = "";
+
+	std::vector<Connection> connections;
 	std::vector<std::string> players;
 	std::vector<std::string> buildings;
 	std::vector<std::string> people;
 
 	bool dungeon = false;
 	bool canTravel = true;
+	Location(std::string n, std::string desc) {
+		id = n;
+		description = desc;
+	}
 };

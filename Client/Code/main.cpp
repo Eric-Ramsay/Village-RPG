@@ -24,11 +24,15 @@ namespace Gdiplus {
 #include "miniaudio.h"
 #include "structures.h"
 #include "globals.h"
-#include "functions.h"
+#include "utilities.h"
+#include "audio.h"
 #include "server.h"
 #include "draw.h"
 #include "text.h"
-#include "audio.h"
+#include "functions.h"
+#include "commands.h"
+#include "init.h"
+#include "UI.h"
 
 int SCREEN_X = 1;
 int SCREEN_Y = 1;
@@ -36,12 +40,9 @@ int SCREEN_Y = 1;
 
 int main()
 {
-	std::string integers = "3!478!-5214!0!";
-	int one = readInt(integers);
-	int two = readInt(integers);
-	int three = readInt(integers);
-	int four = readInt(integers);
-	std::cout << one << " " << two << " " << three << " " << four << std::endl;
+
+	initLocations();
+
 	sf::RenderWindow window;
 	sf::RenderTexture texture;
 	serverInit();
@@ -50,7 +51,7 @@ int main()
 	bool updateFPS = true;
 	auto clock = sf::Clock{};
 	float elapsedTime = 0;
-	float targetTime = .15f;
+	float targetTime = .04f;
 
 	UI.W = sf::VideoMode::getDesktopMode().width;
 	UI.H = sf::VideoMode::getDesktopMode().height;
@@ -61,7 +62,7 @@ int main()
 	srand(time(NULL));
 	//ma_engine_init(NULL, &audio);
 	static sf::Texture sprites = createTexture("./Sprites/sprites.png");
-	texture.create(640, 360);
+	texture.create(WIDTH, HEIGHT);
 	vertices.resize(vertSize);
 	while (window.isOpen()) {
 		sf::Event event;
@@ -75,6 +76,36 @@ int main()
 			else if (event.type == sf::Event::GainedFocus) {
 				UI.inGame = true;
 			}
+			else if (event.type == sf::Event::KeyPressed) {
+				int c = 0;
+				int keyCode = (int)event.key.code;
+				if (keyCode >= sf::Keyboard::A && keyCode <= sf::Keyboard::Z) {
+					char add = 'a';
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+						add = 'A';
+					}
+					c = add + (keyCode - (int)sf::Keyboard::A);
+				}
+				else if (event.key.code >= sf::Keyboard::Num0 && event.key.code <= sf::Keyboard::Num9) {
+					c = (char)(event.key.code - sf::Keyboard::Num0 + '0');
+				}
+				else if (event.key.code == sf::Keyboard::Space) {
+					c = (char)(event.key.code - sf::Keyboard::Space + ' ');
+				}
+				else if (event.key.code == sf::Keyboard::Backspace) {
+					if (input.length() > 0) {
+						input.pop_back();
+					}
+				}
+				if (c != 0) {
+					input += (char)c;
+				}
+				else if (event.key.code == sf::Keyboard::Enter) {
+					Command(input);
+					logs.push_back(input);
+					input = "";
+				}
+			}
 		}
 		if (updateFPS) {
 			FPS = 1.f / clock.getElapsedTime().asSeconds();
@@ -85,10 +116,24 @@ int main()
 		if (elapsedTime >= targetTime) {
 			elapsedTime -= targetTime;
 			UI.timer++;
+			if (UI.timer % 15 == 0) {
+				UI.blink = !UI.blink;
+			}
 			if (UI.timer % 200 == 0) {
 				UI.timer = 0;
 			}
 			updateFPS = true;
+			if (input.length() > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
+				if (holdingBackspace > 5) {
+					input.pop_back();
+				}
+				else {
+					holdingBackspace++;
+				}
+			}
+			else {
+				holdingBackspace = 0;
+			}
 		}
 
 
@@ -109,7 +154,6 @@ int main()
 		Print("*RED*the *YELLOW*quick *GREEN*brown *BLUE*fox *ORANGE*jumps *PURPLE*over *GREY*the *TEAL*lazy *BROWN*dog. . .", 400, 100, 1);
 		Print("sphinx of black quartz, hear my vow!", 400, 125, 1);
 		Print("Do Androids Dream of Electric Sheep?", 400, 150, 1);
-		*/
 		Print(C.NAME, 10, 10);
 		Print(C.DESCRIPTION, 10, 30);
 		Print(C.ID, 10, 50);
@@ -127,7 +171,23 @@ int main()
 		Print(to_str(C.HITS[1]), 10, 290);
 		Print(to_str(C.MISSES[0]), 10, 310);
 		Print(to_str(C.MISSES[1]), 10, 330);
+		*/
 
+		//fillRect(0, 0, 320, 360, sf::Color::Red);
+
+		//fillRect(319, 0, 2, 360, sf::Color::Red);
+
+		//fillRect(638, 0, 2, 360, sf::Color::Red);
+
+		RoomDescription();
+
+
+		for (int i = 1; i <= 3; i++) {
+			if (logs.size() >= i) {
+				Print(logs[logs.size() - i], 10, HEIGHT - (50 + i * 15));
+			}
+		}	
+		Print("> " + input + "_", 10, HEIGHT - 50);
 
 		if (numVertices > vertSize) {
 			vertSize = numVertices + 1000;
@@ -143,6 +203,7 @@ int main()
 		sprite.setTexture(texture.getTexture());
 		sprite.setScale((UI.W) / texture.getSize().x, UI.H / texture.getSize().y);
 		window.draw(sprite);
+
 
 		//Print(to_str((int)FPS), 0, 0, 8);
 

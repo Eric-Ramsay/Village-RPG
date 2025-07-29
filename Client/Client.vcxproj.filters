@@ -50,5 +50,11 @@
     <ClInclude Include="Code\functions.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Code\UI.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\utilities.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
