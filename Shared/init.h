@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 
 void initLocations() {
 	// Buildings
@@ -35,7 +34,7 @@ void initLocations() {
 
 	// Locations
 	Location Merchants("Merchant's Lane", "A wide dusty road flanked by various wooden shops and market stalls. The air is filled with the clamor of townspeople going about their business. Dark pines loom in the west, far beyond the comforts of the town.");
-	Merchants.buildings = { "Tavern", "Tailor", "Barber"};
+	Merchants.buildings = { "Tavern", "Tailor", "Barber" };
 	Merchants.connections = {
 		Connection("south", "Town Square"),
 		Connection("north", "Harbor"),
@@ -43,14 +42,14 @@ void initLocations() {
 	};
 
 	Location Harbor("Harbor", "The harbor on the north side of town. The coast seems endless to the east and west, and a cool southbound wind blows in from the grey sea. A few small ships are out fishing, just shy of the horizon. A large ferry is docked at the end of the pier.");
-	Harbor.buildings = {"Curio Shop", "Rune Shop"};
+	Harbor.buildings = { "Curio Shop", "Rune Shop" };
 	Harbor.connections = {
 		Connection("south", "Merchant's Lane"),
 		Connection("north", "Island Ferry")
 	};
 
 	Location Churchyard("Churchyard", "A stony, two-story church dominates this side of town. It's dead quiet here. Beyond the church is a graveyard. It seems like new graves are always being dug.");
-	Churchyard.buildings = {"Church", "Library"};
+	Churchyard.buildings = { "Church", "Library" };
 	Churchyard.connections = {
 		Connection("west", "Town Square"),
 		Connection("north", "Graveyard"),
@@ -58,7 +57,7 @@ void initLocations() {
 	};
 
 	Location Square("Town Square", "A sprawling, largely empty plaza. There used to be festivals here, but these days they're little more than a distant memory. A few tiny insects flit about the open air, and the smell of mud rises from the southern swamp.");
-	Square.buildings = {"Apothecary", "Smithy", "Bank"};
+	Square.buildings = { "Apothecary", "Smithy", "Bank" };
 	Square.connections = {
 		Connection("north", "Merchant's Lane"),
 		Connection("east", "Churchyard"),
@@ -85,7 +84,7 @@ void initLocations() {
 	Location Woods("Wilted Woods", "An old network of roads winds through this forest, overgrown and travelled only by the most desperate. No birds dare sing here, there is naught but the creaking of the dead trees.");
 	Woods.dungeon = true;
 	Woods.connections = {
-		Connection("west", "Churchyard")
+		Connection("east", "Merchant's Lane")
 	};
 
 	Location Swamp("Acrid Swamp", "Muddy water rises to your knees, pond scum spread across its surface hiding that which lurks below. A thick damp mist hangs in the air, obscuring the trunks and vines at the edge of your perception into frightful figures.");
@@ -100,17 +99,23 @@ void initLocations() {
 		Connection("south", "Island Ferry")
 	};
 
-	LOCATIONS = { Tavern, Tailor, Barber, Curio, Runes, Church, Library, Apothecary, Smithy, Bank, Merchants, Harbor, Churchyard, Square, Graveyard, Ferry, Crypts, Woods, Swamp, Island};
+	LOCATIONS = { Tavern, Tailor, Barber, Curio, Runes, Church, Library, Apothecary, Smithy, Bank, Merchants, Harbor, Churchyard, Square, Graveyard, Ferry, Crypts, Woods, Swamp, Island };
 
 	std::cout << "Beginning Check" << std::endl;
 
 	for (Location loc : LOCATIONS) {
-		GetLocation(loc.id);
+		getLocation(loc.id);
 		for (Connection con : loc.connections) {
-			GetLocation(con.location);
+			getLocation(con.location);
 		}
 		for (std::string id : loc.buildings) {
-			GetLocation(id);
+			getLocation(id);
 		}
 	}
+}	
+
+void initEnemies() {
+	//Character Enemy(std::string name, int hp, std::vector<int> armor, int difficulty, std::vector<int> zones, int moves, std::string type, std::string desc)
+	Character wolf("Crazed Wolf", 40, { 2, 0 }, 40, { 2 }, 3, "animal", "A mangy wolf, foaming at its mouth and snapping viciously.");
+	ENEMIES.push_back(wolf);
 }

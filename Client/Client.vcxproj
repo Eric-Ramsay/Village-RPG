@@ -148,16 +148,17 @@
     <ClCompile Include="Code\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Shared\init.h" />
+    <ClInclude Include="..\Shared\sharedStructures.h" />
+    <ClInclude Include="..\Shared\textFunctions.h" />
     <ClInclude Include="Code\audio.h" />
-    <ClInclude Include="Code\commands.h" />
     <ClInclude Include="Code\draw.h" />
-    <ClInclude Include="Code\functions.h" />
     <ClInclude Include="Code\globals.h" />
-    <ClInclude Include="Code\init.h" />
     <ClInclude Include="Code\miniaudio.h" />
     <ClInclude Include="Code\server.h" />
-    <ClInclude Include="Code\text.h" />
+    <ClInclude Include="Code\sharedFunctions.h" />
     <ClInclude Include="Code\structures.h" />
+    <ClInclude Include="Code\text.h" />
     <ClInclude Include="Code\UI.h" />
     <ClInclude Include="Code\utilities.h" />
   </ItemGroup>

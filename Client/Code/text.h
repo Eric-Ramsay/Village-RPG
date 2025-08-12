@@ -92,81 +92,6 @@ int measureText(std::string text, float scale = 1, int textSize = 2) {
 	return size * scale;
 }
 
-bool range(int x1, int y1, int x2, int y2, int width, int height) {
-	if (height == -1) {
-		height = width;
-	}
-	return (x1 >= x2 && y1 >= y2 && x1 <= x2 + width && y1 <= y2 + height);
-}
-
-
-std::string trimNum(float x) {
-	char append = '!';
-	int excess = 0;
-	float num = abs(x);
-	num = ((int)std::round(num * 1000)) / 1000.0;
-	std::string result = "";
-	if (abs(num) < 100) {
-		if (abs(x) < 1) { //2 decimal precision
-			num = ((int)std::round(num * 100)) / 100.0;
-		}
-		else { //1 decimal precision
-			num = ((int)(num * 10)) / 10.0;
-		}
-		result = to_str(num);
-		if (result[0] == '0' && result[1] == '.') {
-			result = result.substr(1);
-		}
-		return result;
-	}
-	else { //no decimals allowed
-		num = (int)x;
-	}
-	if (num >= 10000) {
-		excess = num;
-		if (num >= 1000000) {
-			append = 'm';
-			num = (int)(num / 1000000);
-			excess -= num * 1000000;
-			excess = (excess / 100000);
-		}
-		else {
-			append = 'k';
-			num = (int)(num / 1000);
-			excess -= num * 1000;
-			excess = (excess / 100);
-		}
-	}
-	result = to_str(num);
-	if (excess > 0 && x < 99999) {
-		if (excess - (excess / 100) * 100 == 0) {
-			excess = 100 * (excess / 100);
-		}
-		result += "." + to_str(excess);
-	}
-	if (append == '!') {
-		return result;
-	}
-	return  result + append;
-}
-
-std::string low(std::string a) {
-	std::string word = "";
-	bool skip = false;
-	for (char c : a) {
-		if (c == '*') {
-			skip = !skip;
-		}
-		if (skip) {
-			word += c;
-		}
-		else {
-			word += std::tolower(c);
-		}
-	}
-	return word;
-}
-
 sf::Color getColor(std::string text = "") {
 	text = low(text);
 	if (text == "yellow") {
@@ -223,25 +148,6 @@ int measureText(std::string text, int scale) {
 		}
 	}
 	return lineLength;
-}
-
-void replace(std::string& str, std::string findText, std::string replaceText) {
-	std::string newStr = "";
-	int len = findText.length();
-	int strLen = str.length();
-	for (int i = 0; i < strLen; i += len) {
-		std::string segment = "";
-		for (int j = 0; j < len; j++) {
-			if (i + j < strLen) {
-				segment += str[i + j];
-			}
-		}
-		if (segment == findText) {
-			segment = replaceText;
-		}
-		newStr += segment;
-	}
-	str = newStr;
 }
 
 std::string splitLines(std::string text, int maxLength, int scale) {

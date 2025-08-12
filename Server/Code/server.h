@@ -1,16 +1,5 @@
 #pragma once
-std::string IP = "10.0.0.11";
-int port = 1234;
-std::deque<Message> outMessages = {};
-
-Message* bufferStart = nullptr;
-Message* bufferEnd = nullptr;
-Message* processing = nullptr;
-bool SENDING = false;
-
-std::vector<Player> players = {};
-
-void SendData(std::string type, std::string data, std::vector<int> sendList = {}) {
+void sendData(std::string type, std::string data, std::vector<int> sendList = {}) {
 	SENDING = TRUE;
 	Message* m = new Message(type, data, sendList);
 	if (m->players.size() == 0) {
@@ -32,7 +21,17 @@ void SendData(std::string type, std::string data, std::vector<int> sendList = {}
 	SENDING = FALSE;
 }
 
-void SendCharacter(int playerIndex) {
-	std::string data = serializeCharacter(players[playerIndex].character);
-	SendData("CHARACTER", data);
+void sendCharacter(int playerIndex) {
+	std::string id = players[playerIndex].ID;
+	std::string data = serializeCharacter(CHARACTERS[id]);
+	sendData("CHARACTER", data);
+}
+
+void sendStat(std::string id, std::string stat, std::string value, std::vector<int> sendList = {}) {
+	sendData("STAT", id + "!!!" + stat + "!!!" + value + "!!!", sendList);
+}
+
+void sendBattle(Battle battle, std::vector<int> sendList = {}) {
+	std::string data = serializeBattle(battle);
+	sendData("BATTLE", data, sendList);
 }

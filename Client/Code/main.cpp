@@ -12,6 +12,7 @@
 #include <sstream>
 #include <WS2tcpip.h>
 #include <thread>
+#include <unordered_map>
 #pragma comment (lib, "ws2_32.lib")
 
 namespace Gdiplus {
@@ -23,24 +24,22 @@ namespace Gdiplus {
 
 #include "miniaudio.h"
 #include "structures.h"
+#include "..\..\Shared\sharedStructures.h"
 #include "globals.h"
+#include "..\..\Shared\textFunctions.h"
+#include "..\..\Shared\sharedFunctions.h"
 #include "utilities.h"
 #include "audio.h"
 #include "server.h"
 #include "draw.h"
 #include "text.h"
-#include "functions.h"
-#include "commands.h"
-#include "init.h"
-#include "UI.h"
 
-int SCREEN_X = 1;
-int SCREEN_Y = 1;
+#include "..\..\Shared\init.h"
+#include "UI.h"
 
 
 int main()
 {
-
 	initLocations();
 
 	sf::RenderWindow window;
@@ -101,7 +100,8 @@ int main()
 					input += (char)c;
 				}
 				else if (event.key.code == sf::Keyboard::Enter) {
-					Command(input);
+					replace(input, "  ", " ");
+					sendData("COMMAND", input);
 					logs.push_back(input);
 					input = "";
 				}
@@ -137,13 +137,11 @@ int main()
 				}
 			}
 
-
 			sf::Sprite sprite;
 			sprite.setPosition(0, 0);
 			texture.clear(sf::Color(0, 0, 10));
 			SCREEN_X = texture.getSize().x;
 			SCREEN_Y = texture.getSize().y;
-
 
 			//PUT ALL YOUR DRAWING CODE HERE!
 			/*Print("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 50, 100, 1);
@@ -180,7 +178,7 @@ int main()
 
 			//fillRect(638, 0, 2, 360, sf::Color::Red);
 
-			RoomDescription();
+			DrawUI();
 
 
 			for (int i = 1; i <= 3; i++) {

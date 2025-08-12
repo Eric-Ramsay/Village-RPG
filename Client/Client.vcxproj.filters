@@ -5,13 +5,8 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Shared Files">
+      <UniqueIdentifier>{e27879f9-38bd-440d-8ece-25de4590608d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -29,31 +24,34 @@
     <ClInclude Include="Code\miniaudio.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\globals.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\structures.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Code\draw.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\text.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\commands.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\init.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\functions.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\UI.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\utilities.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\text.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\sharedStructures.h">
+      <Filter>Shared Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\textFunctions.h">
+      <Filter>Shared Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\sharedFunctions.h">
+      <Filter>Shared Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\init.h">
+      <Filter>Shared Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\structures.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\globals.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

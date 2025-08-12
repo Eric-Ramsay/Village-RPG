@@ -19,16 +19,20 @@
 #include <sstream>
 #include <fstream>
 #include <WS2tcpip.h>
+#include <unordered_map>
+#include <filesystem>
 #pragma comment (lib, "ws2_32.lib")
 
+#include "..\..\Shared\sharedStructures.h"
 #include "structures.h"
+#include "globals.h"
+#include "..\..\Shared\textFunctions.h"
 #include "functions.h"
-#include "init.h"
+#include "..\..\Shared\sharedFunctions.h"
+#include "..\..\Shared\init.h"
 #include "data.h"
 #include "server.h"
-
-SOCKET listening;
-fd_set master;
+#include "commands.h"
 
 int nextMessage(std::vector<Message>& msgs) {
 	int msgIndex = 0;
@@ -113,15 +117,28 @@ void ProcessMessages() {
 					std::string type = players[i].messages[j].type;
 					std::cout << type << " " << data << std::endl;
 					if (type == "LOG_IN") {
-						if (fileExists("Saves/" + data + ".txt")) {
-							players[i].character = loadChar(data);
-							SendCharacter(i);
-							SendData("STAT", "GOLD!!!" + str(150), { i });
+						std::string id = "";
+						if (CHARACTERS.count(data) != 0) {
+							players[i].ID = data;
+							id = data;
 						}
-						// Loop through the saved characters and return the one that belongs to them
+						for (auto character : CHARACTERS) {
+							if (character.second.TYPE == "player" || (id != "" && character.second.LOCATION == CHARACTERS[id].LOCATION)) {
+								std::string data = serializeCharacter(character.second);
+								sendData("CHARACTER", data);
+							}
+						}
 					}
-					else if (type == "TEXT") {
-						SendData(type, data, { i });
+					else if (players[i].ID != "") {
+						if (type == "TEXT") {
+							sendData(type, data, { i });
+						}
+						else if (type == "COMMAND") {
+							command(data, i);
+						}
+					}
+					else {
+						sendData("TEXT", "*RED*You need to create a character first!");
 					}
 				}
 			}
@@ -156,7 +173,7 @@ void Listen() {
 				FD_SET(new_client, &copy);
 
 				players.push_back(Player(new_client));
-				SendData("READY", "", { (int)players.size() - 1 });
+				sendData("READY", "", { (int)players.size() - 1 });
 			}
 			else {
 				// Receive Message From Player
@@ -214,26 +231,11 @@ void Input() {
 		Sleep(1);
 		std::string text;
 		std::getline(std::cin, text);
-		SendData("TEXT", text);
+		sendData("TEXT", text);
 	}
 }
 
 int main() {
-	Character Bob;
-	Item weapon("Axe", "axe", "An axe", 2, 1, 50, 75, 2, 8, 4, 6, 1);
-	Item armor("Chainmail", "Some old chainmail.", 50, 6, 25, 4, 2);
-	Bob.INVENTORY.push_back(&weapon);
-	Bob.INVENTORY.push_back(&armor);
-	Bob.NAME = "Bob";
-	Bob.ID = "Bob1234";
-	Bob.DESCRIPTION = "Bob is an Ape";
-	Bob.LEVEL = 10;
-	Bob.XP = 150;
-	Bob.SP = 3;
-
-	saveChar(Bob);
-	Bob = loadChar("Bob1234");
-	//std::cout << ((Weapon*)Bob.INVENTORY[0])->min << std::endl;
 	std::cout << "Initializing Server. . ." << std::endl;
 	srand(time(NULL));
 	int num = rand() % 99999;
@@ -262,6 +264,24 @@ int main() {
 
 	FD_ZERO(&master);
 	FD_SET(listening, &master);
+
+	initLocations();
+
+	// Load all Characters
+	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Characters/")) {
+		Character character;
+		std::ifstream file(entry.path());
+		std::vector<std::string> strings = {};
+		std::string line = "";
+		while (getline(file, line)) {
+			strings.push_back(line);
+		}
+		for (std::string str : strings) {
+			std::string type = readStr(str);
+			characterChange(character, type, str);
+		}
+		CHARACTERS[character.ID] = character;
+	}
 
 	std::cout << std::endl << "Server started!" << std::endl;
 
