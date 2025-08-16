@@ -3,6 +3,9 @@ std::string commandTravel(int playerIndex, Character& C, std::vector<std::string
 	if (words.size() == 0 || words[0].size() == 0) {
 		return "*RED*Command not understood. . . ";
 	}
+	if (BATTLES.count(C.LOCATION) > 0) {
+		return "*RED*You must leave this battle first!\n";
+	}
 	std::string direction = "";
 	Location location = getLocation(C.LOCATION);
 	if (words[0] == "to") {
@@ -43,17 +46,36 @@ std::string commandTravel(int playerIndex, Character& C, std::vector<std::string
 }
 
 std::string commandDelve(int playerIndex, Character& C, std::vector<std::string> words) {
-	for (int i = 0; i < battles.size(); i++) {
-		if (C.LOCATION == battles[i].id) {
-			return "*RED*You're already in a battle!";
-		}
-		if (C.LOCATION == battles[i].zone && battles[i].round == 0) {
-			battles[i].teams[0].push_back(C.ID);
-			sendBattle(battles[i], { playerIndex })
-			return "*YELLOW*You delve deeper. . .";
+	if (BATTLES.count(C.LOCATION) > 0) {
+		return "*RED*You're already in a battle!";
+	}
+	std::string id = "";
+	for (auto battle : BATTLES) {
+		if (C.LOCATION == battle.second.zone && battle.second.round == 0) {
+			id = battle.second.id;
 		}
 	}
-	return "";
+	if (id == "") {
+		id = C.LOCATION + to_str(rand() % 9999);
+		BATTLES[id] = Battle(id, C.LOCATION);
+	}
+	C.LOCATION = id;
+	BATTLES[id].teams[0].push_back(C.ID);
+	save(BATTLES[id]);
+	sendBattle(BATTLES[id], { playerIndex });
+	return "*YELLOW*You delve deeper. . .";
+}
+
+std::string commandLeave(int playerIndex, Character& C, std::vector<std::string> words) {
+	std::string id = C.LOCATION;
+	if (BATTLES.count(id) > 0) {
+		if (BATTLES[id].round == 0) {
+			C.LOCATION = BATTLES[id].zone;
+			validateBattle(id);
+			return "*YELLOW*You leave the battle . . .";
+		}
+	}
+	return "*RED*You can't leave from here . . .";
 }
 
 void command(std::string input, int playerIndex) {
@@ -68,8 +90,13 @@ void command(std::string input, int playerIndex) {
 	}
 	if (keyword == "delve") {
 		msg = commandDelve(playerIndex, CHARACTERS[id], words);
+		sendStat(id, "LOCATION", CHARACTERS[id].LOCATION);
+	}
+	if (keyword == "leave") {
+		msg = commandLeave(playerIndex, CHARACTERS[id], words);
+		sendStat(id, "LOCATION", CHARACTERS[id].LOCATION);
 	}
 	std::cout << msg << std::endl;
-	savePlayer(CHARACTERS[id]);
+	save(CHARACTERS[id]);
 	sendData("TEXT", msg, { playerIndex });
 }

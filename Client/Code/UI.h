@@ -2,15 +2,20 @@
 
 void DrawBattle() {
 	std::string msg = "";
-	msg += "*GREEN*ALLIES\n";
+	msg += "*GREEN*Allies\n";
 	for (std::string ally : BATTLE.teams[0]) {
+		msg += "*GREEN*" + ally + " - " + CHARACTERS[ally].NAME + "\n";
 		//msg += "*GREEN*" + ally->NAME + "  *GREY*" + ally->HP + "/" + MaxHP(*ally) + "  " + "Row " + ally->ROW + "\n";
 	}
 
+	msg += "\n";
+
 	msg += "*RED*Enemies\n";
 	for (std::string enemy : BATTLE.teams[1]) {
+		msg += "*RED*" + enemy + " - " + CHARACTERS[enemy].NAME + "\n";
 		//msg += "*RED*" + enemy + "  *GREY*" + enemy->HP + "/" + MaxHP(*enemy) + "  " + "Row " + enemy->ROW + "\n";
 	}
+	Print(msg, 20, 20, WIDTH - 40);
 }
 
 void DrawRoom() {
@@ -43,5 +48,10 @@ void DrawUI() {
 	if (CHARACTERS.count(ID) == 0) {
 		Print("No Character!", 50, 50);
 	}
-	DrawRoom();
+	if (CHARACTERS[ID].LOCATION == BATTLE.id) {
+		DrawBattle();
+	}
+	else {
+		DrawRoom();
+	}
 }

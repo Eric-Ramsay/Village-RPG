@@ -1,5 +1,5 @@
 #pragma once
-std::string IP = "10.0.0.12";
+std::string IP = "10.0.0.11";
 int port = 1234;
 std::deque<Message> outMessages = {};
 
@@ -16,8 +16,7 @@ fd_set master;
 
 std::vector<Location> LOCATIONS = {};
 std::vector<Character> ENEMIES = {};
-std::vector<Battle> BATTLES = {};
 
 
 std::unordered_map<std::string, Character> CHARACTERS = {};
-std::vector<Battle> battles = {};
+std::unordered_map<std::string, Battle> BATTLES = {};

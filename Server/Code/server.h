@@ -23,7 +23,7 @@ void sendData(std::string type, std::string data, std::vector<int> sendList = {}
 
 void sendCharacter(int playerIndex) {
 	std::string id = players[playerIndex].ID;
-	std::string data = serializeCharacter(CHARACTERS[id]);
+	std::string data = serialize(CHARACTERS[id]);
 	sendData("CHARACTER", data);
 }
 
@@ -32,6 +32,6 @@ void sendStat(std::string id, std::string stat, std::string value, std::vector<i
 }
 
 void sendBattle(Battle battle, std::vector<int> sendList = {}) {
-	std::string data = serializeBattle(battle);
+	std::string data = serialize(battle);
 	sendData("BATTLE", data, sendList);
 }

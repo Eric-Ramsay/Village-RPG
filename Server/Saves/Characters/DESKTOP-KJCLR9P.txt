@@ -1,20 +1,21 @@
 ID!!!DESKTOP-KJCLR9P!!!
-NAME!!!Bob!!!
-DESCRIPTION!!!Bob is an Ape!!!
-LOCATION!!!Churchyard!!!
-LEVEL!!!10!
-XP!!!150!
-SP!!!3!
-GOLD!!!0!
 HP!!!0!
+ROW!!!0!
+ARMOR!!!0!0!
+MAXHP!!!30!
+NAME!!!!!!
+DESCRIPTION!!!!!!
+LOCATION!!!Wilted Woods!!!
+LEVEL!!!-858993460!
+XP!!!0!
+SP!!!0!
+GOLD!!!0!
 AP!!!0!
 BACKPACK!!!0!
 ATTACKS!!!0!
 CASTS!!!0!
-ROW!!!0!
 ROW_PREFERENCE!!!0!
 LEFT!!!-1!
 RIGHT!!!-1!
 HITS!!!0!0!
 MISSES!!!0!0!
-ITEM!!!ID!!!!!!NAME!!!Axe!!!DESCRIPTION!!!An axe!!!EQUIPPED!!!0!RUNES!!!ID!!!!!!NAME!!!Chainmail!!!DESCRIPTION!!!Some old chainmail.!!!EQUIPPED!!!0!RUNES!!!

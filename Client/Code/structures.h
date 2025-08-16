@@ -61,33 +61,8 @@ struct UIState {
 	bool paused = false;
 	bool WINDOW_DRAW = false;
 
-	bool drawBuildings = true;
-	bool drawUnits = true;
 	bool mouseHeld = false;
 	bool mousePressed = false;
 
-	std::vector<char> uFollowed = {};
-	int uHovered = -1;
-	int bHovered = -1;
-	int uSelected = -1;
-	int bSelected = -1;
 	bool UIClick = false;
-
-	//Map View and Interaction Information
-	C tS = C(0, 0);
-	C tH = C(0, 0);
-	float zoom = 3;
-	int xShift = 0;
-	int yShift = 0;
-	int xView = 0;
-	int yView = 0;
-
-	//UI Element Locations
-	C ResPanel = C(0, 0);
-	C UnitList = C(0, 0);
-	C UnitUpkeep = C(0, 0);
-	C BuildingList = C(0, 0);
-	C IncomeBreakdown = C(0, 0);
-	C ClaimIcon = C(0, 0);
-	C TopScores = C(0, 0);
 };

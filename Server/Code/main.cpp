@@ -21,6 +21,7 @@
 #include <WS2tcpip.h>
 #include <unordered_map>
 #include <filesystem>
+#include <ctime>
 #pragma comment (lib, "ws2_32.lib")
 
 #include "..\..\Shared\sharedStructures.h"
@@ -31,8 +32,10 @@
 #include "..\..\Shared\sharedFunctions.h"
 #include "..\..\Shared\init.h"
 #include "data.h"
+#include "battle.h"
 #include "server.h"
 #include "commands.h"
+#include "listener.h"
 
 int nextMessage(std::vector<Message>& msgs) {
 	int msgIndex = 0;
@@ -105,52 +108,8 @@ void Send() {
 	}
 }
 
-// Interpret Completed Messages from Clients
-void ProcessMessages() {
-	Sleep(1);
-	for (int i = 0; i < players.size(); i++) {
-		std::vector<Message> newMessages = {};
-		for (int j = 0; j < players[i].messages.size(); j++) {
-			if (players[i].messages[j].done) {
-				if (players[i].messages[j].data.size() > 0) {
-					std::string data = players[i].messages[j].data;
-					std::string type = players[i].messages[j].type;
-					std::cout << type << " " << data << std::endl;
-					if (type == "LOG_IN") {
-						std::string id = "";
-						if (CHARACTERS.count(data) != 0) {
-							players[i].ID = data;
-							id = data;
-						}
-						for (auto character : CHARACTERS) {
-							if (character.second.TYPE == "player" || (id != "" && character.second.LOCATION == CHARACTERS[id].LOCATION)) {
-								std::string data = serializeCharacter(character.second);
-								sendData("CHARACTER", data);
-							}
-						}
-					}
-					else if (players[i].ID != "") {
-						if (type == "TEXT") {
-							sendData(type, data, { i });
-						}
-						else if (type == "COMMAND") {
-							command(data, i);
-						}
-					}
-					else {
-						sendData("TEXT", "*RED*You need to create a character first!");
-					}
-				}
-			}
-			else {
-				newMessages.push_back(players[i].messages[j]);
-			}
-		}
-		players[i].messages = newMessages;
-	}
-}
-
 void Listen() {
+	srand(time(NULL));
 	FD_ZERO(&master);
 	FD_SET(listening, &master);
 	for (;;) {
@@ -238,7 +197,7 @@ void Input() {
 int main() {
 	std::cout << "Initializing Server. . ." << std::endl;
 	srand(time(NULL));
-	int num = rand() % 99999;
+	rand() % 9999;
 
 	WSADATA wsData;
 	WORD ver = MAKEWORD(2, 2);
@@ -269,18 +228,14 @@ int main() {
 
 	// Load all Characters
 	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Characters/")) {
-		Character character;
-		std::ifstream file(entry.path());
-		std::vector<std::string> strings = {};
-		std::string line = "";
-		while (getline(file, line)) {
-			strings.push_back(line);
-		}
-		for (std::string str : strings) {
-			std::string type = readStr(str);
-			characterChange(character, type, str);
-		}
+		Character character = load<Character>(entry.path().string());
 		CHARACTERS[character.ID] = character;
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Battles/")) {
+		Battle battle = load<Battle>(entry.path().string());
+		BATTLES[battle.id] = battle;
+		validateBattle(battle.id);
 	}
 
 	std::cout << std::endl << "Server started!" << std::endl;

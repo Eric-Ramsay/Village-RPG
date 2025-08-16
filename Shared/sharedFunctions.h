@@ -60,7 +60,7 @@ Item parseItem(std::string data) {
 	return item;
 }
 
-void characterChange(Character& character, std::string type, std::string data) {
+void parseChange(Character& character, std::string type, std::string data) {
 	if (type == "NAME") {
 		character.NAME = readStr(data);
 	}
@@ -122,5 +122,37 @@ void characterChange(Character& character, std::string type, std::string data) {
 	}
 	if (type == "ITEM") {
 		character.INVENTORY.push_back(parseItem(data));
+	}
+}
+
+
+void parseChange(Battle& battle, std::string type, std::string data) {
+	if (type == "ID") {
+		battle.id = readStr(data);
+	}
+	if (type == "ZONE") {
+		battle.zone = readStr(data);
+	}
+	if (type == "TURN") {
+		battle.turn = readInt(data);
+	}
+	if (type == "DIFFICULTY") {
+		battle.difficulty = readInt(data);
+	}
+	if (type == "ROUND") {
+		battle.round = readInt(data);
+	}
+	if (type == "ONE" || type == "TWO") {
+		int index = 0;
+		if (type == "TWO") {
+			index = 1;
+		}
+		battle.teams[index].clear();
+		while (data.length() > 0) {
+			battle.teams[index].push_back(readStr(data));
+		}
+	}
+	if (type == "ITEM") {
+		battle.loot.push_back(parseItem(data));
 	}
 }

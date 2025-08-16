@@ -171,6 +171,13 @@ struct Battle {
 
 	std::vector<std::string> teams[2];
 	std::vector<Item> loot;
+
+	Battle(std::string ID, std::string Zone) {
+		id = ID;
+		zone = Zone;
+	}
+
+	Battle() {}
 };
 
 struct NPC {

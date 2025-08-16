@@ -31,6 +31,7 @@ namespace Gdiplus {
 #include "utilities.h"
 #include "audio.h"
 #include "server.h"
+#include "listener.h"
 #include "draw.h"
 #include "text.h"
 
@@ -40,11 +41,21 @@ namespace Gdiplus {
 
 int main()
 {
+	srand(time(NULL));
+	std::cout << rand() % 100 << std::endl;
 	initLocations();
 
 	sf::RenderWindow window;
 	sf::RenderTexture texture;
-	serverInit();
+	
+	std::cout << "Beginning Connection. . ." << std::endl;
+	connect();
+	std::thread thread1(listenToServer);
+	std::thread thread2(processMessages);
+	std::thread thread3(consoleInput);
+	thread1.detach();
+	thread2.detach();
+	thread3.detach();
 
 	float FPS = 0;
 	bool updateFPS = true;
