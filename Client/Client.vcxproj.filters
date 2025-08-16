@@ -54,5 +54,8 @@
     <ClInclude Include="Code\globals.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="listener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

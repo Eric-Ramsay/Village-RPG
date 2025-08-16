@@ -45,5 +45,11 @@
     <ClInclude Include="Code\globals.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Code\listener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\battle.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
