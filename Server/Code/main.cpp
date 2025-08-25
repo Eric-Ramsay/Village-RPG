@@ -238,6 +238,11 @@ int main() {
 		validateBattle(battle.id);
 	}
 
+	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Accounts/")) {
+		Account account = load<Account>(entry.path().string());
+		ACCOUNTS[account.USERNAME] = account;
+	}
+
 	std::cout << std::endl << "Server started!" << std::endl;
 
 	for (;;) {

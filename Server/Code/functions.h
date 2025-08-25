@@ -4,6 +4,15 @@ bool fileExists(std::string name) {
 	return f.good();
 }
 
+void parseChange(Account& account, std::string type, std::string data) {
+	if (type == "USERNAME") {
+		account.USERNAME = readStr(data);
+	}
+	if (type == "PASSWORD") {
+		account.PASSWORD = readStr(data);
+	}
+}
+
 void validateBattle(std::string id) {
 	for (int i = 0; i < BATTLES[id].teams[0].size(); i++) {
 		std::string character = BATTLES[id].teams[0][i];

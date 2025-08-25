@@ -68,6 +68,9 @@ void parseChange(Character& character, std::string type, std::string data) {
 	if (type == "NAME") {
 		character.NAME = readStr(data);
 	}
+	if (type == "USER") {
+		character.USER = readStr(data);
+	}
 	if (type == "TYPE") {
 		character.TYPE = readStr(data);
 	}

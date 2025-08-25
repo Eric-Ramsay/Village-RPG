@@ -18,6 +18,13 @@ std::string serialize(std::vector<Item> items) {
 	return data;
 }
 
+std::string serialize(Account P) {
+	std::string data = "";
+	data += addLine("USERNAME", P.USERNAME);
+	data += addLine("PASSWORD", P.PASSWORD);
+	return data;
+}
+
 std::string serialize(Character C) {
 	std::string data = "";
 	data += addLine("ID", C.ID);
@@ -90,6 +97,10 @@ void save(Character character) {
 
 void save(Battle battle) {
 	saveToFile("Battles/" + battle.id, serialize(battle));
+}
+
+void save(Account account) {
+	saveToFile("Accounts/" + account.USERNAME, serialize(account));
 }
 
 std::string getLine(std::istream file) {

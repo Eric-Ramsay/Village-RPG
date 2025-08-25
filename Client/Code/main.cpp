@@ -39,6 +39,32 @@ namespace Gdiplus {
 #include "UI.h"
 
 
+void handleLoginInput(std::string input) {
+	if (UI.signInState == CHOOSE) {
+		if (input == "log in") {
+			UI.signInState = LOGIN_USERNAME;
+		}
+		else if (input == "register") {
+			UI.signInState = REGISTER_USERNAME;
+		}
+		stateMessage(UI.signInState);
+	}
+	else if (UI.signInState == REGISTER_USERNAME) {
+		sendData("REGISTER_USERNAME", input);
+	}
+	else if (UI.signInState == REGISTER_PASSWORD) {
+		sendData("REGISTER_PASSWORD", input);
+	}
+	else if (UI.signInState == LOGIN_USERNAME) {
+		USERNAME = input;
+		sendData("LOGIN_USERNAME", input);
+	}
+	else if (UI.signInState == LOGIN_PASSWORD) {
+		PASSWORD = input;
+		sendData("LOGIN_PASSWORD", input);
+	}
+}
+
 int main()
 {
 	srand(time(NULL));
@@ -119,13 +145,29 @@ int main()
 				else if (event.key.code == sf::Keyboard::Down) {
 					sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X) + str(CHARACTERS[ID].Y + 1));
 				}
+				else if (event.key.code == sf::Keyboard::Escape) {
+					if (UI.signInState < COMPLETED && UI.signInState > CHOOSE) {
+						if (UI.signInState == LOGIN_USERNAME) {
+							UI.signInState = CHOOSE;
+						}
+						else {
+							UI.signInState = (LOGIN)((int)UI.signInState - 1);
+						}
+						stateMessage(UI.signInState);
+					}
+				}
 				if (c != 0) {
 					input += (char)c;
 				}
 				else if (event.key.code == sf::Keyboard::Enter) {
 					replace(input, "  ", " ");
-					sendData("COMMAND", input);
 					logs.push_back(input);
+					if (UI.signInState == COMPLETED) {
+						sendData("COMMAND", input);
+					}
+					else {
+						handleLoginInput(input);
+					}
 					input = "";
 				}
 			}
@@ -166,50 +208,26 @@ int main()
 			SCREEN_X = texture.getSize().x;
 			SCREEN_Y = texture.getSize().y;
 
-			//PUT ALL YOUR DRAWING CODE HERE!
-			/*Print("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 50, 100, 1);
-			Print(low("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 50, 125, 1);
-			Print("0123456789", 50, 150, 1);
-			Print(". , ! ?", 50, 175, 1);
-			//Draw(0, 434, 13, 13, player.x, player.y, 2);
-
-			Print("*RED*the *YELLOW*quick *GREEN*brown *BLUE*fox *ORANGE*jumps *PURPLE*over *GREY*the *TEAL*lazy *BROWN*dog. . .", 400, 100, 1);
-			Print("sphinx of black quartz, hear my vow!", 400, 125, 1);
-			Print("Do Androids Dream of Electric Sheep?", 400, 150, 1);
-			Print(C.NAME, 10, 10);
-			Print(C.DESCRIPTION, 10, 30);
-			Print(C.ID, 10, 50);
-			Print(C.TYPE, 10, 70);
-			Print(C.LOCATION, 10, 90);
-			Print(C.BUILDING, 10, 110);
-			Print(to_str(C.LEVEL), 10, 130);
-			Print(to_str(C.XP), 10, 150);
-			Print(to_str(C.SP), 10, 170);
-			Print("Gold " + to_str(C.GOLD), 10, 190);
-			Print(to_str(C.HP), 10, 210);
-			Print(to_str(C.AP), 10, 230);
-			Print(to_str(C.BACKPACK), 10, 250);
-			Print(to_str(C.HITS[0]), 10, 270);
-			Print(to_str(C.HITS[1]), 10, 290);
-			Print(to_str(C.MISSES[0]), 10, 310);
-			Print(to_str(C.MISSES[1]), 10, 330);
-			*/
-
-			//fillRect(0, 0, 320, 360, sf::Color::Red);
-
-			//fillRect(319, 0, 2, 360, sf::Color::Red);
-
-			//fillRect(638, 0, 2, 360, sf::Color::Red);
-
-			DrawUI();
-
+			if (UI.signInState == COMPLETED) {
+				DrawUI();
+			}
+			
 
 			for (int i = 1; i <= 3; i++) {
 				if (logs.size() >= i) {
-					Print(logs[logs.size() - i], 10, HEIGHT - (50 + i * 15));
+					Print(logs[logs.size() - i], 10, HEIGHT - (11 + i * 15));
 				}
 			}
-			Print("> " + input + "_", 10, HEIGHT - 50);
+			if (UI.signInState == LOGIN_PASSWORD) {
+				std::string replacement = "";
+				for (int i = 0; i < input.size(); i++) {
+					replacement += "\1";
+				}
+				Print("> " + replacement + "_", 10, HEIGHT - 11);
+			}
+			else {
+				Print("> " + input + "_", 10, HEIGHT - 11);
+			}
 
 			if (numVertices > vertSize) {
 				vertSize = numVertices + 1000;

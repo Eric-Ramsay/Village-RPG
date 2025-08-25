@@ -35,6 +35,15 @@ struct AmbientSound {
 	float target = 0;
 };
 
+enum LOGIN {
+	CHOOSE,
+	REGISTER_USERNAME,
+	REGISTER_PASSWORD,
+	LOGIN_USERNAME,
+	LOGIN_PASSWORD,
+	COMPLETED
+};
+
 struct UIState {
 	bool vSync = true;
 
@@ -65,4 +74,6 @@ struct UIState {
 	bool mousePressed = false;
 
 	bool UIClick = false;
+
+	LOGIN signInState = CHOOSE;
 };

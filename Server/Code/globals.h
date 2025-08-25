@@ -18,5 +18,6 @@ std::vector<Location> LOCATIONS = {};
 std::vector<Character> ENEMIES = {};
 
 
+std::unordered_map<std::string, Account> ACCOUNTS = {};
 std::unordered_map<std::string, Character> CHARACTERS = {};
 std::unordered_map<std::string, Battle> BATTLES = {};

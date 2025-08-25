@@ -29,61 +29,6 @@ struct Item {
 	bool equipped = false;
 };
 
-/*
-struct UI_Item {
-	int value = 0;
-	bool equipped = false;
-	bool rare = false;
-	int AP = 0;
-
-	// Weapon Properties
-	std::string subclass = "";
-	int attacks = 0;
-	int maxAttacks = 0;
-	int chance = 0;
-	int min = 0;
-	int max = 0;
-	int pen = 0;
-	int range = 0;
-	int hands = 0;
-
-	// Armor Properties
-	int stamina;
-	int physical;
-	int magical;
-
-	Item() {}
-
-	Item(std::string n, std::string sC, std::string d, int h, int a, int v, int c, int mn, int mx, int p, int ap, int rnge, bool rar = false) {
-		type = "weapon";
-		name = n;
-		subclass = sC;
-		description = d;
-		hands = h;
-		attacks = a;
-		value = v;
-		chance = c;
-		min = mn;
-		max = mx;
-		pen = p;
-		AP = ap;
-		range = rnge;
-		rare = rar;
-	}
-
-	Item(std::string n, std::string desc, int val, int ap, int sta, int phys, int mag) {
-		AP = ap;
-		stamina = sta;
-		physical = phys;
-		magical = mag;
-		value = val;
-		name = n;
-		description = desc;
-		type = "armor";
-	}
-};
-*/
-
 struct Effect {
 	std::string name;
 	bool isDebuff = false;
@@ -113,6 +58,7 @@ enum STATS {
 };
 
 struct Character {
+	std::string USER;
 	std::string ID;
 	std::string TYPE = "player";
 	std::string DESCRIPTION;

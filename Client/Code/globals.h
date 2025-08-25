@@ -9,7 +9,7 @@ Message* bufferEnd = nullptr;
 Message* firstProcess = nullptr;
 
 bool connected = true;
-std::string IP = "10.0.0.12";
+std::string IP = "67.177.184.43";
 sockaddr_in hint;
 int port = 1234;
 SOCKET sock;
@@ -31,7 +31,11 @@ int HEIGHT = 9 * 40;
 std::string input = "";
 int holdingBackspace = 0;
 
-std::vector<std::string> logs = {};
+std::vector<std::string> logs = {"*BLACK*Connecting . . ."};
 
 std::string ID = "";
 std::unordered_map<std::string, Character> CHARACTERS = {};
+
+std::string USERNAME = "";
+std::string PASSWORD = "";
+

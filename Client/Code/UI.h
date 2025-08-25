@@ -91,7 +91,7 @@ void DrawUI() {
 	if (CHARACTERS.count(ID) == 0) {
 		Print("No Character!", 50, 50);
 	}
-	if (CHARACTERS[ID].LOCATION == BATTLE.id) {
+	else if (CHARACTERS[ID].LOCATION == BATTLE.id) {
 		DrawBattle();
 	}
 	else {

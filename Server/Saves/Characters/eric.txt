@@ -1,8 +1,8 @@
-ID!!!DESKTOP-KJCLR9P!!!
+ID!!!eric!!!
 HP!!!15!
 STAMINA!!!20!
-X!!!10!
-Y!!!5!
+X!!!8!
+Y!!!9!
 ARMOR!!!0!0!
 MAXHP!!!30!
 TYPE!!!peasant!!!

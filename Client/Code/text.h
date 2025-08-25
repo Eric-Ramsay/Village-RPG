@@ -125,7 +125,7 @@ sf::Color getColor(std::string text = "") {
 		return sf::Color(190, 55, 125);
 	}
 	else if (text == "purple") {
-		return sf::Color(120, 35, 190);
+		return sf::Color(160, 90, 250);
 	}
 	else if (text == "blue") {
 		return sf::Color(40, 125, 85);
