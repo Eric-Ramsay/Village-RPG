@@ -1,9 +1,18 @@
-#pragma once
+﻿#pragma once
 
 void charInfo(char c, int& sX, int& sY, int& sW) {
 	sW = 5;
 	sX = 0;
 	sY = 0;
+
+	if (c < 16) {
+		sW = 7;
+		sY = 57;
+		sX = 8 * (c - 1);
+	}
+	if (c == '\1') {
+		sW = 5;
+	}
 	if (c == '.') {
 		sW = 1;
 		sX = 26;
@@ -26,6 +35,15 @@ void charInfo(char c, int& sX, int& sY, int& sW) {
 	else if (c == '<') {
 		sX = 52;
 		sY = 48;
+	}
+	else if (c == '[') {
+		sW = 2; sX = 59; sY = 48;
+	}
+	else if (c == ']') {
+		sW = 2; sX = 62; sY = 48;
+	}
+	else if (c == '/') {
+		sX = 65; sY = 48; sW = 3;
 	}
 	else if (c == '+') {
 		sY = 48;
@@ -95,25 +113,31 @@ int measureText(std::string text, float scale = 1, int textSize = 2) {
 sf::Color getColor(std::string text = "") {
 	text = low(text);
 	if (text == "yellow") {
-		return sf::Color(255, 223, 0);
+		return sf::Color(180, 140, 0);
 	}
 	else if (text == "red") {
-		return sf::Color(220, 30, 40);
+		return sf::Color(220, 50, 45);
 	}
 	else if (text == "green") {
-		return sf::Color(25, 225, 30);
+		return sf::Color(135, 155, 0);
+	}
+	else if (text == "pink") {
+		return sf::Color(190, 55, 125);
 	}
 	else if (text == "purple") {
-		return sf::Color(140, 90, 240);
+		return sf::Color(120, 35, 190);
 	}
 	else if (text == "blue") {
-		return sf::Color(65, 140, 255);
+		return sf::Color(40, 125, 85);
 	}
 	else if (text == "teal") {
 		return sf::Color(45, 155, 145);
 	}
 	else if (text == "orange") {
-		return sf::Color(255, 165, 0);
+		return sf::Color(190, 75, 40);
+	}
+	else if (text == "black") {
+		return sf::Color(125, 125, 125);
 	}
 	else if (text == "grey") {
 		return sf::Color(245, 245, 240);
@@ -222,4 +246,33 @@ void Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 
 			}
 		}
 	}
+}
+
+std::string DrawBar(int val, int max, int size, std::string color, bool drawNum = true, std::string braceColor = "*GREY*") {
+	std::string str = braceColor + "[" + color;
+	int threshold = (size * val) / max;
+	for (int i = 0; i < size; i++) {
+		if (i < threshold) {
+			str += "\1";
+		}
+		else {
+			if (i == threshold) {
+				str += "*BLACK*";
+			}
+			str += "-";
+		}
+	}
+	str += braceColor + "]";
+	if (drawNum) {
+		return str + "*BLACK* " + val + "/" + max;
+	}
+	return str;
+}
+
+std::string Title(std::string text) {
+	std::vector<std::string> lines = split(text);
+	for (std::string& line : lines) {
+		line[0] = std::toupper(line[0]);
+	}
+	return join(lines);
 }

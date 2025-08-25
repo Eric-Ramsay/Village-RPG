@@ -107,6 +107,18 @@ int main()
 						input.pop_back();
 					}
 				}
+				else if (event.key.code == sf::Keyboard::Right) {
+					sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X + 1) + str(CHARACTERS[ID].Y));
+				}
+				else if (event.key.code == sf::Keyboard::Left) {
+					sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X - 1) + str(CHARACTERS[ID].Y));
+				}
+				else if (event.key.code == sf::Keyboard::Up) {
+					sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X) + str(CHARACTERS[ID].Y - 1));
+				}
+				else if (event.key.code == sf::Keyboard::Down) {
+					sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X) + str(CHARACTERS[ID].Y + 1));
+				}
 				if (c != 0) {
 					input += (char)c;
 				}

@@ -151,6 +151,14 @@ int readInt(std::string& msg) {
 	return mult * total;
 }
 
+std::vector<int> readInts(std::string& msg) {
+	std::vector<int> data = {};
+	while (msg.size() > 0) {
+		data.push_back(readInt(msg));
+	}
+	return data;
+}
+
 std::string removeAtEnd(std::string str, int num) {
 	if (num > str.length()) {
 		return "";
@@ -180,6 +188,14 @@ std::string str(int num) {
 	return std::to_string(num) + "!";
 }
 
+std::string str(std::vector<int> data) {
+	std::string text = "";
+	for (int num : data) {
+		text += str(num);
+	}
+	return text;
+}
+
 std::string str(std::string txt) {
 	return txt + "!!!";
 }
@@ -188,5 +204,8 @@ std::string addLine(std::string stat, std::string value) {
 	return str(stat) + str(value) + "\n";
 }
 std::string addLine(std::string stat, int value) {
+	return str(stat) + str(value) + "\n";
+}
+std::string addLine(std::string stat, std::vector<int> value) {
 	return str(stat) + str(value) + "\n";
 }

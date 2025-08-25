@@ -1,5 +1,5 @@
 #pragma once
-std::string IP = "10.0.0.11";
+std::string IP = "10.0.0.12";
 int port = 1234;
 std::deque<Message> outMessages = {};
 

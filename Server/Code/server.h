@@ -28,8 +28,17 @@ void sendCharacter(int playerIndex) {
 }
 
 void sendStat(std::string id, std::string stat, std::string value, std::vector<int> sendList = {}) {
-	sendData("STAT", id + "!!!" + stat + "!!!" + value + "!!!", sendList);
+	sendData("STAT", id + "!!!" + stat + "!!!" + str(value), sendList);
 }
+
+void sendStat(std::string id, std::string stat, int value, std::vector<int> sendList = {}) {
+	sendData("STAT", id + "!!!" + stat + "!!!" + str(value), sendList);
+}
+
+void sendStat(std::string id, std::string stat, std::vector<int> value, std::vector<int> sendList = {}) {
+	sendData("STAT", id + "!!!" + stat + "!!!" + str(value), sendList);
+}
+
 
 void sendBattle(Battle battle, std::vector<int> sendList = {}) {
 	std::string data = serialize(battle);

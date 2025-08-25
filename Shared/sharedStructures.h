@@ -103,6 +103,14 @@ struct Effect {
 	}
 };
 
+enum STATS {
+	VIT,
+	END,
+	DEX,
+	MAG,
+	WEP,
+	AVD
+};
 
 struct Character {
 	std::string ID;
@@ -111,8 +119,9 @@ struct Character {
 	std::string NAME;
 
 	int HP;
-	int ARMOR[2] = { 0, 0 };
-	int ROW = 0;
+	std::vector<int> ARMOR = { 0, 0 };
+	int X = 0;
+	int Y = 0;
 	int LEVEL;
 
 	std::vector<Effect> effects;
@@ -131,12 +140,15 @@ struct Character {
 
 	bool BACKPACK = false;
 
-	int HITS[2] = { 0, 0 };
-	int MISSES[2] = { 0, 0 };
+	std::vector<int> HITS = { 0, 0 };
+	std::vector<int> MISSES = { 0, 0 };
+
+	std::vector<int> STATS = { 0, 0, 0, 0, 0, 0 };
 
 	int ATTACKS = 0;
 	int CASTS = 0;
-	int ROW_PREFERENCE = 0;
+	int X_PREFERENCE = 0;
+	int Y_PREFERENCE = 0;
 
 	// Enemy Stats
 	int MaxHP = 30;

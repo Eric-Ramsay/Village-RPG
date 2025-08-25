@@ -96,6 +96,25 @@ void command(std::string input, int playerIndex) {
 		msg = commandLeave(playerIndex, CHARACTERS[id], words);
 		sendStat(id, "LOCATION", CHARACTERS[id].LOCATION);
 	}
+	if (keyword == "move") {
+		int x = readInt(words[0]);
+		int y = readInt(words[0]);
+		if (x >= 0 && x < 12) {
+			CHARACTERS[id].X = x;
+			sendStat(id, "X", CHARACTERS[id].X);
+		}
+		if (y >= 0 && y < 12) {
+			CHARACTERS[id].Y = y;
+			sendStat(id, "Y", CHARACTERS[id].Y);
+		}
+	}
+	if (keyword == "hp") {
+		if (words.size() > 0) {
+			int num = std::stoi(words[0]);
+			CHARACTERS[id].HP = num;
+			sendStat(id, "HP", CHARACTERS[id].HP);
+		}
+	}
 	std::cout << msg << std::endl;
 	save(CHARACTERS[id]);
 	sendData("TEXT", msg, { playerIndex });

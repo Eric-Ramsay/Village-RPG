@@ -1,11 +1,14 @@
 ID!!!DESKTOP-KJCLR9P!!!
-HP!!!0!
-ROW!!!0!
+HP!!!30!
+STAMINA!!!20!
+X!!!6!
+Y!!!10!
 ARMOR!!!0!0!
 MAXHP!!!30!
-NAME!!!!!!
+TYPE!!!peasant!!!
+NAME!!!Eric!!!
 DESCRIPTION!!!!!!
-LOCATION!!!Wilted Woods!!!
+LOCATION!!!Wilted Woods5253!!!
 LEVEL!!!-858993460!
 XP!!!0!
 SP!!!0!
@@ -14,8 +17,10 @@ AP!!!0!
 BACKPACK!!!0!
 ATTACKS!!!0!
 CASTS!!!0!
-ROW_PREFERENCE!!!0!
+X_PREFERENCE!!!0!
+Y_PREFERENCE!!!0!
 LEFT!!!-1!
 RIGHT!!!-1!
 HITS!!!0!0!
 MISSES!!!0!0!
+STATS!!!2!2!2!2!2!2!

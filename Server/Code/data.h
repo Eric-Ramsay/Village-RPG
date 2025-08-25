@@ -22,9 +22,12 @@ std::string serialize(Character C) {
 	std::string data = "";
 	data += addLine("ID", C.ID);
 	data += addLine("HP", C.HP);
-	data += addLine("ROW", C.ROW);
-	data += "ARMOR!!!" + str(C.ARMOR[0]) + str(C.ARMOR[1]) + "\n";
+	data += addLine("STAMINA", C.STAMINA);
+	data += addLine("X", C.X);
+	data += addLine("Y", C.Y);
+	data += addLine("ARMOR", C.ARMOR);
 	data += addLine("MAXHP", C.MaxHP);
+	data += addLine("TYPE", C.TYPE);
 	if (C.TYPE == "enemy") {
 		return data;
 	}
@@ -41,14 +44,18 @@ std::string serialize(Character C) {
 	data += addLine("ATTACKS", C.ATTACKS);
 	data += addLine("CASTS", C.CASTS);
 	
-	data += addLine("ROW_PREFERENCE", C.ROW_PREFERENCE);
+	data += addLine("X_PREFERENCE", C.X_PREFERENCE);
+	data += addLine("Y_PREFERENCE", C.Y_PREFERENCE);
 	data += addLine("LEFT", C.LEFT);
 	data += addLine("RIGHT", C.RIGHT);
-	data += "HITS!!!" + str(C.HITS[0]) + str(C.HITS[1]) + "\n";
-	data += "MISSES!!!" + str(C.MISSES[0]) + str(C.MISSES[1]) + "\n";
+	data += addLine("HITS", C.HITS);
+	data += addLine("MISSES", C.MISSES);
+	data += addLine("STATS", C.STATS);
 	data += serialize(C.INVENTORY);
 	return data;
 }
+
+
 
 std::string serialize(Battle battle) {
 	std::string data = "";

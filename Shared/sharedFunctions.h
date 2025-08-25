@@ -33,6 +33,10 @@ int MaxHP(Character C) {
 	return C.MaxHP;
 }
 
+int MaxStamina(Character C) {
+	return 20 + C.STATS[END] * 10;
+}
+
 Item parseItem(std::string data) {
 	Item item;
 	while (data.length() > 0) {
@@ -64,6 +68,9 @@ void parseChange(Character& character, std::string type, std::string data) {
 	if (type == "NAME") {
 		character.NAME = readStr(data);
 	}
+	if (type == "TYPE") {
+		character.TYPE = readStr(data);
+	}
 	if (type == "ID") {
 		character.ID = readStr(data);
 	}
@@ -91,22 +98,35 @@ void parseChange(Character& character, std::string type, std::string data) {
 	if (type == "HP") {
 		character.HP = readInt(data);
 	}
+	if (type == "STAMINA") {
+		character.STAMINA = readInt(data);
+	}
 	if (type == "BACKPACK") {
 		character.BACKPACK = (bool)readInt(data);
 	}
 	if (type == "HITS") {
-		character.HITS[0] = readInt(data);
-		character.HITS[1] = readInt(data);
+		character.HITS = readInts(data);
 	}
 	if (type == "MISSES") {
-		character.MISSES[0] = readInt(data);
-		character.MISSES[1] = readInt(data);
+		character.MISSES = readInts(data);
 	}
-	if (type == "ROW") {
-		character.ROW = readInt(data);
+	if (type == "ARMOR") {
+		character.ARMOR = readInts(data);
 	}
-	if (type == "ROW_PREFERENCE") {
-		character.ROW_PREFERENCE = readInt(data);
+	if (type == "STATS") {
+		character.STATS = readInts(data);
+	}
+	if (type == "X") {
+		character.X = readInt(data);
+	}
+	if (type == "Y") {
+		character.Y = readInt(data);
+	}
+	if (type == "X_PREFERENCE") {
+		character.X_PREFERENCE = readInt(data);
+	}
+	if (type == "Y_PREFERENCE") {
+		character.Y_PREFERENCE = readInt(data);
 	}
 	if (type == "LEFT") {
 		character.LEFT = readInt(data);
