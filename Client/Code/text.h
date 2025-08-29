@@ -13,12 +13,12 @@ void charInfo(char c, int& sX, int& sY, int& sW) {
 	if (c == '\1') {
 		sW = 5;
 	}
-	if (c == '.') {
+	else if (c == '.') {
 		sW = 1;
 		sX = 26;
 		sY = 48;
 	}
-	if (c == ' ') {
+	else if (c == ' ') {
 		sX = 156;
 	}
 	else if (c == '_') {

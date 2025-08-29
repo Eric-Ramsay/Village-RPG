@@ -2,7 +2,7 @@ ID!!!eric!!!
 HP!!!15!
 STAMINA!!!20!
 X!!!8!
-Y!!!9!
+Y!!!11!
 ARMOR!!!0!0!
 MAXHP!!!30!
 TYPE!!!peasant!!!

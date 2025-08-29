@@ -117,5 +117,7 @@ void command(std::string input, int playerIndex) {
 	}
 	std::cout << msg << std::endl;
 	save(CHARACTERS[id]);
-	sendData("TEXT", msg, { playerIndex });
+	if (msg != "") {
+		sendData("TEXT", msg, { playerIndex });
+	}
 }

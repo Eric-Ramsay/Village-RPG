@@ -1,6 +1,4 @@
 #pragma once
-int SCREEN_X = 1;
-int SCREEN_Y = 1;
 
 std::deque<Message> messageBuffer = {};
 bool SENDING = false;
@@ -9,7 +7,7 @@ Message* bufferEnd = nullptr;
 Message* firstProcess = nullptr;
 
 bool connected = true;
-std::string IP = "67.177.184.43";
+std::string IP = "10.0.0.12";
 sockaddr_in hint;
 int port = 1234;
 SOCKET sock;
@@ -39,3 +37,7 @@ std::unordered_map<std::string, Character> CHARACTERS = {};
 std::string USERNAME = "";
 std::string PASSWORD = "";
 
+
+bool blur = false;
+bool scanLines = false;
+bool quit = false;

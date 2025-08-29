@@ -8,6 +8,9 @@
     <Filter Include="Shared Files">
       <UniqueIdentifier>{e27879f9-38bd-440d-8ece-25de4590608d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{0ae07fde-fdeb-481d-98e7-3a9012ac2b1e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\main.cpp">
@@ -57,5 +60,10 @@
     <ClInclude Include="listener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Code\shader.frag">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

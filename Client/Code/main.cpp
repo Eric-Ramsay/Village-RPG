@@ -100,7 +100,12 @@ int main()
 	static sf::Texture sprites = createTexture("./Sprites/sprites.png");
 	texture.create(WIDTH, HEIGHT);
 	vertices.resize(vertSize);
-	while (window.isOpen()) {
+
+	sf::Shader shader;
+	shader.loadFromFile("./Code/shader.frag", sf::Shader::Fragment);
+
+	while (!quit && window.isOpen()) {
+		Sleep(1);
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
@@ -162,7 +167,16 @@ int main()
 				else if (event.key.code == sf::Keyboard::Enter) {
 					replace(input, "  ", " ");
 					logs.push_back(input);
-					if (UI.signInState == COMPLETED) {
+					if (input == "scan") {
+						scanLines = !scanLines;
+					}
+					if (input == "blur") {
+						blur = !blur;
+					}
+					if (input == "quit") {
+						quit = true;
+					}
+					else if (UI.signInState == COMPLETED) {
 						sendData("COMMAND", input);
 					}
 					else {
@@ -205,14 +219,10 @@ int main()
 			sf::Sprite sprite;
 			sprite.setPosition(0, 0);
 			texture.clear(sf::Color(0, 0, 10));
-			SCREEN_X = texture.getSize().x;
-			SCREEN_Y = texture.getSize().y;
 
 			if (UI.signInState == COMPLETED) {
 				DrawUI();
 			}
-			
-
 			for (int i = 1; i <= 3; i++) {
 				if (logs.size() >= i) {
 					Print(logs[logs.size() - i], 10, HEIGHT - (11 + i * 15));
@@ -242,8 +252,18 @@ int main()
 			texture.display();
 			sprite.setTexture(texture.getTexture());
 			sprite.setScale((UI.W) / texture.getSize().x, UI.H / texture.getSize().y);
-			window.draw(sprite);
 
+			sprite.setTexture(texture.getTexture());
+			sprite.setScale((UI.W) / texture.getSize().x, UI.H / texture.getSize().y);
+
+			shader.setUniform("texture", texture.getTexture());
+			shader.setUniform("pixel_width", 1.0f / texture.getSize().x);
+			shader.setUniform("pixel_height", 1.0f / texture.getSize().y);
+			shader.setUniform("big_pixel", 1.0f / window.getSize().y);
+			shader.setUniform("scanLines", scanLines);
+			shader.setUniform("blur", blur);
+
+			window.draw(sprite, &shader);
 
 			//Print(to_str((int)FPS), 0, 0, 8);
 
