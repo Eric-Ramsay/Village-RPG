@@ -13,11 +13,6 @@ void charInfo(char c, int& sX, int& sY, int& sW) {
 	if (c == '\1') {
 		sW = 5;
 	}
-	else if (c == '.') {
-		sW = 1;
-		sX = 26;
-		sY = 48;
-	}
 	else if (c == ' ') {
 		sX = 156;
 	}
@@ -70,6 +65,9 @@ void charInfo(char c, int& sX, int& sY, int& sW) {
 	else if (c == '.') {
 		sX = 23; sY = 48; sW = 1;
 	}
+	else if (c == ':') {
+		sX = 69; sY = 48; sW = 2;
+	}
 	else if (c >= 65 && c <= 90) {
 		sY = 0;
 		sX = (c - 65) * 6;
@@ -111,7 +109,6 @@ int measureText(std::string text, float scale = 1, int textSize = 2) {
 }
 
 sf::Color getColor(std::string text = "") {
-	text = low(text);
 	if (text == "yellow") {
 		return sf::Color(180, 140, 0);
 	}
@@ -128,7 +125,7 @@ sf::Color getColor(std::string text = "") {
 		return sf::Color(160, 90, 250);
 	}
 	else if (text == "blue") {
-		return sf::Color(40, 125, 85);
+		return sf::Color(40, 125, 195);
 	}
 	else if (text == "teal") {
 		return sf::Color(45, 155, 145);
@@ -174,7 +171,7 @@ int measureText(std::string text, int scale) {
 	return lineLength;
 }
 
-std::string splitLines(std::string text, int maxLength, int scale) {
+std::vector<std::string> splitLines(std::string text, int maxLength, int scale) {
 	std::vector<std::string> lines = split(text, '\n');
 	std::string merged = "";
 	int sX;
@@ -201,51 +198,67 @@ std::string splitLines(std::string text, int maxLength, int scale) {
 		merged += "\n";
 	}
 
-	return merged;
+	return split(merged, '\n');
 }
 
 // Print Function
-void Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1) {
-	int drawX = dX;
-	int drawY = dY;
+void Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1, ALIGN align = LEFT) {
 	bool printing = true;
 	std::string color = "white";
-	std::string lines = splitLines(text, maxLength, scale);
-	int dYT = dY + 10 * scale;
-	/*std::vector<std::string> splitLines = split(lines, '\n');
-	for (std::string line : splitLines) {
-		fillRect(dX, dYT, measureText(line, scale), scale, sf::Color::White);
-		dYT += 11 * scale;
-	}*/
+	std::vector<std::string> lines = splitLines(text, maxLength, scale);
 
-	for (char c : lines) {
-		if (printing) {
-			if (c == '*') {
-				printing = false;
-				color = "";
-			}
-			else if (c == '\n') {
-				drawX = dX;
-				drawY += 11 * scale;
+	for (int i = 0; i < lines.size(); i++) {
+		int drawX = dX;
+		if (align == CENTER || align == RIGHT) {
+			int len = measureText(lines[i]);
+			if (align == CENTER) {
+				drawX -= measureText(lines[i]) / 2;
 			}
 			else {
-				int sX = 0;
-				int sY = 0;
-				int sW = 0;
-				charInfo(c, sX, sY, sW);
-				Draw(sX, sY, sW, 8, drawX, drawY, scale, getColor(color));
-				drawX += (sW + 1) * scale;
+				drawX -= measureText(lines[i]);
 			}
 		}
-		else {
-			if (c == '*') {
-				printing = true;
+		for (char c : lines[i]) {
+			int drawY = dY + 11 * scale * i;
+			if (printing) {
+				if (c == '*') {
+					printing = false;
+					color = "";
+				}
+				else {
+					int sX = 0;
+					int sY = 0;
+					int sW = 0;
+					charInfo(c, sX, sY, sW);
+					if (color == "sensitive") {
+						charInfo('\1', sX, sY, sW);
+						Draw(sX, sY, sW, 8, drawX, drawY, scale);
+					}
+					else {
+						Draw(sX, sY, sW, 8, drawX, drawY, scale, getColor(color));
+					}
+					drawX += (sW + 1) * scale;
+				}
 			}
 			else {
-				color += c;
+				if (c == '*') {
+					printing = true;
+					color = low(color);
+				}
+				else {
+					color += c;
+				}
 			}
 		}
 	}
+}
+
+void CPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1) {
+	Print(text, dX, dY, maxLength, scale, CENTER);
+}
+
+void RPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1) {
+	Print(text, dX, dY, maxLength, scale, RIGHT);
 }
 
 std::string DrawBar(int val, int max, int size, std::string color, bool drawNum = true, std::string braceColor = "*GREY*") {

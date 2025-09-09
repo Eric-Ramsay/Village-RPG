@@ -51,5 +51,8 @@
     <ClInclude Include="Code\battle.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Code\AI.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

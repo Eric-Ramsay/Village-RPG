@@ -32,8 +32,9 @@
 #include "..\..\Shared\sharedFunctions.h"
 #include "..\..\Shared\init.h"
 #include "data.h"
-#include "battle.h"
 #include "server.h"
+#include "AI.h"
+#include "battle.h"
 #include "commands.h"
 #include "listener.h"
 
@@ -83,7 +84,7 @@ void Send() {
 									send(players[j].socket, str.c_str(), str.length(), 0);
 								}
 							}
-							else if (j > 0 && players[j].connected) {
+							else if (j > 0) {
 								newList.push_back(j);
 							}
 						}
@@ -228,8 +229,13 @@ int main() {
 
 	// Load all Characters
 	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Characters/")) {
-		Character character = load<Character>(entry.path().string());
-		CHARACTERS[character.ID] = character;
+		std::string path = entry.path().string();
+		if (path != "./Saves/Characters/Graveyard") {
+			Character character = load<Character>(path);
+			if (character.ID != "") {
+				CHARACTERS[character.ID] = character;
+			}
+		}
 	}
 
 	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Battles/")) {

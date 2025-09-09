@@ -1,15 +1,15 @@
 #pragma once
 
 struct Player {
-	std::string ID;
+	std::string ID = "";
 	std::string USERNAME = "";
 	std::string PASSWORD = "";
+
+	bool connected = false;
 
 	SOCKET socket;
 	
 	std::vector<Message> messages = {};
-
-	bool connected = true;
 
 	Player(SOCKET s) {
 		socket = s;

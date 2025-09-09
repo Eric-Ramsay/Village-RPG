@@ -64,12 +64,105 @@ Item parseItem(std::string data) {
 	return item;
 }
 
+struct PathTile {
+	std::string type = "blank_tile";
+	std::string state = "unexplored";
+	int x = 0;
+	int y = 0;
+	int cost = 0;
+	int baseCost = 0;
+	bool canLand = true;
+	PathTile() {}
+	PathTile(int x1, int y1) {
+		x = x1;
+		y = y1;
+	}
+};
+
+int moveCost(std::string type) {
+	int cost = 2;
+	return cost;
+}
+
+std::vector<std::vector<PathTile>> createMap(Battle b) {
+	std::vector<std::vector<PathTile>> tiles;
+
+	for (int i = 0; i < 12; i++) {
+		tiles.push_back(std::vector<PathTile>());
+		for (int j = 0; j < 12; j++) {
+			tiles[i].push_back(PathTile());
+			tiles[i][j].x = j;
+			tiles[i][j].y = i;
+			tiles[i][j].baseCost = moveCost(tiles[i][j].type);
+		}
+	}
+
+	for (int i = 0; i < 2; i++) {
+		for (std::string id : b.teams[i]) {
+			Character C = CHARACTERS[id];
+			tiles[C.Y][C.X].canLand = false;
+		}
+	}
+
+	// Check where characters & hazards are & shit
+
+
+	return tiles;
+}
+
+std::vector<std::vector<int>> moveCosts(Character C, Battle battle) {
+	std::vector<std::vector<PathTile>> map = createMap(battle);
+	std::vector<Spot> open = { Spot(C.X, C.Y) };
+	while (open.size() > 0) {
+		Spot current = open.back();
+		map[current.y][current.x].state = "closed";
+		open.pop_back();
+		int currentCost = map[current.y][current.x].cost;
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				// If tile hasn't been explored yet, or the cost from this point is cheaper than the previously found cost, add the tile to the open list.
+				int x = min(11, max(current.x + j, 0));
+				int y = min(11, max(current.y + i, 0));
+				int baseCost = map[y][x].baseCost;
+				if (i != 0 && j != 0) {
+					baseCost *= 1.5;
+				}
+				int cost = currentCost + baseCost;
+				PathTile* tile = &map[y][x];
+				if (tile->state == "unexplored" || cost < tile->cost) {
+					tile->cost = cost;
+					if (tile->state != "open") {
+						tile->state = "open";
+						open.push_back(Spot(x, y));
+					}
+				}
+			}
+		}
+	}
+	std::vector<std::vector<int>> costs = {};
+	
+	for (int i = 0; i < 12; i++) {
+		costs.push_back(std::vector<int>());
+		for (int j = 0; j < 12; j++) {
+			int cost = map[i][j].cost;
+			if (!map[i][j].canLand) {
+				cost = 999;
+			}
+			costs[i].push_back(cost);
+		}
+	}
+	return costs;
+}
+
 void parseChange(Character& character, std::string type, std::string data) {
 	if (type == "NAME") {
 		character.NAME = readStr(data);
 	}
 	if (type == "USER") {
 		character.USER = readStr(data);
+	}
+	if (type == "ENDED") {
+		character.ENDED = (bool)readInt(data);
 	}
 	if (type == "TYPE") {
 		character.TYPE = readStr(data);
@@ -94,6 +187,9 @@ void parseChange(Character& character, std::string type, std::string data) {
 	}
 	if (type == "SP") {
 		character.SP = readInt(data);
+	}
+	if (type == "AP") {
+		character.AP = readInt(data);
 	}
 	if (type == "GOLD") {
 		character.GOLD = readInt(data);

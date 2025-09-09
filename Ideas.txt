@@ -1,0 +1,10 @@
+- Trait System
+	- Instead of Class System from Discord RPG, have traits.
+		- +2/+2 Armor
+		- 1 Respawn at Monastery
+		- Start with +Gold
+		- More Companion Slots
+
+- Trait System is locked behind Achievement System
+
+- Fishing Minigame

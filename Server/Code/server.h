@@ -21,10 +21,9 @@ void sendData(std::string type, std::string data, std::vector<int> sendList = {}
 	SENDING = FALSE;
 }
 
-void sendCharacter(int playerIndex) {
-	std::string id = players[playerIndex].ID;
-	std::string data = serialize(CHARACTERS[id]);
-	sendData("CHARACTER", data);
+void sendCharacter(Character character, std::vector<int> sendList = {}) {
+	std::string data = serialize(character);
+	sendData("CHARACTER", data, sendList);
 }
 
 void sendStat(std::string id, std::string stat, std::string value, std::vector<int> sendList = {}) {
@@ -43,4 +42,43 @@ void sendStat(std::string id, std::string stat, std::vector<int> value, std::vec
 void sendBattle(Battle battle, std::vector<int> sendList = {}) {
 	std::string data = serialize(battle);
 	sendData("BATTLE", data, sendList);
+}
+
+void updateBattle(Battle battle) {
+	std::vector<int> indices = {};
+	for (int i = 0; i < 2; i++) {
+		for (std::string id : battle.teams[i]) {
+			for (int i = 0; i < players.size(); i++) {
+				if (players[i].ID == id) {
+					indices.push_back(i);
+				}
+			}
+		}
+	}
+	save(battle);
+	sendBattle(battle, indices);
+}
+
+void removeCharacter(Character character) {
+	sendData("REMOVE_CHARACTER", character.ID);
+	if (character.TYPE == "player") {
+		graveSave(character);
+		std::remove(("./Saves/Characters/" + character.ID).c_str());
+	}
+	CHARACTERS.erase(character.ID);
+}
+
+void setStat(Character& C, std::string stat, std::string value) {
+	parseChange(C, stat, str(value));
+	sendData("STAT", C.ID + "!!!" + stat + "!!!" + str(value));
+}
+
+void setStat(Character& C, std::string stat, int value) {
+	parseChange(C, stat, str(value));
+	sendData("STAT", C.ID + "!!!" + stat + "!!!" + str(value));
+}
+
+void setStat(Character& C, std::string stat, std::vector<int> value) {
+	parseChange(C, stat, str(value));
+	sendData("STAT", C.ID + "!!!" + stat + "!!!" + str(value));
 }

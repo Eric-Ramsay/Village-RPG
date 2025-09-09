@@ -1,7 +1,0 @@
-ID!!!Wilted Woods9317!!!
-ZONE!!!Wilted Woods!!!
-TURN!!!0!
-ROUND!!!0!
-DIFFICULTY!!!0!
-ONE!!!eric2!!!eric!!!
-TWO!!!

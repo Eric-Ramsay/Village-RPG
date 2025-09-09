@@ -153,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Shared\init.h" />
+    <ClInclude Include="..\Shared\sharedFunctions.h" />
     <ClInclude Include="..\Shared\sharedStructures.h" />
     <ClInclude Include="..\Shared\textFunctions.h" />
     <ClInclude Include="Code\audio.h" />
@@ -160,7 +161,6 @@
     <ClInclude Include="Code\globals.h" />
     <ClInclude Include="Code\miniaudio.h" />
     <ClInclude Include="Code\server.h" />
-    <ClInclude Include="Code\sharedFunctions.h" />
     <ClInclude Include="Code\structures.h" />
     <ClInclude Include="Code\text.h" />
     <ClInclude Include="Code\UI.h" />

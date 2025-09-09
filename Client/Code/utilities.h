@@ -12,12 +12,12 @@ void stateMessage(LOGIN state) {
 		logs.push_back("Do you want to *PURPLE*log in*GREY* or *ORANGE*register*GREY* a new account?");
 	}
 	else if (state == LOGIN_USERNAME) {
-		logs.push_back("Please enter your *PINK*username*GREY*: ");
+		logs.push_back("Please enter your *PINK*username");
 	}
 	else if (state == REGISTER_USERNAME) {
-		logs.push_back("Please enter a new *PINK*username*GREY*: ");
+		logs.push_back("Please enter a new *PINK*username");
 	}
 	else if (state == LOGIN_PASSWORD || state == REGISTER_PASSWORD) {
-		logs.push_back("Please enter your *PINK*password.");
+		logs.push_back("Please enter your *PINK*password");
 	}
 }

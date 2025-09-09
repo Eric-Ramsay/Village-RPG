@@ -26,6 +26,7 @@
     <ClInclude Include="..\Shared\sharedFunctions.h" />
     <ClInclude Include="..\Shared\sharedStructures.h" />
     <ClInclude Include="..\Shared\textFunctions.h" />
+    <ClInclude Include="Code\AI.h" />
     <ClInclude Include="Code\battle.h" />
     <ClInclude Include="Code\commands.h" />
     <ClInclude Include="Code\data.h" />

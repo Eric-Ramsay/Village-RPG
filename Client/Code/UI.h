@@ -3,7 +3,7 @@
 void DrawCharacterUI() {
 	if (CHARACTERS.count(ID) > 0) {
 		Character C = CHARACTERS[ID];
-		Print("*GREEN*" + C.NAME + " *GREY*the *TEAL*" + Title(C.TYPE), 440, 1);
+		Print("*GREEN*" + C.NAME, 440, 1);
 		Print(DrawBar(C.HP, MaxHP(C), 20, "*RED*"), 440, 11);
 		Print(DrawBar(C.STAMINA, MaxStamina(C), 20, "*GREEN*"), 440, 21);
 		Print("*TEAL*\4 *GREY*" + to_str(C.ARMOR[0]), 440, 31);
@@ -14,6 +14,9 @@ void DrawCharacterUI() {
 void DrawBattle() {
 	std::string msg = "";
 	Print("*RED*" + BATTLE.zone, 1, 1);
+
+	std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[ID], BATTLE);
+
 	DrawCharacterUI();
 
 	std::vector<std::vector<std::string>> tiles(12, std::vector<std::string>(12, "blank_tile"));
@@ -42,12 +45,23 @@ void DrawBattle() {
 	Print("*YELLOW*Allies", 200, 107);
 	for (int i = 0; i < BATTLE.teams[0].size(); i++) {
 		Character C = CHARACTERS[BATTLE.teams[0][i]];
-		Print("*GREEN*P" + to_str(i + 1) + " *GREY*" + C.NAME, 200, 117 + (i * 10));
+		std::string pColor = "*GREEN*";
+		if (C.TYPE != "player") {
+			pColor = "*BLUE*";
+		}
+		std::string nColor = "*GREY*";
+		if (C.ENDED) {
+			nColor = "*BLACK*";
+		}
+		Print(pColor + "P" + to_str(i + 1) + " " + nColor + C.NAME, 200, 117 + (i * 10));
 		tiles[C.Y][C.X] = "*GREEN*P" + to_str(i + 1);
 	}
 
 	for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < 12; j++) {
+			if (movementCosts[i][j] <= CHARACTERS[ID].AP) {
+				Draw(32, 80, 16, 16, (j * 16), 11 + (i * 16), 1, sf::Color(135, 155, 0));
+			}
 			if (tiles[i][j] == "blank_tile") {
 				Draw(0, 80, 16, 16, (j * 16), 11 + (i * 16));
 			}

@@ -44,6 +44,12 @@ enum LOGIN {
 	COMPLETED
 };
 
+enum ALIGN {
+	LEFT,
+	CENTER,
+	RIGHT
+};
+
 struct UIState {
 	bool vSync = true;
 

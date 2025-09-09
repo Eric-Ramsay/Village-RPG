@@ -66,6 +66,20 @@ std::string commandDelve(int playerIndex, Character& C, std::vector<std::string>
 	return "*YELLOW*You delve deeper. . .";
 }
 
+
+std::string commandStart(int playerIndex, Character& C) {
+	if (BATTLES.count(C.LOCATION) == 0) {
+		return "*RED*You must be in combat!";
+	}
+
+	if (BATTLES[C.LOCATION].round > 0) {
+		return "*RED*The battle already started!";
+	}
+
+	startBattle(BATTLES[C.LOCATION]);
+	return "";
+}
+
 std::string commandLeave(int playerIndex, Character& C, std::vector<std::string> words) {
 	std::string id = C.LOCATION;
 	if (BATTLES.count(id) > 0) {
@@ -78,12 +92,33 @@ std::string commandLeave(int playerIndex, Character& C, std::vector<std::string>
 	return "*RED*You can't leave from here . . .";
 }
 
+std::string createCharacter(int playerIndex, std::string name) {
+	std::time_t t = std::time(0);
+	Character newCharacter;
+	std::string id = players[playerIndex].USERNAME + " " + name + " " + to_str(t) + to_str(rand() % 99);
+
+	newCharacter.GOLD = 30;
+	newCharacter.HP = 30;
+	newCharacter.ID = id;
+	newCharacter.NAME = name;
+
+	players[playerIndex].ID = id;
+	CHARACTERS[id] = newCharacter;
+	
+	sendCharacter(newCharacter);
+	return id;
+}
+
 void command(std::string input, int playerIndex) {
 	std::string id = players[playerIndex].ID;
 	std::string msg = "";
 	std::vector<std::string> words = split(low(input));
 	std::string keyword = words[0];
 	words.erase(words.begin());
+	if (keyword == "character") {
+		id = createCharacter(playerIndex, words[0]);
+		players[playerIndex].ID = id;
+	}
 	if (keyword == "go" || keyword == "enter" || keyword == "travel") {
 		msg = commandTravel(playerIndex, CHARACTERS[id], words, -1);
 		sendStat(id, "LOCATION", CHARACTERS[id].LOCATION);
@@ -91,6 +126,18 @@ void command(std::string input, int playerIndex) {
 	if (keyword == "delve") {
 		msg = commandDelve(playerIndex, CHARACTERS[id], words);
 		sendStat(id, "LOCATION", CHARACTERS[id].LOCATION);
+	}
+	if (keyword == "start") {
+		msg = commandStart(playerIndex, CHARACTERS[id]);
+	}
+	if (keyword == "end") {
+		if (BATTLES.count(CHARACTERS[id].LOCATION) > 0) {
+			setStat(CHARACTERS[id], "ENDED", true);
+			msg = handleCombat(BATTLES[CHARACTERS[id].LOCATION]);
+		}
+		else {
+			msg = "*RED*You must be in combat. Did you mean to *YELLOW*quit*RED* the game?";
+		}
 	}
 	if (keyword == "leave") {
 		msg = commandLeave(playerIndex, CHARACTERS[id], words);
@@ -115,8 +162,14 @@ void command(std::string input, int playerIndex) {
 			sendStat(id, "HP", CHARACTERS[id].HP);
 		}
 	}
+	if (keyword == "suicide") {
+		msg = "*RED*You've lost the will to go on. . .";
+		removeCharacter(CHARACTERS[id]);
+	}
 	std::cout << msg << std::endl;
-	save(CHARACTERS[id]);
+	if (CHARACTERS.count(id) > 0) {
+		save(CHARACTERS[id]);
+	}
 	if (msg != "") {
 		sendData("TEXT", msg, { playerIndex });
 	}

@@ -34,8 +34,8 @@ std::vector<std::string> logs = {"*BLACK*Connecting . . ."};
 std::string ID = "";
 std::unordered_map<std::string, Character> CHARACTERS = {};
 
-std::string USERNAME = "";
-std::string PASSWORD = "";
+std::string USERNAME = "eric";
+std::string PASSWORD = "123";
 
 
 bool blur = false;

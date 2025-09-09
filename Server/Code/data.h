@@ -28,17 +28,18 @@ std::string serialize(Account P) {
 std::string serialize(Character C) {
 	std::string data = "";
 	data += addLine("ID", C.ID);
+	data += addLine("USER", C.USER);
 	data += addLine("HP", C.HP);
-	data += addLine("STAMINA", C.STAMINA);
 	data += addLine("X", C.X);
 	data += addLine("Y", C.Y);
 	data += addLine("ARMOR", C.ARMOR);
 	data += addLine("MAXHP", C.MaxHP);
 	data += addLine("TYPE", C.TYPE);
+	data += addLine("NAME", C.NAME);
 	if (C.TYPE == "enemy") {
 		return data;
 	}
-	data += addLine("NAME", C.NAME);
+	data += addLine("STAMINA", C.STAMINA);
 	data += addLine("DESCRIPTION", C.DESCRIPTION);
 	data += addLine("LOCATION", C.LOCATION);
 	data += addLine("LEVEL", C.LEVEL);
@@ -48,6 +49,7 @@ std::string serialize(Character C) {
 	
 	data += addLine("AP", C.AP);
 	data += addLine("BACKPACK", C.BACKPACK);
+	data += addLine("ENDED", C.ENDED);
 	data += addLine("ATTACKS", C.ATTACKS);
 	data += addLine("CASTS", C.CASTS);
 	
@@ -89,6 +91,10 @@ void saveToFile(std::string filePath, std::string content) {
 	std::ofstream MyFile("./Saves/" + filePath + ".txt");
 	MyFile << content;
 	MyFile.close();
+}
+
+void graveSave(Character character) {
+	saveToFile("Characters/Graveyard/" + character.ID, serialize(character));
 }
 
 void save(Character character) {

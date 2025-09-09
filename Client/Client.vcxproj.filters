@@ -45,9 +45,6 @@
     <ClInclude Include="..\Shared\textFunctions.h">
       <Filter>Shared Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\sharedFunctions.h">
-      <Filter>Shared Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Shared\init.h">
       <Filter>Shared Files</Filter>
     </ClInclude>
@@ -59,6 +56,9 @@
     </ClInclude>
     <ClInclude Include="listener.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\sharedFunctions.h">
+      <Filter>Shared Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

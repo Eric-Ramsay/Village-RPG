@@ -89,6 +89,7 @@ int main()
 	float elapsedTime = 0;
 	float targetTime = .04f;
 
+
 	UI.W = sf::VideoMode::getDesktopMode().width;
 	UI.H = sf::VideoMode::getDesktopMode().height;
 	window.create(sf::VideoMode(UI.W, UI.H), "Village RPG", sf::Style::Fullscreen);
@@ -218,7 +219,7 @@ int main()
 
 			sf::Sprite sprite;
 			sprite.setPosition(0, 0);
-			texture.clear(sf::Color(0, 0, 10));
+			texture.clear(sf::Color(0, 5, 10));
 
 			if (UI.signInState == COMPLETED) {
 				DrawUI();
@@ -228,16 +229,7 @@ int main()
 					Print(logs[logs.size() - i], 10, HEIGHT - (11 + i * 15));
 				}
 			}
-			if (UI.signInState == LOGIN_PASSWORD) {
-				std::string replacement = "";
-				for (int i = 0; i < input.size(); i++) {
-					replacement += "\1";
-				}
-				Print("> " + replacement + "_", 10, HEIGHT - 11);
-			}
-			else {
-				Print("> " + input + "_", 10, HEIGHT - 11);
-			}
+			Print("> " + input + "_", 10, HEIGHT - 11);
 
 			if (numVertices > vertSize) {
 				vertSize = numVertices + 1000;

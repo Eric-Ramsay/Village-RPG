@@ -45,8 +45,6 @@ void Draw(int sX, int sY, int w, int h, int dX, int dY, int scale = 1, sf::Color
 	Draw(sX, sY, w, h, dX, dY, scale, scale, color, flip);
 }
 
-
-
 const int PIXEL_SPOT_X = 1;
 const int PIXEL_SPOT_Y = 0;
 

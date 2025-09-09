@@ -21,11 +21,6 @@ void processMessages() {
 					UI.signInState = CHOOSE;
 				}
 				stateMessage(UI.signInState);
-				/*char myhostname[256];
-				int rc = gethostname(myhostname, sizeof myhostname);
-				std::cout << myhostname << std::endl;
-				ID = myhostname;
-				sendData("LOG_IN", std::string(myhostname));*/
 			}
 			if (type == "REJECT_USERNAME") {
 				if (UI.signInState == LOGIN_USERNAME) {
@@ -48,7 +43,6 @@ void processMessages() {
 				stateMessage(UI.signInState);
 			}
 			if (type == "ACCEPT_PASSWORD") {
-				ID = USERNAME;
 				logs.push_back("*GREEN*You've successfully signed in.");
 				UI.signInState = COMPLETED;
 			}
@@ -66,7 +60,16 @@ void processMessages() {
 					std::string stat = readStr(str);
 					parseChange(C, stat, str);
 				}
+				if (C.USER == USERNAME) {
+					ID = C.ID;
+				}
 				CHARACTERS[C.ID] = C;
+			}
+			if (type == "REMOVE_CHARACTER") {
+				CHARACTERS.erase(data);
+				if (data == ID) {
+					ID = "";
+				}
 			}
 			if (type == "STAT") {
 				std::string id = readStr(data);

@@ -1,5 +1,14 @@
 #pragma once
 
+struct Spot {
+	int x;
+	int y;
+	Spot(int x1, int y1) {
+		x = x1;
+		y = y1;
+	}
+};
+
 struct Message {
 	std::vector<int> players = {};
 	std::string type = "";
@@ -89,6 +98,8 @@ struct Character {
 	std::vector<int> HITS = { 0, 0 };
 	std::vector<int> MISSES = { 0, 0 };
 
+	bool ENDED = false;
+
 	std::vector<int> STATS = { 0, 0, 0, 0, 0, 0 };
 
 	int ATTACKS = 0;
@@ -120,6 +131,44 @@ struct Character {
 	}
 };
 
+enum TYPE {
+	PHYSICAL,
+	MAGICAL,
+	TRUE_DMG
+};
+
+struct Attack {
+	TYPE type;
+	int dmg;
+	int pen;
+	int hitChance;
+	Attack(TYPE t, int d, int p, int c) {
+		type = t;
+		dmg = d;
+		pen = p;
+		hitChance = c;
+	}
+};
+
+Attack P_Attack(int min, int max, int hitChance, int pen = 0) {
+	return Attack(PHYSICAL, min + rand() % (max - min), pen, hitChance);
+}
+
+Attack M_Attack(int min, int max, int hitChance = 100, int pen = 0) {
+	return Attack(MAGICAL, min + rand() % (max - min), hitChance, pen);
+}
+
+Attack T_Attack(int min, int max, int hitChance = 100, int pen = 100) {
+	return Attack(TRUE_DMG, min + rand() % (max - min), hitChance, pen);
+}
+
+struct Hazard {
+	std::string type = "";
+	int x = 0;
+	int y = 0;
+	int duration = 999;
+};
+
 struct Battle {
 	std::string id = "";
 	std::string zone = "";
@@ -127,6 +176,7 @@ struct Battle {
 	int round = 0;
 	int difficulty = 0;
 
+	std::vector<Hazard> hazards;
 	std::vector<std::string> teams[2];
 	std::vector<Item> loot;
 
