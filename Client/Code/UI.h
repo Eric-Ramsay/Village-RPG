@@ -38,8 +38,8 @@ void DrawBattle() {
 	Print("*PINK*Enemies", 200, 18);
 	for (int i = 0; i < BATTLE.teams[1].size(); i++) {
 		Character C = CHARACTERS[BATTLE.teams[1][i]];
-		Print("*RED*P" + to_str(i + 1) + " *GREY*" + C.NAME, 200, 28 + (i * 10));
-		tiles[C.Y][C.X] = "*RED*E" + to_str(i + 1);
+		Print("*RED*P" + to_str(i + 11) + " *GREY*" + C.NAME, 200, 28 + (i * 10));
+		tiles[C.Y][C.X] = "*RED*" + to_str(i + 11);
 	}
 
 	Print("*YELLOW*Allies", 200, 107);
@@ -53,8 +53,8 @@ void DrawBattle() {
 		if (C.ENDED) {
 			nColor = "*BLACK*";
 		}
-		Print(pColor + "P" + to_str(i + 1) + " " + nColor + C.NAME, 200, 117 + (i * 10));
-		tiles[C.Y][C.X] = "*GREEN*P" + to_str(i + 1);
+		Print(pColor + "P" + to_str(i + 11) + " " + nColor + C.NAME, 200, 117 + (i * 10));
+		tiles[C.Y][C.X] = "*GREEN*" + to_str(i + 11);
 	}
 
 	for (int i = 0; i < 12; i++) {
@@ -69,7 +69,7 @@ void DrawBattle() {
 				Draw(16, 80, 16, 16, (j * 16), 11 + (i * 16));
 			}
 			else {
-				Print(tiles[i][j], (3 + j * 16), 15 + (i * 16));
+				CPrint(tiles[i][j], 12 + (j * 16), 15 + (i * 16));
 			}
 		}
 	}

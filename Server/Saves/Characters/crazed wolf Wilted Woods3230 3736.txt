@@ -1,9 +1,0 @@
-ID!!!crazed wolf Wilted Woods3230 3736!!!
-USER!!!!!!
-HP!!!15!
-X!!!0!
-Y!!!0!
-ARMOR!!!0!0!
-MAXHP!!!15!
-TYPE!!!enemy!!!
-NAME!!!crazed wolf!!!

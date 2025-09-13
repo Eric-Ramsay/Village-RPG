@@ -226,11 +226,23 @@ int main() {
 	FD_SET(listening, &master);
 
 	initLocations();
+	initEnemies();
 
 	// Load all Characters
 	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Characters/")) {
 		std::string path = entry.path().string();
-		if (path != "./Saves/Characters/Graveyard") {
+		if (!entry.is_directory()) {
+			Character character = load<Character>(path);
+			if (character.ID != "") {
+				CHARACTERS[character.ID] = character;
+			}
+		}
+	}
+
+	// Load all Enemies
+	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Characters/Enemies/")) {
+		std::string path = entry.path().string();
+		if (!entry.is_directory()) {
 			Character character = load<Character>(path);
 			if (character.ID != "") {
 				CHARACTERS[character.ID] = character;

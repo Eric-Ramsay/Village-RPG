@@ -1,7 +1,7 @@
-ID!!!Wilted Woods3230!!!
+ID!!!Wilted Woods6097!!!
 ZONE!!!Wilted Woods!!!
-TURN!!!1!
+TURN!!!0!
 ROUND!!!1!
 DIFFICULTY!!!0!
 ONE!!!eric eric 175728553656!!!
-TWO!!!crazed wolf Wilted Woods3230 5049!!!
+TWO!!!Crazed Wolf Wilted Woods6097 8206!!!

@@ -70,6 +70,7 @@ int main()
 	srand(time(NULL));
 	std::cout << rand() % 100 << std::endl;
 	initLocations();
+	initEnemies();
 
 	sf::RenderWindow window;
 	sf::RenderTexture texture;

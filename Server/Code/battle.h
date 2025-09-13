@@ -72,40 +72,94 @@ std::string handleCombat(Battle& battle) {
 	if (battle.round == 0) {
 		return "";
 	}
-
-	if (turnCompleted(battle.teams[battle.turn])) {
+	int maxTurns = 0;
+	while (maxTurns++ < 10 && turnCompleted(battle.teams[battle.turn])) {
 		battle.turn = !battle.turn;
 		startTurn(battle);
-	}
 
-	if (validateBattle(battle.id)) {
-		if (battle.teams[1].size() == 0) {
-			msg = winBattle(battle);
+		if (validateBattle(battle.id)) {
+			if (battle.teams[1].size() == 0) {
+				msg = winBattle(battle);
+			}
+			updateBattle(battle);
 		}
-		updateBattle(battle);
 	}
 	return msg;
 }
 
+void summon(Battle& battle, Character enemy, int team = 1) {
+	std::string id = enemy.NAME + " " + battle.id + " " + to_str(rand() % 9999);
+	enemy.ID = id;
+	enemy.LOCATION = battle.id;
+	battle.teams[team].push_back(id);
+	CHARACTERS[id] = enemy;
+	sendCharacter(enemy);
+	save(enemy);
+}
+
+void summon(Battle& battle, std::vector<Character> enemyList, int team = 1, bool update = true) {
+	for (Character enemy : enemyList) {
+		summon(battle, enemy, team);
+	}
+	if (update) {
+		updateBattle(battle);
+	}
+}
+
+void summon(Battle& battle, std::string name, int team = 1) {
+	for (Character enemy : ENEMIES) {
+		if (low(enemy.NAME) == low(name)) {
+			summon(battle, enemy, team);
+			updateBattle(battle);
+			return;
+		}
+	}
+	std::cout << "Couldn't summon enemy '" + name + "'!" << std::endl;
+}
+
 void startBattle(Battle& battle) {
+	std::vector<Character> enemies = {};
 	battle.round = 1;
 	battle.turn = 0;
 
-	Character wolf;
-	wolf.NAME = "crazed wolf";
-	wolf.TYPE = "enemy";
-	wolf.ID = "crazed wolf " + battle.id + " " + to_str(rand() % 9999);
-	wolf.HP = 15;
-	wolf.MaxHP = 15;
-	wolf.AP = 12;
-	wolf.LOCATION = battle.id;
+	float lvl = 0.0;
+	int num = 0;
 
-	CHARACTERS[wolf.ID] = wolf;
-	battle.teams[1].push_back(wolf.ID);
+	for (std::string id : battle.teams[0]) {
+		if (CHARACTERS[id].TYPE == "player") {
+			num++;
+			lvl += CHARACTERS[id].LEVEL;
+		}
+	}
+
+	lvl /= (float)num;
+	int rating = 45 * num * std::pow(1.22, lvl) + (15 * (lvl - 1) * num);
+
+	std::vector<Character> validEnemies = {};
+	for (Character enemy : ENEMIES) {
+		if (enemy.LEVEL < rating && contains(enemy.ZONES, battle.zone)) {
+			validEnemies.push_back(enemy);
+		}
+	}
+
+	while (validEnemies.size() > 0 && rating > 0) {
+		int index = rand() % validEnemies.size();
+
+		enemies.push_back(validEnemies[index]);
+		rating -= validEnemies[index].LEVEL;
+
+		std::vector<Character> newTeams = {};
+		for (Character enemy : validEnemies) {
+			if (enemy.LEVEL <= rating) {
+				newTeams.push_back(enemy);
+			}
+		}
+		validEnemies = newTeams;
+	}
+
+	summon(battle, enemies, 1, false);
 
 	startTurn(battle);
 
-	save(wolf);
-	sendCharacter(wolf);
 	updateBattle(battle);
 }

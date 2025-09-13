@@ -275,3 +275,44 @@ void parseChange(Battle& battle, std::string type, std::string data) {
 		battle.loot.push_back(parseItem(data));
 	}
 }
+
+std::vector<int> merge(std::vector<int> arr1, std::vector<int> arr2) {
+	int i = 0; int j = 0;
+	int len1 = arr1.size();
+	int len2 = arr2.size();
+	std::vector<int> sorted(len1 + len2, 0);
+	int k = 0;
+	while (i < len1 || j < len2) {
+		if (i == len1) {
+			sorted[k++] = arr2[j++];
+		}
+		else if (j == len2) {
+			sorted[k++] = arr1[i++];
+		}
+		else if (arr1[i] > arr2[j]) {
+			sorted[k++] = arr1[i++];
+		}
+		else {
+			sorted[k++] = arr2[j++];
+		}
+	}
+	return sorted;
+}
+
+std::vector<int> sort(std::vector<int>& nums) {
+	if (nums.size() == 1) {
+		return nums;
+	}
+	std::vector<int> first(nums.begin(), nums.begin() + nums.size() / 2);
+	std::vector<int> second(nums.begin() + nums.size() / 2, nums.end());
+	return merge(sort(first), sort(second));
+}
+
+template <typename T> bool contains(std::vector<T> elements, T element) {
+	for (T elem : elements) {
+		if (elem == element) {
+			return true;
+		}
+	}
+	return false;
+}

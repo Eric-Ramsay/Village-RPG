@@ -14,31 +14,39 @@ std::vector<std::string> findTargets(int x, int y, int range, std::vector<std::s
 	return targets;
 }
 
-void moveInRange(Character* C, std::vector<std::string> enemies, int range, std::vector<std::vector<int>> movementCosts) {
-	int minDist = 999;
-	int newX = 0;
-	int newY = 0;
-	for (int iteration = 0; iteration < 12; iteration++) {
-		for (int i = (0 - iteration); i <= iteration; i++) {
-			for (int j = (0 - iteration); j <= iteration; j++) {
-				if (i != 0 || j != 0) {
-					int x = C->X + j;
-					int y = C->Y + i;
-					if (x >= 0 && x < 12 && y >= 0 && y < 12) {
-						if (movementCosts[y][x] < C->AP) {
-							int dist = movementCosts[y][x];
-							if (dist < minDist) {
-								newX = x;
-								newY = y;
-								auto targets = findTargets(x, y, range, enemies);
-								if (targets.size() > 0) {
-									break;
-									break;
-									break;
-								}
-							}
-						}
-					}
+void moveInRange(Character* C, std::vector<std::string> enemies, int range, std::vector<std::vector<int>> movementCosts, bool retreat = false) {
+	float minDist = 9999;
+	int minX = C->X;
+	int minY = C->Y;
+	for (std::string id : enemies) {
+		int x = CHARACTERS[id].X;
+		int y = CHARACTERS[id].Y;
+		int d = atkDist(C->X, C->Y, x, y);
+		if (d < minDist) {
+			minDist = d;
+			minX = x;
+			minY = y;
+		}
+	}
+
+	int startDist = atkDist(minX, minY, C->X, C->Y);
+	if ((!retreat && startDist < range) || startDist == range) {
+		return;
+	}
+
+	int newX = C->X;
+	int newY = C->Y;
+	minDist = 999;
+	int moveCost = 999;
+	for (int i = 0; i < movementCosts.size(); i++) {
+		for (int j = 0; j < movementCosts.size(); j++) {
+			if (movementCosts[i][j] <= C->AP) {
+				int d = abs(atkDist(minX, minY, j, i) - range);
+				if (d < minDist || (d == minDist && movementCosts[i][j] < moveCost)) {
+					moveCost = movementCosts[i][j];
+					minDist = d;
+					newX = j;
+					newY = i;
 				}
 			}
 		}
@@ -67,19 +75,19 @@ std::string enemyAttack(int enemyIndex, std::vector<std::string> allies, std::ve
 		// Damage doubles below half HP
 		// Has a strong bite attack when not moving, or a weaker nip attack when moving that afflicts bleeding.
 		std::vector<std::string> targets = findTargets(C->X, C->Y, 1, enemies);
-		if (targets.size() > 0) {
+		if (false && targets.size() > 0) {
 			int index = rand() % targets.size();
 			msg += "*RED*The Crazed Wolf*GREY* bites savagely at " + CHARACTERS[enemies[index]].NAME + "!";
 			//Result result = dealDamage(P_Attack(10, 16, 90));
 		}
 		else {
-			moveInRange(C, enemies, 1, movementCosts);
+			moveInRange(C, enemies, 3, movementCosts, true);
 		}
 	}
-
 
 	sendStat(C->ID, "X", C->X);
 	sendStat(C->ID, "Y", C->Y);
 	sendStat(C->ID, "HP", C->HP);
+	save(*C);
 	return msg;
 }

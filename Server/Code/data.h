@@ -36,12 +36,12 @@ std::string serialize(Character C) {
 	data += addLine("MAXHP", C.MaxHP);
 	data += addLine("TYPE", C.TYPE);
 	data += addLine("NAME", C.NAME);
-	if (C.TYPE == "enemy") {
+	data += addLine("LOCATION", C.LOCATION);
+	if (C.TYPE != "player") {
 		return data;
 	}
 	data += addLine("STAMINA", C.STAMINA);
 	data += addLine("DESCRIPTION", C.DESCRIPTION);
-	data += addLine("LOCATION", C.LOCATION);
 	data += addLine("LEVEL", C.LEVEL);
 	data += addLine("XP", C.XP);
 	data += addLine("SP", C.SP);
@@ -98,7 +98,12 @@ void graveSave(Character character) {
 }
 
 void save(Character character) {
-	saveToFile("Characters/" + character.ID, serialize(character));
+	if (character.TYPE == "player") {
+		saveToFile("Characters/" + character.ID, serialize(character));
+	}
+	else {
+		saveToFile("Characters/Enemies/" + character.ID, serialize(character));
+	}
 }
 
 void save(Battle battle) {

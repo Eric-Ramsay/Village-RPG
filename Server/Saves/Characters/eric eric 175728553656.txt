@@ -1,22 +1,22 @@
 ID!!!eric eric 175728553656!!!
 USER!!!eric!!!
 HP!!!30!
-X!!!9!
-Y!!!9!
+X!!!6!
+Y!!!7!
 ARMOR!!!0!0!
 MAXHP!!!30!
 TYPE!!!player!!!
 NAME!!!eric!!!
+LOCATION!!!Wilted Woods6097!!!
 STAMINA!!!0!
 DESCRIPTION!!!!!!
-LOCATION!!!Wilted Woods3230!!!
-LEVEL!!!-858993460!
+LEVEL!!!1!
 XP!!!0!
 SP!!!0!
 GOLD!!!30!
 AP!!!12!
 BACKPACK!!!0!
-ENDED!!!1!
+ENDED!!!0!
 ATTACKS!!!0!
 CASTS!!!0!
 X_PREFERENCE!!!0!

@@ -67,21 +67,21 @@ enum STATS {
 };
 
 struct Character {
-	std::string USER;
-	std::string ID;
+	std::string USER = "";
+	std::string ID = "";
 	std::string TYPE = "player";
-	std::string DESCRIPTION;
-	std::string NAME;
+	std::string DESCRIPTION = "";
+	std::string NAME = "";
 
-	int HP;
+	int HP = 30;
 	std::vector<int> ARMOR = { 0, 0 };
 	int X = 0;
 	int Y = 0;
-	int LEVEL;
+	int LEVEL = 1;
 
-	std::vector<Effect> effects;
+	std::vector<Effect> effects = {};
 	std::string COLOR = "";
-	std::vector<Item> INVENTORY;
+	std::vector<Item> INVENTORY = {};
 	int LEFT = -1;
 	int RIGHT = -1;
 
@@ -111,20 +111,27 @@ struct Character {
 	int MaxHP = 30;
 	int PHASE = 0;
 	int MOVES = 0;
-	std::vector<int> ZONES;
+	std::vector<std::string> ZONES;
 	std::vector<std::string> LOOT;
 
 	Character() {}
 
 	Character(std::string name, int hp, std::vector<int> armor, int difficulty, std::vector<int> zones, int moves, std::string type, std::string desc)
 	{
+		std::vector<std::string> zoneNames = {
+			"Haunted Crypts",
+			"Acrid Swamp",
+			"Wilted Woods"
+		};
 		NAME = name;
 		ID = name;
 		MaxHP = hp;
 		ARMOR[0] = armor[0];
 		ARMOR[1] = armor[1];
 		LEVEL = difficulty;
-		ZONES = zones;
+		for (int zone : zones) {
+			ZONES.push_back(zoneNames[zone]);
+		}
 		MOVES = moves;
 		TYPE = type;
 		DESCRIPTION = desc;
@@ -167,6 +174,12 @@ struct Hazard {
 	int x = 0;
 	int y = 0;
 	int duration = 999;
+};
+
+enum ZONE {
+	HauntedCrypts,
+	AcridSwamp,
+	WiltedWoods
 };
 
 struct Battle {
