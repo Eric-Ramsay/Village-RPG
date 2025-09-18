@@ -101,6 +101,7 @@ std::string createCharacter(int playerIndex, std::string name) {
 	newCharacter.HP = 30;
 	newCharacter.ID = id;
 	newCharacter.NAME = name;
+	newCharacter.USER = players[playerIndex].USERNAME;
 
 	players[playerIndex].ID = id;
 	CHARACTERS[id] = newCharacter;
@@ -116,8 +117,13 @@ void command(std::string input, int playerIndex) {
 	std::string keyword = words[0];
 	words.erase(words.begin());
 	if (keyword == "character") {
-		id = createCharacter(playerIndex, words[0]);
-		players[playerIndex].ID = id;
+		if (words.size() == 0) {
+			msg = "*RED*Please enter a character name!";
+		}
+		else {
+			id = createCharacter(playerIndex, words[0]);
+			players[playerIndex].ID = id;
+		}
 	}
 	if (keyword == "go" || keyword == "enter" || keyword == "travel") {
 		msg = commandTravel(playerIndex, CHARACTERS[id], words, -1);

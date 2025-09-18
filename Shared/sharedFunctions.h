@@ -71,6 +71,7 @@ struct PathTile {
 	int y = 0;
 	int cost = 0;
 	int baseCost = 0;
+	int team = -1;
 	bool canLand = true;
 	PathTile() {}
 	PathTile(int x1, int y1) {
@@ -101,6 +102,7 @@ std::vector<std::vector<PathTile>> createMap(Battle b) {
 		for (std::string id : b.teams[i]) {
 			Character C = CHARACTERS[id];
 			tiles[C.Y][C.X].canLand = false;
+			tiles[C.Y][C.X].team = i;
 		}
 	}
 
@@ -111,6 +113,13 @@ std::vector<std::vector<PathTile>> createMap(Battle b) {
 }
 
 std::vector<std::vector<int>> moveCosts(Character C, Battle battle) {
+	int team = 1;
+	for (std::string id : battle.teams[0]) {
+		if (C.ID == id) {
+			team = 0;
+			break;
+		}
+	}
 	std::vector<std::vector<PathTile>> map = createMap(battle);
 	std::vector<Spot> open = { Spot(C.X, C.Y) };
 	while (open.size() > 0) {
@@ -124,6 +133,9 @@ std::vector<std::vector<int>> moveCosts(Character C, Battle battle) {
 				int x = min(11, max(current.x + j, 0));
 				int y = min(11, max(current.y + i, 0));
 				int baseCost = map[y][x].baseCost;
+				if (map[y][x].team > -1 && map[y][x].team != team) {
+					baseCost += 4;
+				}
 				if (i != 0 && j != 0) {
 					baseCost *= 1.5;
 				}

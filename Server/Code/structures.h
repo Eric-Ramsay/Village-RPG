@@ -27,3 +27,8 @@ struct Account {
 		PASSWORD = pass;
 	}
 };
+
+struct Result {
+	std::string msg = "";
+	int damage = 0;
+};

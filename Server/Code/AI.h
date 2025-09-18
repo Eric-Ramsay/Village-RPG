@@ -75,15 +75,33 @@ std::string enemyAttack(int enemyIndex, std::vector<std::string> allies, std::ve
 		// Damage doubles below half HP
 		// Has a strong bite attack when not moving, or a weaker nip attack when moving that afflicts bleeding.
 		std::vector<std::string> targets = findTargets(C->X, C->Y, 1, enemies);
-		if (false && targets.size() > 0) {
+		if (targets.size() > 0) {
 			int index = rand() % targets.size();
-			msg += "*RED*The Crazed Wolf*GREY* bites savagely at " + CHARACTERS[enemies[index]].NAME + "!";
-			//Result result = dealDamage(P_Attack(10, 16, 90));
+			msg += "*RED*The Crazed Wolf*GREY* bites savagely at " + CHARACTERS[enemies[index]].NAME + "!\n";
+			Result result = dealDamage(P_Attack(10, 16, 90), C->ID, CHARACTERS[enemies[index]].ID, allies, enemies);
+			msg += result.msg;
 		}
 		else {
-			moveInRange(C, enemies, 3, movementCosts, true);
+			moveInRange(C, enemies, 1, movementCosts, true);
 		}
 	}
+
+
+	std::vector<std::string> playerIds = {};
+
+	for (std::string id : allies) {
+		if (CHARACTERS[id].TYPE == "player") {
+			playerIds.push_back(id);
+		}
+	}
+	for (std::string id : enemies) {
+		if (CHARACTERS[id].TYPE == "player") {
+			playerIds.push_back(id);
+		}
+	}
+
+	sendToIds("TEXT", msg, playerIds);
+
 
 	sendStat(C->ID, "X", C->X);
 	sendStat(C->ID, "Y", C->Y);

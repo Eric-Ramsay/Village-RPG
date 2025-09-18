@@ -21,6 +21,19 @@ void sendData(std::string type, std::string data, std::vector<int> sendList = {}
 	SENDING = FALSE;
 }
 
+void sendToIds(std::string type, std::string data, std::vector<std::string> sendList) {
+	std::vector<int> list = {};
+	for (std::string id : sendList) {
+		for (int i = 0; i < players.size(); i++) {
+			if (players[i].ID == id) {
+				list.push_back(i);
+				break;
+			}
+		}
+	}
+	sendData(type, data, list);
+}
+
 void sendCharacter(Character character, std::vector<int> sendList = {}) {
 	std::string data = serialize(character);
 	sendData("CHARACTER", data, sendList);
@@ -63,7 +76,10 @@ void removeCharacter(Character character) {
 	sendData("REMOVE_CHARACTER", character.ID);
 	if (character.TYPE == "player") {
 		graveSave(character);
-		std::remove(("./Saves/Characters/" + character.ID).c_str());
+		std::remove(("./Saves/Characters/" + character.ID + ".txt").c_str());
+	}
+	else {
+		std::remove(("./Saves/Characters/Enemies/" + character.ID + ".txt").c_str());
 	}
 	CHARACTERS.erase(character.ID);
 }

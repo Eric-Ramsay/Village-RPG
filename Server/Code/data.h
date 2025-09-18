@@ -64,8 +64,6 @@ std::string serialize(Character C) {
 	return data;
 }
 
-
-
 std::string serialize(Battle battle) {
 	std::string data = "";
 	data += addLine("ID", battle.id);

@@ -1,13 +1,40 @@
 ﻿#pragma once
 
+std::string padNum(int num) {
+	if (num < 10) {
+		return "0" + to_str(num);
+	}
+
+	return to_str(num);
+}
+
 void DrawCharacterUI() {
 	if (CHARACTERS.count(ID) > 0) {
 		Character C = CHARACTERS[ID];
-		Print("*GREEN*" + C.NAME, 440, 1);
+		Print("*GREEN*" + C.NAME + " *BLACK*| *PINK*Level 1 *BLACK*| *YELLOW*40*GREY*/*GREEN*100*GREY* XP", 440, 1);
 		Print(DrawBar(C.HP, MaxHP(C), 20, "*RED*"), 440, 11);
-		Print(DrawBar(C.STAMINA, MaxStamina(C), 20, "*GREEN*"), 440, 21);
+		Print(DrawBar(MaxStamina(C), MaxStamina(C), 20, "*GREEN*"), 440, 21);
 		Print("*TEAL*\4 *GREY*" + to_str(C.ARMOR[0]), 440, 31);
 		Print("*TEAL*\5 *GREY*" + to_str(C.ARMOR[1]), 440, 41);
+		Print("*GREEN*AP: 7 ", 470, 31);
+		std::vector<std::string> stats = {
+			"VIT", "END", "DEX", "MAG", "WEP", "AVD"
+		};
+		for (int i = 0; i < stats.size(); i++) {
+			Print("*TEAL*" + stats[i] + " - *GREY*" + C.STATS[i], 440, 51 + 10 * i);
+		}
+		Print("*YELLOW*Inventory *GREY*- *YELLOW*17 Gold", 440, 111);
+		for (int i = 0; i < 10; i++) {
+			if (i == 0) {
+				Print("*PINK*" + padNum(i + 1) + "*GREY*) [*RED*LR*GREY*] *BLUE*Longbow *RED*x2 *BLACK*| *GREEN*6", 440, 121 + 10 * i);
+			}
+			else if (i == 1) {
+				Print("*PINK*" + padNum(i + 1) + "*GREY*) Tome of the Guardian", 440, 121 + 10 * i);
+			}
+			else {
+				Print("*PINK*" + padNum(i + 1) + "*GREY*) *BLACK*---", 440, 121 + 10 * i);
+			}
+		}
 	}
 }
 

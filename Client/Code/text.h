@@ -37,6 +37,15 @@ void charInfo(char c, int& sX, int& sY, int& sW) {
 	else if (c == ']') {
 		sW = 2; sX = 62; sY = 48;
 	}
+	else if (c == '|') {
+		sX = 72; sY = 48; sW = 1;
+	}
+	else if (c == ')') {
+		sX = 75; sY = 48; sW = 2;
+	}
+	else if (c == '(') {
+		sX = 78; sY = 48; sW = 2;
+	}
 	else if (c == '/') {
 		sX = 65; sY = 48; sW = 3;
 	}

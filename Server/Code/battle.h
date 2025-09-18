@@ -1,5 +1,4 @@
 #pragma once
-
 bool validateBattle(std::string id) {
 	if (BATTLES.count(id) == 0) {
 		return false;
@@ -22,6 +21,14 @@ bool validateBattle(std::string id) {
 	if (numCharacters == 0) {
 		std::string filePath = "./Saves/Battles/" + BATTLES[id].id + ".txt";
 		std::remove(filePath.c_str());
+		for (int i = 0; i < 2; i++) {
+			for (int j = BATTLES[id].teams[i].size() - 1; j >= 0; j--) {
+				std::string playerId = BATTLES[id].teams[i][j];
+				if (CHARACTERS[playerId].TYPE != "player") {
+					removeCharacter(CHARACTERS[playerId]);
+				}
+			}
+		}
 		BATTLES.erase(id);
 		return false;
 	}
@@ -82,6 +89,9 @@ std::string handleCombat(Battle& battle) {
 				msg = winBattle(battle);
 			}
 			updateBattle(battle);
+		}
+		else {
+			return msg;
 		}
 	}
 	return msg;
