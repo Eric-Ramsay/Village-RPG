@@ -19,6 +19,8 @@ std::string commandTravel(int playerIndex, Character& C, std::vector<std::string
 		}
 	}
 	if (destination.id != "error") {
+		C.TRADING = "";
+		sendStat(C.ID, "TRADING", "", { playerIndex });
 		C.LOCATION = destination.id;
 		return "You travel to the " + destination.id;
 	}
@@ -37,6 +39,8 @@ std::string commandTravel(int playerIndex, Character& C, std::vector<std::string
 	if (direction != "") {
 		for (Connection con : location.connections) {
 			if (low(con.direction) == direction) {
+				C.TRADING = "";
+				sendStat(C.ID, "TRADING", "", { playerIndex });
 				C.LOCATION = con.location;
 				return "You travel " + direction + ".";
 			}
@@ -81,6 +85,11 @@ std::string commandStart(int playerIndex, Character& C) {
 }
 
 std::string commandLeave(int playerIndex, Character& C, std::vector<std::string> words) {
+	if (C.TRADING != "") {
+		C.TRADING = "";
+		sendStat(C.ID, "TRADING", "", { playerIndex });
+		return "";
+	}
 	std::string id = C.LOCATION;
 	if (BATTLES.count(id) > 0) {
 		if (BATTLES[id].round == 0) {
@@ -88,6 +97,11 @@ std::string commandLeave(int playerIndex, Character& C, std::vector<std::string>
 			validateBattle(id);
 			return "*YELLOW*You leave the battle . . .";
 		}
+	}
+	Location loc = getLocation(C.LOCATION);
+	if (loc.parent != "") {
+		C.LOCATION = loc.parent;
+		return "You travel to the " + loc.parent;
 	}
 	return "*RED*You can't leave from here . . .";
 }
@@ -110,6 +124,14 @@ std::string createCharacter(int playerIndex, std::string name) {
 	return id;
 }
 
+void commandTrade(int playerIndex, Character& C, std::string id) {
+	NPC npc = getNPC(id);
+	if (low(npc.NAME) == low(id)) {
+		C.TRADING = npc.NAME;
+		sendStat(C.ID, "TRADING", npc.NAME, { playerIndex });
+	}
+}
+
 void command(std::string input, int playerIndex) {
 	std::string id = players[playerIndex].ID;
 	std::string msg = "";
@@ -125,18 +147,27 @@ void command(std::string input, int playerIndex) {
 			players[playerIndex].ID = id;
 		}
 	}
-	if (keyword == "go" || keyword == "enter" || keyword == "travel") {
+	else if (keyword == "go" || keyword == "enter" || keyword == "travel") {
 		msg = commandTravel(playerIndex, CHARACTERS[id], words, -1);
 		sendStat(id, "LOCATION", CHARACTERS[id].LOCATION);
 	}
-	if (keyword == "delve") {
+	else if (keyword == "delve") {
 		msg = commandDelve(playerIndex, CHARACTERS[id], words);
 		sendStat(id, "LOCATION", CHARACTERS[id].LOCATION);
 	}
-	if (keyword == "start") {
+	else if (keyword == "start") {
 		msg = commandStart(playerIndex, CHARACTERS[id]);
 	}
-	if (keyword == "end") {
+	else if (keyword == "trade") {
+		std::string trading = CHARACTERS[id].TRADING;
+		if (words.size() > 0) {
+			commandTrade(playerIndex, CHARACTERS[id], words[0]);
+		}
+		if (trading == CHARACTERS[id].TRADING) {
+			msg = "*RED*Command not understood.";
+		}
+	}
+	else if (keyword == "end") {
 		if (BATTLES.count(CHARACTERS[id].LOCATION) > 0) {
 			setStat(CHARACTERS[id], "ENDED", true);
 			msg = handleCombat(BATTLES[CHARACTERS[id].LOCATION]);
@@ -145,11 +176,11 @@ void command(std::string input, int playerIndex) {
 			msg = "*RED*You must be in combat. Did you mean to *YELLOW*quit*RED* the game?";
 		}
 	}
-	if (keyword == "leave") {
+	else if (keyword == "leave" || keyword == "back" || keyword == "stop") {
 		msg = commandLeave(playerIndex, CHARACTERS[id], words);
 		sendStat(id, "LOCATION", CHARACTERS[id].LOCATION);
 	}
-	if (keyword == "move") {
+	else if (keyword == "move") {
 		int x = readInt(words[0]);
 		int y = readInt(words[0]);
 		if (x >= 0 && x < 12) {
@@ -161,14 +192,14 @@ void command(std::string input, int playerIndex) {
 			sendStat(id, "Y", CHARACTERS[id].Y);
 		}
 	}
-	if (keyword == "hp") {
+	else if (keyword == "hp") {
 		if (words.size() > 0) {
 			int num = std::stoi(words[0]);
 			CHARACTERS[id].HP = num;
 			sendStat(id, "HP", CHARACTERS[id].HP);
 		}
 	}
-	if (keyword == "suicide") {
+	else if (keyword == "suicide") {
 		msg = "*RED*You've lost the will to go on. . .";
 		removeCharacter(CHARACTERS[id]);
 	}

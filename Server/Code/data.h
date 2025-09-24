@@ -42,6 +42,7 @@ std::string serialize(Character C) {
 	}
 	data += addLine("STAMINA", C.STAMINA);
 	data += addLine("DESCRIPTION", C.DESCRIPTION);
+	data += addLine("TRADING", C.TRADING);
 	data += addLine("LEVEL", C.LEVEL);
 	data += addLine("XP", C.XP);
 	data += addLine("SP", C.SP);

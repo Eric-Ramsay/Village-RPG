@@ -15,6 +15,26 @@ Location getLocation(std::string id) {
 	return Location("error", "");
 }
 
+NPC getNPC(std::string name) {
+	for (NPC npc : PEOPLE) {
+		if (low(npc.NAME) == low(name)) {
+			return npc;
+		}
+	}
+	std::cout << "Error, NPC " + name + " not found!" << std::endl;
+	return PEOPLE[0];
+}
+
+UI_Item getItem(std::string id) {
+	for (UI_Item item : ITEMS) {
+		if (low(item.id) == low(id)) {
+			return item;
+		}
+	}
+	std::cout << "Error, Item " + id + " not found!" << std::endl;
+	return ITEMS[0];
+}
+
 float min(float a, float b) {
 	if (a < b) {
 		return a;
@@ -184,6 +204,9 @@ void parseChange(Character& character, std::string type, std::string data) {
 	}
 	if (type == "DESCRIPTION") {
 		character.DESCRIPTION = readStr(data);
+	}
+	if (type == "TRADING") {
+		character.TRADING = readStr(data);
 	}
 	if (type == "COLOR") {
 		character.COLOR = readStr(data);

@@ -69,8 +69,7 @@ int main()
 {
 	srand(time(NULL));
 	std::cout << rand() % 100 << std::endl;
-	initLocations();
-	initEnemies();
+	init();
 
 	sf::RenderWindow window;
 	sf::RenderTexture texture;
@@ -172,10 +171,17 @@ int main()
 					if (input == "scan") {
 						scanLines = !scanLines;
 					}
-					if (input == "blur") {
+					else if (input == "blur") {
 						blur = !blur;
 					}
-					if (input == "quit") {
+					else if (input == "trade") {
+						for (int i = 0; i < PEOPLE.size(); i++) {
+							if (low(PEOPLE[i].NAME) == low(input)) {
+								PEOPLE[i].index++;
+							}
+						}
+					}
+					else if (input == "quit") {
 						quit = true;
 					}
 					else if (UI.signInState == COMPLETED) {

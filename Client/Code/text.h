@@ -136,7 +136,7 @@ sf::Color getColor(std::string text = "") {
 	else if (text == "blue") {
 		return sf::Color(40, 125, 195);
 	}
-	else if (text == "teal") {
+	else if (text == "teal" || text == "cyan") {
 		return sf::Color(45, 155, 145);
 	}
 	else if (text == "orange") {
@@ -180,7 +180,7 @@ int measureText(std::string text, int scale) {
 	return lineLength;
 }
 
-std::vector<std::string> splitLines(std::string text, int maxLength, int scale) {
+std::vector<std::string> splitLines(std::string text, int maxLength = WIDTH, int scale = 1) {
 	std::vector<std::string> lines = split(text, '\n');
 	std::string merged = "";
 	int sX;
@@ -211,7 +211,7 @@ std::vector<std::string> splitLines(std::string text, int maxLength, int scale) 
 }
 
 // Print Function
-void Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1, ALIGN align = LEFT) {
+int Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1, ALIGN align = LEFT) {
 	bool printing = true;
 	std::string color = "white";
 	std::vector<std::string> lines = splitLines(text, maxLength, scale);
@@ -260,6 +260,8 @@ void Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 
 			}
 		}
 	}
+
+	return lines.size() * scale * 11;
 }
 
 void CPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1) {

@@ -1,4 +1,25 @@
 #pragma once
+enum TYPE {
+	PHYSICAL,
+	MAGICAL,
+	TRUE_DMG
+};
+
+struct Attack {
+	TYPE type;
+	int min;
+	int max;
+	int pen;
+	int hitChance;
+	Attack(TYPE t, int mn, int mx, int p, int c) {
+		type = t;
+		min = mn;
+		max = mx;
+		pen = p;
+		hitChance = c;
+	}
+	Attack() {}
+};
 
 struct Spot {
 	int x;
@@ -8,6 +29,19 @@ struct Spot {
 		y = y1;
 	}
 };
+
+
+Attack P_Attack(int min, int max, int hitChance, int pen = 0) {
+	return Attack(PHYSICAL, min, max, pen, hitChance);
+}
+
+Attack M_Attack(int min, int max, int hitChance = 100, int pen = 0) {
+	return Attack(MAGICAL, min, max, hitChance, pen);
+}
+
+Attack T_Attack(int min, int max, int hitChance = 100, int pen = 100) {
+	return Attack(TRUE_DMG, min, max, hitChance, pen);
+}
 
 struct Message {
 	std::vector<int> players = {};
@@ -27,6 +61,49 @@ struct Message {
 	{
 		this.data += to_str(rhs);
 		return *this;
+	}
+};
+
+enum WEAPON_CLASS {
+	BLADE,
+	BLUNT,
+	WHIP,
+	AXE,
+	POLEARM,
+	SHIELD,
+	RANGED
+};
+
+struct UI_Item {
+	std::string id = "";
+	std::string type = "";
+	std::string description = "";
+	int cost = 0;
+	int rarity = 0;
+
+	// Weapon Stats
+	bool twoHanded = false;
+	int range = 0;
+	int AP = 0;
+	int attacks = 0;
+	bool equipped = false;
+	Attack attack;
+	WEAPON_CLASS subclass;
+
+	// Armor Stats
+	std::vector<int> armor = {};
+	//WEAPON NAME, Name	Class, 	Description,  #Atks	Value 	Chance 	MinDmg 	MaxDmg 	Pen% 	AP 		Range	Rare?
+	UI_Item(std::string name, int value, WEAPON_CLASS wepType, std::string desc, bool twoH, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
+		type = "weapon";
+		id = name;
+		cost = value;
+		subclass = wepType;
+		description = desc;
+		attacks = atks;
+		attack = P_Attack(min, max, chance, pen);
+		AP = ap;
+		range = rng;
+		rarity = rare;
 	}
 };
 
@@ -72,6 +149,7 @@ struct Character {
 	std::string TYPE = "player";
 	std::string DESCRIPTION = "";
 	std::string NAME = "";
+	std::string TRADING = "";
 
 	int HP = 30;
 	std::vector<int> ARMOR = { 0, 0 };
@@ -138,37 +216,6 @@ struct Character {
 	}
 };
 
-enum TYPE {
-	PHYSICAL,
-	MAGICAL,
-	TRUE_DMG
-};
-
-struct Attack {
-	TYPE type;
-	int dmg;
-	int pen;
-	int hitChance;
-	Attack(TYPE t, int d, int p, int c) {
-		type = t;
-		dmg = d;
-		pen = p;
-		hitChance = c;
-	}
-};
-
-Attack P_Attack(int min, int max, int hitChance, int pen = 0) {
-	return Attack(PHYSICAL, min + rand() % (max - min), pen, hitChance);
-}
-
-Attack M_Attack(int min, int max, int hitChance = 100, int pen = 0) {
-	return Attack(MAGICAL, min + rand() % (max - min), hitChance, pen);
-}
-
-Attack T_Attack(int min, int max, int hitChance = 100, int pen = 100) {
-	return Attack(TRUE_DMG, min + rand() % (max - min), hitChance, pen);
-}
-
 struct Hazard {
 	std::string type = "";
 	int x = 0;
@@ -202,10 +249,17 @@ struct Battle {
 };
 
 struct NPC {
-	std::string TYPE = "NPC";
+	bool MERCHANT = false;
 	std::string NAME = "";
 	std::string DESCRIPTION = "";
-	std::vector<Item> ITEMS;
+	int index = -1;
+	std::vector<std::string> CONVERSATIONS;
+	std::vector<std::string> ITEMS;
+	NPC(std::string n, bool isMerchant, std::string d) {
+		NAME = n;
+		DESCRIPTION = d;
+		MERCHANT = isMerchant;
+	}
 };
 
 struct Connection {
@@ -224,7 +278,6 @@ struct Location {
 	std::string parent = "";
 
 	std::vector<Connection> connections;
-	std::vector<std::string> players;
 	std::vector<std::string> buildings;
 	std::vector<std::string> people;
 

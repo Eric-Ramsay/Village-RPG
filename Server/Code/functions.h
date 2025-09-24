@@ -22,7 +22,7 @@ Result dealDamage(Attack attack, std::string attackerId, std::string targetId, s
 	Character* target = &CHARACTERS[targetId];
 
 	int hitValue = rand() % 100;
-	int dmg = attack.dmg;
+	int dmg = attack.min + rand() % (attack.max - attack.min);
 	if (hitValue < attack.hitChance) {
 		result.msg = "*RED*" + target->NAME + " takes *ORANGE*" + to_str(dmg) + "*RED* damage!";
 		result.damage = dmg;

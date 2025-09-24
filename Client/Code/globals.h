@@ -7,12 +7,14 @@ Message* bufferEnd = nullptr;
 Message* firstProcess = nullptr;
 
 bool connected = true;
-std::string IP = "10.0.0.12";
+std::string IP = "10.0.0.11";
 sockaddr_in hint;
 int port = 1234;
 SOCKET sock;
 
 std::vector<Location> LOCATIONS = {};
+std::vector<NPC> PEOPLE = {};
+std::vector<UI_Item> ITEMS = {};
 std::vector<Character> ENEMIES = {};
 
 UIState UI;

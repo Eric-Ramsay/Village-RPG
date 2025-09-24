@@ -225,8 +225,7 @@ int main() {
 	FD_ZERO(&master);
 	FD_SET(listening, &master);
 
-	initLocations();
-	initEnemies();
+	init();
 
 	// Load all Characters
 	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Characters/")) {

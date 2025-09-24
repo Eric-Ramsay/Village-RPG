@@ -209,3 +209,10 @@ std::string addLine(std::string stat, int value) {
 std::string addLine(std::string stat, std::vector<int> value) {
 	return str(stat) + str(value) + "\n";
 }
+
+std::string pretty(std::string txt) {
+	if (txt.size() == 0) {
+		return txt;
+	}
+	return "" + to_str((char)toupper(txt[0])) + txt.substr(1, txt.size());
+}

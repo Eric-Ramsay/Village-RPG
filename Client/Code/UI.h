@@ -8,32 +8,63 @@ std::string padNum(int num) {
 	return to_str(num);
 }
 
-void DrawCharacterUI() {
-	if (CHARACTERS.count(ID) > 0) {
-		Character C = CHARACTERS[ID];
-		Print("*GREEN*" + C.NAME + " *BLACK*| *PINK*Level 1 *BLACK*| *YELLOW*40*GREY*/*GREEN*100*GREY* XP", 440, 1);
-		Print(DrawBar(C.HP, MaxHP(C), 20, "*RED*"), 440, 11);
-		Print(DrawBar(MaxStamina(C), MaxStamina(C), 20, "*GREEN*"), 440, 21);
-		Print("*TEAL*\4 *GREY*" + to_str(C.ARMOR[0]), 440, 31);
-		Print("*TEAL*\5 *GREY*" + to_str(C.ARMOR[1]), 440, 41);
-		Print("*GREEN*AP: 7 ", 470, 31);
-		std::vector<std::string> stats = {
-			"VIT", "END", "DEX", "MAG", "WEP", "AVD"
-		};
-		for (int i = 0; i < stats.size(); i++) {
-			Print("*TEAL*" + stats[i] + " - *GREY*" + C.STATS[i], 440, 51 + 10 * i);
+void DrawTrade() {
+	if (CHARACTERS.count(ID) == 0) {
+		return;
+	}
+	Character C = CHARACTERS[ID];
+	NPC npc = getNPC(C.TRADING);
+	std::string text = npc.DESCRIPTION;
+	if (npc.CONVERSATIONS.size() > 0) {
+		if (npc.index < 0 || npc.CONVERSATIONS.size() < npc.index) {
+			npc.index = 0;
 		}
-		Print("*YELLOW*Inventory *GREY*- *YELLOW*17 Gold", 440, 111);
-		for (int i = 0; i < 10; i++) {
-			if (i == 0) {
-				Print("*PINK*" + padNum(i + 1) + "*GREY*) [*RED*LR*GREY*] *BLUE*Longbow *RED*x2 *BLACK*| *GREEN*6", 440, 121 + 10 * i);
-			}
-			else if (i == 1) {
-				Print("*PINK*" + padNum(i + 1) + "*GREY*) Tome of the Guardian", 440, 121 + 10 * i);
-			}
-			else {
-				Print("*PINK*" + padNum(i + 1) + "*GREY*) *BLACK*---", 440, 121 + 10 * i);
-			}
+		text += "\n\n" + npc.CONVERSATIONS[npc.index];
+	}
+	int y = 10 + Print(text, 10, 10, 420);
+	Print("*YELLOW*Items for Sale", 10, y);
+	for (int i = 0; i < npc.ITEMS.size(); i++) {
+		UI_Item item = getItem(npc.ITEMS[i]);
+		Print("*PINK*" + padNum(i + 1) + "*GREY*)" + pretty(item.id), 10, y + 10 * i, 420);
+		Print("*YELLOW*" + to_str(item.cost), 150, y + 10 * i, 420);
+	}
+}
+
+void DrawCharacterUI() {
+	int x = 460;
+	int y = 5;
+	if (CHARACTERS.count(ID) == 0) {
+		return;
+	}
+	Character C = CHARACTERS[ID];
+	Print("*GREEN*" + C.NAME + " *BLACK*| *PINK*Level 1 *BLACK*| *YELLOW*40*GREY*/*GREEN*100*GREY* XP", x, y);
+	Print(DrawBar(C.HP, MaxHP(C), 20, "*RED*"), x, y + 10);
+	Print(DrawBar(MaxStamina(C), MaxStamina(C), 20, "*GREEN*"), x, y + 20);
+	Print("*TEAL*\4 *GREY*" + to_str(C.ARMOR[0]), x, y + 30);
+	Print("*TEAL*\5 *GREY*" + to_str(C.ARMOR[1]), x, y + 40);
+	Print("*GREEN*AP: 7 ", x + 30, y + 30);
+	std::vector<std::string> stats = {
+		"VIT", "END", "DEX", "MAG", "WEP", "AVD"
+	};
+	for (int i = 0; i < stats.size(); i++) {
+		int xPos = x;
+		int yPos = y + 50 + 10 * i;
+		if (i > 2) {
+			xPos += 80;
+			yPos -= 30;
+		}
+		Print("*TEAL*" + stats[i] + " - *GREY*" + C.STATS[i], xPos, yPos);
+	}
+	Print("*YELLOW*Inventory *GREY*- *YELLOW*17 Gold", x, y + 80);
+	for (int i = 0; i < 10; i++) {
+		if (i == 0) {
+			Print("*PINK*" + padNum(i + 1) + "*GREY*) [*RED*LR*GREY*] *BLUE*Longbow *RED*x2 *BLACK*| *GREEN*6", x, y + 90 + 10 * i);
+		}
+		else if (i == 1) {
+			Print("*PINK*" + padNum(i + 1) + "*GREY*) Tome of the Guardian", x, y + 90 + 10 * i);
+		}
+		else {
+			Print("*PINK*" + padNum(i + 1) + "*GREY*) *BLACK*---", x, y + 90 + 10 * i);
 		}
 	}
 }
@@ -43,8 +74,6 @@ void DrawBattle() {
 	Print("*RED*" + BATTLE.zone, 1, 1);
 
 	std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[ID], BATTLE);
-
-	DrawCharacterUI();
 
 	std::vector<std::vector<std::string>> tiles(12, std::vector<std::string>(12, "blank_tile"));
 
@@ -125,17 +154,60 @@ void DrawRoom() {
 	for (Connection con : room.connections) {
 		msg += "*GREEN*" + con.direction + "*GREY* - *BLUE*" + con.location + "\n";
 	}
-	Print(msg, 20, 20, WIDTH-40);
+	std::vector<std::string> names = {};
+	for (std::string npc : room.people) {
+		std::string color = "*GREEN*";
+		NPC character = getNPC(npc);
+		if (character.MERCHANT) {
+			color = "*YELLOW*";
+		}
+		names.push_back(color + pretty(npc));
+	}
+	for (auto character : CHARACTERS) {
+		Character C = character.second;
+		if (C.ID != CHARACTERS[ID].ID && C.LOCATION == room.id) {
+			names.push_back("*BLUE*" + pretty(C.NAME));
+		}
+	}
+	int num = names.size();
+	if (num > 0) {
+		for (int i = 0; i < num; i++) {
+			msg += names[i] + "*GREY*";
+			if (num > 1 && i < num - 1) {
+				if (num > 2) {
+					msg += ",";
+				}
+				if (i == (num - 2)) {
+					msg += " and";
+				}
+				msg += " ";
+			}
+		}
+		if (num > 1) {
+			msg += " are here.\n";
+		}
+		else {
+			msg += " is here.\n";
+		}
+	}
+	
+	Print(msg, 5, 5, 420);
 }
 
 void DrawUI() {
 	if (CHARACTERS.count(ID) == 0) {
 		Print("No Character!", 50, 50);
 	}
-	else if (CHARACTERS[ID].LOCATION == BATTLE.id) {
-		DrawBattle();
-	}
 	else {
-		DrawRoom();
+		DrawCharacterUI();
+		if (CHARACTERS[ID].LOCATION == BATTLE.id) {
+			DrawBattle();
+		}
+		else if (CHARACTERS[ID].TRADING != "") {
+			DrawTrade();
+		}
+		else {
+			DrawRoom();
+		}
 	}
 }

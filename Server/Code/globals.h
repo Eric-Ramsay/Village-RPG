@@ -1,5 +1,5 @@
 #pragma once
-std::string IP = "10.0.0.12";
+std::string IP = "10.0.0.11";
 int port = 1234;
 std::deque<Message> outMessages = {};
 
@@ -15,6 +15,8 @@ SOCKET listening;
 fd_set master;
 
 std::vector<Location> LOCATIONS = {};
+std::vector<NPC> PEOPLE = {};
+std::vector<UI_Item> ITEMS = {};
 std::vector<Character> ENEMIES = {};
 
 
