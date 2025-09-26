@@ -351,3 +351,18 @@ template <typename T> bool contains(std::vector<T> elements, T element) {
 	}
 	return false;
 }
+
+bool canTake(Character C, std::string item) {
+	return (C.INVENTORY.size() < 5 || (C.BACKPACK && C.INVENTORY.size() < 10)) || low(item) == "backpack";
+}
+
+template <typename T> std::vector<T> slice(std::vector<T> data, int begin, int end = -1) {
+	if (end == -1) {
+		end = data.size();
+	}
+	std::vector<T> newData = {};
+	for (int i = begin; i < end; i++) {
+		newData.push_back(data[i]);
+	}
+	return newData;
+}

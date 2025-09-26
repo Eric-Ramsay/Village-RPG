@@ -10,11 +10,11 @@ NAME!!!eric!!!
 LOCATION!!!Tavern!!!
 STAMINA!!!0!
 DESCRIPTION!!!Penelope!!!
-TRADING!!!!!!
+TRADING!!!Clyde!!!
 LEVEL!!!1!
 XP!!!0!
 SP!!!0!
-GOLD!!!30!
+GOLD!!!5!
 AP!!!0!
 BACKPACK!!!0!
 ENDED!!!0!
@@ -27,3 +27,7 @@ RIGHT!!!-1!
 HITS!!!0!0!
 MISSES!!!0!0!
 STATS!!!0!0!0!0!0!0!
+ITEM!!!ID!!!dagger!!!NAME!!!!!!DESCRIPTION!!!!!!EQUIPPED!!!0!RUNES!!!
+ITEM!!!ID!!!longbow!!!NAME!!!!!!DESCRIPTION!!!!!!EQUIPPED!!!0!RUNES!!!
+ITEM!!!ID!!!longbow!!!NAME!!!!!!DESCRIPTION!!!!!!EQUIPPED!!!0!RUNES!!!
+ITEM!!!ID!!!dagger!!!NAME!!!!!!DESCRIPTION!!!!!!EQUIPPED!!!0!RUNES!!!

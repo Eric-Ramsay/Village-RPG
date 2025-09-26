@@ -22,10 +22,10 @@ void DrawTrade() {
 		text += "\n\n" + npc.CONVERSATIONS[npc.index];
 	}
 	int y = 10 + Print(text, 10, 10, 420);
-	Print("*YELLOW*Items for Sale", 10, y);
+	//Print("*YELLOW*Items for Sale", 10, y);
 	for (int i = 0; i < npc.ITEMS.size(); i++) {
 		UI_Item item = getItem(npc.ITEMS[i]);
-		Print("*PINK*" + padNum(i + 1) + "*GREY*)" + pretty(item.id), 10, y + 10 * i, 420);
+		Print("*PINK*" + padNum(i + 1) + "*GREY*) " + pretty(item.id), 10, y + 10 * i, 420);
 		Print("*YELLOW*" + to_str(item.cost), 150, y + 10 * i, 420);
 	}
 }
@@ -55,13 +55,11 @@ void DrawCharacterUI() {
 		}
 		Print("*TEAL*" + stats[i] + " - *GREY*" + C.STATS[i], xPos, yPos);
 	}
-	Print("*YELLOW*Inventory *GREY*- *YELLOW*17 Gold", x, y + 80);
-	for (int i = 0; i < 10; i++) {
-		if (i == 0) {
-			Print("*PINK*" + padNum(i + 1) + "*GREY*) [*RED*LR*GREY*] *BLUE*Longbow *RED*x2 *BLACK*| *GREEN*6", x, y + 90 + 10 * i);
-		}
-		else if (i == 1) {
-			Print("*PINK*" + padNum(i + 1) + "*GREY*) Tome of the Guardian", x, y + 90 + 10 * i);
+	Print("*YELLOW*Inventory *GREY*- *YELLOW*" + to_str(C.GOLD) + " Gold", x, y + 80);
+	int num = 5 + (5 * C.BACKPACK);
+	for (int i = 0; i < num; i++) {
+		if (C.INVENTORY.size() > i) {
+			Print("*PINK*" + padNum(i + 1) + "*GREY*) " + pretty(C.INVENTORY[i].id), x, y + 90 + 10 * i);
 		}
 		else {
 			Print("*PINK*" + padNum(i + 1) + "*GREY*) *BLACK*---", x, y + 90 + 10 * i);

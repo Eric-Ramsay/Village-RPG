@@ -113,6 +113,9 @@ struct Item {
 	std::string description = "";
 	std::vector<std::string> runes;
 	bool equipped = false;
+	Item(std::string Id = "") {
+		id = Id;
+	}
 };
 
 struct Effect {

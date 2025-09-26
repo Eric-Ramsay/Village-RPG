@@ -106,6 +106,42 @@ std::string commandLeave(int playerIndex, Character& C, std::vector<std::string>
 	return "*RED*You can't leave from here . . .";
 }
 
+std::string commandBuy(int playerIndex, Character& C, std::vector<std::string> words) {
+	if (C.TRADING == "") {
+		return "*RED*You must trade with a merchant first.";
+	}
+	std::string args = low(join(words));
+	if (C.BACKPACK && args == "backpack") {
+		return "*RED*You already have a backpack.";
+	}
+	NPC npc = getNPC(C.TRADING);
+	bool found = false;
+	for (std::string word : npc.ITEMS) {
+		if (word == args) {
+			found = true;
+			break;
+		}
+	}
+	if (!found) {
+		return "*RED*This merchant isn't selling that item.";
+	}
+	UI_Item item = getItem(args);
+	if (C.GOLD < item.cost) {
+		return "*RED*You don't have enough gold to buy that.";
+	}
+
+	if (canTake(C, args)) {
+		Item newItem(args);
+		C.INVENTORY.push_back(newItem);
+		C.GOLD -= item.cost;
+		sendItem(C.ID, newItem);
+		sendStat(C.ID, "GOLD", C.GOLD);
+		return "*GREEN*You buy the *RED*" + pretty(args) + "*GREEN* for *YELLOW*" + item.cost + " gold*GREEN*. You have *YELLOW*" + C.GOLD + " gold*GREEN* left.\n";
+	}
+	return "*RED*You don't have room in your inventory to buy that!\n";
+}
+
+
 std::string createCharacter(int playerIndex, std::string name) {
 	std::time_t t = std::time(0);
 	Character newCharacter;
@@ -167,6 +203,9 @@ void command(std::string input, int playerIndex) {
 			msg = "*RED*Command not understood.";
 		}
 	}
+	else if (keyword == "buy") {
+		msg = commandBuy(playerIndex, CHARACTERS[id], words);
+	}
 	else if (keyword == "end") {
 		if (BATTLES.count(CHARACTERS[id].LOCATION) > 0) {
 			setStat(CHARACTERS[id], "ENDED", true);
@@ -198,6 +237,10 @@ void command(std::string input, int playerIndex) {
 			CHARACTERS[id].HP = num;
 			sendStat(id, "HP", CHARACTERS[id].HP);
 		}
+	}
+	else if (keyword == "gold") {
+		CHARACTERS[id].GOLD += 25;
+		sendStat(id, "GOLD", CHARACTERS[id].GOLD);
 	}
 	else if (keyword == "suicide") {
 		msg = "*RED*You've lost the will to go on. . .";

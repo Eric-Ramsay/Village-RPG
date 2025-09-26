@@ -139,7 +139,8 @@ UI_Item TwoH(std::string n, int v, WEAPON_CLASS wepType, std::string d, int atks
 }
 
 void initItems() {	//	 Name		G		Type		Description												#	%		Min		Max		Pen		AP		Range
-	ITEMS.push_back(OneH("dagger",	25,		BLADE,		"A simple dagger, lightweight and easy to use.",		3,	70,		2,		4,		0,		1,		1));
+	ITEMS.push_back(OneH("Dagger",	25,		BLADE,		"A simple dagger, lightweight and easy to use.",		3,	70,		2,		4,		0,		1,		1));
+	ITEMS.push_back(TwoH("Longbow", 50,		RANGED,		"A powerful bow thats almost as tall as its user.",		1,	80,		8,		14,		20,		6,		6));
 }
 
 void initPeople() {
@@ -278,12 +279,19 @@ void initPeople() {
 	Merchant.CONVERSATIONS.push_back("*BLACK*. . .");
 	Merchant.CONVERSATIONS.push_back("*GREY*The merchant makes a clicking sound.");
 
+	// Items
+	Clyde.ITEMS = {
+		"dagger",
+		"longbow"
+	};
+
 	//M		F		M		 M		M		M		F		F		F		F		F		F	     M		NB		   M
 	PEOPLE = { Gout, Nestra, Minsiki, Tobin, Kobos, Clyde, Qarana, Asha, Penelope, Florence, Janice, Sarkana, Terat, Merchant, Elias };
 }
 
 void init() {
 	initLocations();
+	initItems();
 	initEnemies();
 	initPeople();
 }

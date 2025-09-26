@@ -51,6 +51,13 @@ void sendStat(std::string id, std::string stat, std::vector<int> value, std::vec
 	sendData("STAT", id + "!!!" + stat + "!!!" + str(value), sendList);
 }
 
+void sendItem(std::string id, Item item, std::vector<int> sendList = {}) {
+	sendData("STAT", id + "!!!ITEM!!!" + serialize(item), sendList);
+}
+
+void sendStat(std::string id, std::string stat, std::vector<Item> value, std::vector<int> sendList = {}) {
+	sendData("STAT", id + "!!!" + stat + "!!!" + serialize(value), sendList);
+}
 
 void sendBattle(Battle battle, std::vector<int> sendList = {}) {
 	std::string data = serialize(battle);

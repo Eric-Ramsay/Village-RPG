@@ -1,18 +1,24 @@
 #pragma once
 // This file concerns saving/loading data & transmitting it to the player
 
+std::string serialize(Item item) {
+	std::string data = "";
+	data += str("ITEM");
+	data += str("ID") + str(item.id);
+	data += str("NAME") + str(item.name);
+	data += str("DESCRIPTION") + str(item.description);
+	data += str("EQUIPPED") + str(item.equipped);
+	data += str("RUNES");
+	for (std::string rune : item.runes) {
+		data += str(rune);
+	}
+	return data;
+}
+
 std::string serialize(std::vector<Item> items) {
 	std::string data = "";
 	for (Item item : items) {
-		data += str("ITEM");
-		data += str("ID") + str(item.id);
-		data += str("NAME") + str(item.name);
-		data += str("DESCRIPTION") + str(item.description);
-		data += str("EQUIPPED") + str(item.equipped);
-		data += str("RUNES");
-		for (std::string rune : item.runes) {
-			data += str(rune);
-		}
+		data += serialize(item);
 		data += "\n";
 	}
 	return data;
