@@ -1,6 +1,7 @@
 #pragma once
 
 void initLocations() {
+	std::vector<Location> locations = {};
 	// Buildings
 	Location Tavern("Tavern", "The *BLUE*Tavern*GREY* is four stories, and boasts no fewer than twenty-five rooms for rent, though these days only a few are ever rented out at a time. More than a few townspeople come to the *RED*firelit*GREY* common room for dinner or drinks at its bar, which is enough for *YELLOW*Penelope*GREY* to maintain the establishment.\n\nIt's said that *GREEN*Asha*GREY*, sitting perpetually at the bar and living in a rented room accounts for half of the tavern's total revenue.");
 	Tavern.parent = "Merchant's Lane";
@@ -109,25 +110,34 @@ void initLocations() {
 		Connection("south", "Island Ferry")
 	};
 
-	LOCATIONS = { Tavern, Tailor, Barber, Curio, Runes, Church, Library, Apothecary, Smithy, Bank, Merchants, Harbor, Churchyard, Square, Graveyard, Ferry, Crypts, Woods, Swamp, Island };
+	locations = { Tavern, Tailor, Barber, Curio, Runes, Church, Library, Apothecary, Smithy, Bank, Merchants, Harbor, Churchyard, Square, Graveyard, Ferry, Crypts, Woods, Swamp, Island };
+
+	for (Location loc : locations) {
+		LOCATIONS[low(loc.id)] = loc;
+	}
 
 	std::cout << "Beginning Check" << std::endl;
 
-	for (Location loc : LOCATIONS) {
-		getLocation(loc.id);
-		for (Connection con : loc.connections) {
+	for (auto loc : LOCATIONS) {
+		getLocation(loc.second.id);
+		for (Connection con : loc.second.connections) {
 			getLocation(con.location);
 		}
-		for (std::string id : loc.buildings) {
+		for (std::string id : loc.second.buildings) {
 			getLocation(id);
 		}
 	}
 }	
 
 void initEnemies() {
+	std::vector<Character> enemies = {};
 	//Character Enemy(std::string name, int hp, std::vector<int> armor, int difficulty, std::vector<int> zones, int AP, std::string type, std::string desc)
 	Character wolf("Crazed Wolf", 40, { 2, 0 }, 40, { 2 }, 3, "animal", "A mangy wolf, foaming at its mouth and snapping viciously.");
-	ENEMIES.push_back(wolf);
+	enemies.push_back(wolf);
+
+	for (Character enemy : enemies) {
+		ENEMIES[low(enemy.ID)] = enemy;
+	}
 }
 
 UI_Item OneH(std::string n, int v, WEAPON_CLASS wepType, std::string d, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
@@ -139,18 +149,20 @@ UI_Item TwoH(std::string n, int v, WEAPON_CLASS wepType, std::string d, int atks
 }
 
 void initItems() {	//	 Name		G		Type		Description												#	%		Min		Max		Pen		AP		Range
-	ITEMS.push_back(OneH("Dagger",	25,		BLADE,		"A simple dagger, lightweight and easy to use.",		3,	70,		2,		4,		0,		1,		1));
-	ITEMS.push_back(TwoH("Longbow", 50,		RANGED,		"A powerful bow thats almost as tall as its user.",		1,	80,		8,		14,		20,		6,		6));
+	ITEMS["dagger"] = OneH("Dagger", 25, BLADE, "A simple dagger, lightweight and easy to use.", 3, 70, 2, 4, 0, 1, 1);
+	ITEMS["longbow"] = TwoH("Longbow", 50, RANGED, "A powerful bow thats almost as tall as its user.", 1, 80, 8, 14, 20, 6, 6);
 }
 
 void initPeople() {
+	std::vector<NPC> people = {};
+
 	NPC Merchant("Wandering Merchant", true, "A *YELLOW*wandering merchant*GREY* who travels around the *RED*wilderness*GREY*, selling *CYAN*peculiar*GREY* items to any adventurers who happen upon them. They're tall, a being formed of *BLACK*shadow*GREY*, adourned in *PINK*dapper attire*GREY*. They have very little to say, but their intentions are clear.");
 
 	NPC Minsiki("Minsiki", true, "*GREEN*Minsiki*GREY* is middle-aged, with a thick black beard and kind eyes. No one knows where Minsiki came from before he came to the village years ago and opened his shop; they still think of him as an exotic stranger. Minsiki prefers it that way, he likes to keep to himself.");
 	NPC Gout("Gout", true, "*GREEN*Gout*GREY* is an older man, short and grey but broad all the same. He hobbles across the pier and his muscles flex beneath his wrinkled skin as he casts his fishing line out into the sea. His is a soldier's body, its scars etched immutably as if in marble. It has not forgotten the many campaigns and battles, and though *GREEN*Gout*GREY* never speaks of his past, his eyes would say he has not forgotten either.");
 	NPC Tobin("Tobin", true, "*GREEN*Father Tobin*GREY* is a thin man, taller than most and pale. From time to time one can see sadness in his eyes, as he looks across the graves he tends, but it is only ever there for a moment and then he smiles. In his humility he has found unwavering joy.");
 	NPC Kobos("Kobos", true, "*GREEN*Kobos*GREY* has been swinging hammer for forty years now, nearly as long as he's been alive. When he works his craft the singing of his anvil can be heard as far away as the harbor. Princes have offered to buy out his services, but he has no interest in their gold, only in his iron.");
-	NPC Clyde("Clyde", true, "*GREEN*Clyde*GREY* is a huntsman. He spends more time far afield than anyone else in the town. When some people hear his frightful tails they roll their eyes; sometimes he sounds like a coward. He pleads with anyone who will listen to avoid the woods at night.");
+	NPC Clyde("Clyde", true, "*GREEN*Clyde*GREY* is a *TEAL*huntsman*GREY*. He spends more time far afield than anyone else in the town. When some people hear his frightful tails they roll their eyes; sometimes he sounds like a *ORANGE*coward*GREY*. He pleads with anyone who will listen to avoid the woods at night.");
 	NPC Terat("Terat", true, "*GREEN*Terat*GREY* is the estranged brother of *GREEN*Sarkana*GREY*. He's quite timid, and perhaps a bit anxious. He can be rather friendly and generous, but for the most part focuses on his work. He always seems to be engraving new golden runes into their cold steel plates.");
 	NPC Elias("Elias", true, "*GREEN*Elias*GREY* is a young man, slender, with a mess of dusty brown hair and grey-blue eyes that gleam from behind a pair of bronze-rimmed quartz spectacles. He spends most of his time reading by lamplight, or tending to the many old tomes in his care. He tends to only leave the library at night, rendering him somewhat of a mystery among the less scholarly townsfolk.");
 
@@ -286,7 +298,11 @@ void initPeople() {
 	};
 
 	//M		F		M		 M		M		M		F		F		F		F		F		F	     M		NB		   M
-	PEOPLE = { Gout, Nestra, Minsiki, Tobin, Kobos, Clyde, Qarana, Asha, Penelope, Florence, Janice, Sarkana, Terat, Merchant, Elias };
+	people = { Gout, Nestra, Minsiki, Tobin, Kobos, Clyde, Qarana, Asha, Penelope, Florence, Janice, Sarkana, Terat, Merchant, Elias };
+
+	for (NPC npc : people) {
+		PEOPLE[low(npc.NAME)] = npc;
+	}
 }
 
 void init() {

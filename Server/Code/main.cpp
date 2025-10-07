@@ -24,10 +24,10 @@
 #include <ctime>
 #pragma comment (lib, "ws2_32.lib")
 
+#include "..\..\Shared\textFunctions.h"
 #include "..\..\Shared\sharedStructures.h"
 #include "structures.h"
 #include "globals.h"
-#include "..\..\Shared\textFunctions.h"
 #include "functions.h"
 #include "..\..\Shared\sharedFunctions.h"
 #include "..\..\Shared\init.h"

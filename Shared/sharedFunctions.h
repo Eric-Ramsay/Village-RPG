@@ -1,38 +1,36 @@
 #pragma once
 
-std::string operator+(std::string str, int num)
-{
-	return str + to_str(num);
+std::string itemId(Item item) {
+	return split(low(item.id), '.')[0];
+}
+
+std::string itemId(std::string id) {
+	return split(low(id), '.')[0];
 }
 
 Location getLocation(std::string id) {
-	for (Location loc : LOCATIONS) {
-		if (low(loc.id) == low(id)) {
-			return loc;
-		}
+	if (LOCATIONS.count(low(id)) == 0) {
+		std::cout << "Error, Location " + id + " not found!" << std::endl;
+		return Location("error", "");
 	}
-	std::cout << "Error, Location " + id + " not found!" << std::endl;
-	return Location("error", "");
+	return LOCATIONS[low(id)];
 }
 
-NPC getNPC(std::string name) {
-	for (NPC npc : PEOPLE) {
-		if (low(npc.NAME) == low(name)) {
-			return npc;
-		}
+NPC getNPC(std::string id) {
+	if (PEOPLE.count(low(id)) == 0) {
+		std::cout << "Error, NPC " + id + " not found!" << std::endl;
+		return PEOPLE[0];
 	}
-	std::cout << "Error, NPC " + name + " not found!" << std::endl;
-	return PEOPLE[0];
+	return PEOPLE[low(id)];
 }
 
 UI_Item getItem(std::string id) {
-	for (UI_Item item : ITEMS) {
-		if (low(item.id) == low(id)) {
-			return item;
-		}
+	id = itemId(id);
+	if (ITEMS.count(id) == 0) {
+		std::cout << "Error, Item " + id + " not found!" << std::endl;
+		return ITEMS[0];
 	}
-	std::cout << "Error, Item " + id + " not found!" << std::endl;
-	return ITEMS[0];
+	return ITEMS[low(id)];
 }
 
 float min(float a, float b) {
@@ -190,92 +188,113 @@ void parseChange(Character& character, std::string type, std::string data) {
 	if (type == "NAME") {
 		character.NAME = readStr(data);
 	}
-	if (type == "USER") {
+	else if (type == "USER") {
 		character.USER = readStr(data);
 	}
-	if (type == "ENDED") {
+	else if (type == "ENDED") {
 		character.ENDED = (bool)readInt(data);
 	}
-	if (type == "TYPE") {
+	else if (type == "TYPE") {
 		character.TYPE = readStr(data);
 	}
-	if (type == "ID") {
+	else if (type == "ID") {
 		character.ID = readStr(data);
 	}
-	if (type == "DESCRIPTION") {
+	else if (type == "DESCRIPTION") {
 		character.DESCRIPTION = readStr(data);
 	}
-	if (type == "TRADING") {
+	else if (type == "TRADING") {
 		character.TRADING = readStr(data);
 	}
-	if (type == "COLOR") {
+	else if (type == "COLOR") {
 		character.COLOR = readStr(data);
 	}
-	if (type == "LOCATION") {
+	else if (type == "LOCATION") {
 		character.LOCATION = readStr(data);
 	}
-	if (type == "LEVEL") {
+	else if (type == "LEVEL") {
 		character.LEVEL = readInt(data);
 	}
-	if (type == "XP") {
+	else if (type == "XP") {
 		character.XP = readInt(data);
 	}
-	if (type == "SP") {
+	else if (type == "SP") {
 		character.SP = readInt(data);
 	}
-	if (type == "AP") {
+	else if (type == "AP") {
 		character.AP = readInt(data);
 	}
-	if (type == "GOLD") {
+	else if (type == "GOLD") {
 		character.GOLD = readInt(data);
 	}
-	if (type == "HP") {
+	else if (type == "HP") {
 		character.HP = readInt(data);
 	}
-	if (type == "STAMINA") {
+	else if (type == "STAMINA") {
 		character.STAMINA = readInt(data);
 	}
-	if (type == "BACKPACK") {
+	else if (type == "BACKPACK") {
 		character.BACKPACK = (bool)readInt(data);
 	}
-	if (type == "HITS") {
+	else if (type == "HITS") {
 		character.HITS = readInts(data);
 	}
-	if (type == "MISSES") {
+	else if (type == "MISSES") {
 		character.MISSES = readInts(data);
 	}
-	if (type == "ARMOR") {
+	else if (type == "ARMOR") {
 		character.ARMOR = readInts(data);
 	}
-	if (type == "STATS") {
+	else if (type == "STATS") {
 		character.STATS = readInts(data);
 	}
-	if (type == "X") {
+	else if (type == "X") {
 		character.X = readInt(data);
 	}
-	if (type == "Y") {
+	else if (type == "Y") {
 		character.Y = readInt(data);
 	}
-	if (type == "X_PREFERENCE") {
+	else if (type == "X_PREFERENCE") {
 		character.X_PREFERENCE = readInt(data);
 	}
-	if (type == "Y_PREFERENCE") {
+	else if (type == "Y_PREFERENCE") {
 		character.Y_PREFERENCE = readInt(data);
 	}
-	if (type == "LEFT") {
-		character.LEFT = readInt(data);
+	else if (type == "LEFT") {
+		character.LEFT = readStr(data);
 	}
-	if (type == "RIGHT") {
-		character.RIGHT = readInt(data);
+	else if (type == "RIGHT") {
+		character.RIGHT = readStr(data);
 	}
-	if (type == "ATTACKS") {
+	else if (type == "ATTACKS") {
 		character.ATTACKS = readInt(data);
 	}
-	if (type == "CASTS") {
+	else if (type == "CASTS") {
 		character.CASTS = readInt(data);
 	}
-	if (type == "ITEM") {
-		character.INVENTORY.push_back(parseItem(data));
+	else if (type == "EQUIP") {
+		std::string id = readStr(data);
+		if (character.INVENTORY.count(id) > 0) {
+			character.INVENTORY[id].equipped = true;
+		}
+	}
+	else if (type == "DEQUIP") {
+		std::string id = readStr(data);
+		if (character.INVENTORY.count(id) > 0) {
+			character.INVENTORY[id].equipped = false;
+		}
+	}
+	else if (type == "ITEM") {
+		Item item = parseItem(data);
+		character.INVENTORY[item.id] = item;
+	}
+	else if (type == "INVENTORY") {
+		character.INVENTORY = {};
+		std::vector<std::string> lines = split(data, '\n');
+		for (int i = 0; i < lines.size(); i++) {
+			std::string header = readStr(lines[i]);
+			parseChange(character, header, lines[i]);
+		}
 	}
 }
 
@@ -365,4 +384,43 @@ template <typename T> std::vector<T> slice(std::vector<T> data, int begin, int e
 		newData.push_back(data[i]);
 	}
 	return newData;
+}
+
+bool isNum(std::string s) {
+	return s.find_first_not_of("0123456789") == std::string::npos;
+}
+
+std::vector<int> findItem(std::string args, std::vector<Item> inventory) {
+	std::vector<int> indices = {};
+
+	if (isNum(args)) {
+		int index = std::stoi(args) - 1;
+		if (index >= 0 && index < inventory.size()) {
+			return { index };
+		}
+	}
+	for (int i = 0; i < inventory.size(); i++) {
+		if (low(inventory[i].id) == args) {
+			indices.push_back(i);
+		}
+	}
+
+	return indices;
+}
+
+std::vector<std::string> findItem(std::string args, std::unordered_map<std::string, Item> inventory) {
+	std::vector<std::string> ids = {};
+
+	args = low(args);
+
+	if (inventory.count(args) > 0) {
+		return { args };
+	}
+	for (auto item : inventory) {
+		if (itemId(item.second) == args) {
+			ids.push_back(item.second.id);
+		}
+	}
+
+	return ids;
 }

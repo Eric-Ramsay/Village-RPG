@@ -23,10 +23,10 @@ namespace Gdiplus {
 #include <SFML\Graphics.hpp>
 
 #include "miniaudio.h"
+#include "..\..\Shared\textFunctions.h"
 #include "structures.h"
 #include "..\..\Shared\sharedStructures.h"
 #include "globals.h"
-#include "..\..\Shared\textFunctions.h"
 #include "..\..\Shared\sharedFunctions.h"
 #include "utilities.h"
 #include "audio.h"
@@ -175,10 +175,8 @@ int main()
 						blur = !blur;
 					}
 					else if (input == "trade") {
-						for (int i = 0; i < PEOPLE.size(); i++) {
-							if (low(PEOPLE[i].NAME) == low(input)) {
-								PEOPLE[i].index++;
-							}
+						if (PEOPLE.count(low(input)) > 0) {
+							PEOPLE[low(input)].index++;
 						}
 					}
 					else if (input == "quit") {

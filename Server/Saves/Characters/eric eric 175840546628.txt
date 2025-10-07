@@ -22,12 +22,10 @@ ATTACKS!!!0!
 CASTS!!!0!
 X_PREFERENCE!!!0!
 Y_PREFERENCE!!!0!
-LEFT!!!-1!
-RIGHT!!!-1!
+LEFT!!!longbow!!!
+RIGHT!!!longbow!!!
 HITS!!!0!0!
 MISSES!!!0!0!
 STATS!!!0!0!0!0!0!0!
 ITEM!!!ID!!!dagger!!!NAME!!!!!!DESCRIPTION!!!!!!EQUIPPED!!!0!RUNES!!!
-ITEM!!!ID!!!longbow!!!NAME!!!!!!DESCRIPTION!!!!!!EQUIPPED!!!0!RUNES!!!
-ITEM!!!ID!!!longbow!!!NAME!!!!!!DESCRIPTION!!!!!!EQUIPPED!!!0!RUNES!!!
-ITEM!!!ID!!!dagger!!!NAME!!!!!!DESCRIPTION!!!!!!EQUIPPED!!!0!RUNES!!!
+ITEM!!!ID!!!longbow!!!NAME!!!!!!DESCRIPTION!!!!!!EQUIPPED!!!1!RUNES!!!

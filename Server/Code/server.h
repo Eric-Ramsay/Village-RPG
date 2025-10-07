@@ -55,6 +55,10 @@ void sendItem(std::string id, Item item, std::vector<int> sendList = {}) {
 	sendData("STAT", id + "!!!ITEM!!!" + serialize(item), sendList);
 }
 
+/*void sendInventory(std::string id, std::unordered_map<Item> inventory, std::vector<int> sendList = {}) {
+	sendData("STAT", id + "!!!INVENTORY!!!" + serialize(inventory), sendList);
+}*/
+
 void sendStat(std::string id, std::string stat, std::vector<Item> value, std::vector<int> sendList = {}) {
 	sendData("STAT", id + "!!!" + stat + "!!!" + serialize(value), sendList);
 }

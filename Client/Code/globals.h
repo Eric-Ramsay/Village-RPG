@@ -12,10 +12,10 @@ sockaddr_in hint;
 int port = 1234;
 SOCKET sock;
 
-std::vector<Location> LOCATIONS = {};
-std::vector<NPC> PEOPLE = {};
-std::vector<UI_Item> ITEMS = {};
-std::vector<Character> ENEMIES = {};
+std::unordered_map<std::string, UI_Item> ITEMS = {};
+std::unordered_map<std::string, NPC> PEOPLE = {};
+std::unordered_map<std::string, Location> LOCATIONS = {};
+std::unordered_map<std::string, Character> ENEMIES = {};
 
 UIState UI;
 

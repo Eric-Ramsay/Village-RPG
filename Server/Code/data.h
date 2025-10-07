@@ -24,6 +24,15 @@ std::string serialize(std::vector<Item> items) {
 	return data;
 }
 
+std::string serialize(std::unordered_map<std::string, Item> items) {
+	std::string data = "";
+	for (auto item : items) {
+		data += serialize(item.second);
+		data += "\n";
+	}
+	return data;
+}
+
 std::string serialize(Account P) {
 	std::string data = "";
 	data += addLine("USERNAME", P.USERNAME);

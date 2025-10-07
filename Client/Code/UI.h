@@ -37,7 +37,7 @@ void DrawCharacterUI() {
 		return;
 	}
 	Character C = CHARACTERS[ID];
-	Print("*GREEN*" + C.NAME + " *BLACK*| *PINK*Level 1 *BLACK*| *YELLOW*40*GREY*/*GREEN*100*GREY* XP", x, y);
+	Print("*GREEN*" + pretty(C.NAME) + " *BLACK*| *PINK*Level " + C.LEVEL + "*BLACK* | *YELLOW*" + C.XP + "*GREY*/*GREEN*" + 100 * C.LEVEL + "*GREY* XP", x, y);
 	Print(DrawBar(C.HP, MaxHP(C), 20, "*RED*"), x, y + 10);
 	Print(DrawBar(MaxStamina(C), MaxStamina(C), 20, "*GREEN*"), x, y + 20);
 	Print("*TEAL*\4 *GREY*" + to_str(C.ARMOR[0]), x, y + 30);
@@ -56,14 +56,19 @@ void DrawCharacterUI() {
 		Print("*TEAL*" + stats[i] + " - *GREY*" + C.STATS[i], xPos, yPos);
 	}
 	Print("*YELLOW*Inventory *GREY*- *YELLOW*" + to_str(C.GOLD) + " Gold", x, y + 80);
-	int num = 5 + (5 * C.BACKPACK);
-	for (int i = 0; i < num; i++) {
-		if (C.INVENTORY.size() > i) {
-			Print("*PINK*" + padNum(i + 1) + "*GREY*) " + pretty(C.INVENTORY[i].id), x, y + 90 + 10 * i);
+	
+	int itemCount = 0;
+	for (auto item : C.INVENTORY) {
+		itemCount++;
+		std::string color = "";
+		if (item.second.equipped) {
+			color = "*TEAL*";
 		}
-		else {
-			Print("*PINK*" + padNum(i + 1) + "*GREY*) *BLACK*---", x, y + 90 + 10 * i);
-		}
+		Print("*PINK*" + padNum(itemCount) + "*GREY*) " + color + pretty(item.second.id), x, y + 80 + 10 * itemCount);
+	}
+	int num = (5 + (5 * C.BACKPACK)) - itemCount;
+	for (int i = itemCount; i < itemCount + num; i++) {
+		Print("*PINK*" + padNum(i + 1) + "*GREY*) *BLACK*---", x, y + 90 + 10 * i);
 	}
 }
 

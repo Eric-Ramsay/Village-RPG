@@ -14,12 +14,12 @@ std::vector<Player> players = {};
 SOCKET listening;
 fd_set master;
 
-std::vector<Location> LOCATIONS = {};
-std::vector<NPC> PEOPLE = {};
-std::vector<UI_Item> ITEMS = {};
-std::vector<Character> ENEMIES = {};
-
 
 std::unordered_map<std::string, Account> ACCOUNTS = {};
 std::unordered_map<std::string, Character> CHARACTERS = {};
 std::unordered_map<std::string, Battle> BATTLES = {};
+
+std::unordered_map<std::string, UI_Item> ITEMS = {};
+std::unordered_map<std::string, NPC> PEOPLE = {};
+std::unordered_map<std::string, Location> LOCATIONS = {};
+std::unordered_map<std::string, Character> ENEMIES = {};

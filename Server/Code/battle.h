@@ -117,9 +117,9 @@ void summon(Battle& battle, std::vector<Character> enemyList, int team = 1, bool
 }
 
 void summon(Battle& battle, std::string name, int team = 1) {
-	for (Character enemy : ENEMIES) {
-		if (low(enemy.NAME) == low(name)) {
-			summon(battle, enemy, team);
+	for (auto enemy : ENEMIES) {
+		if (low(enemy.second.NAME) == low(name)) {
+			summon(battle, enemy.second, team);
 			updateBattle(battle);
 			return;
 		}
@@ -146,9 +146,9 @@ void startBattle(Battle& battle) {
 	int rating = 45 * num * std::pow(1.22, lvl) + (15 * (lvl - 1) * num);
 
 	std::vector<Character> validEnemies = {};
-	for (Character enemy : ENEMIES) {
-		if (enemy.LEVEL < rating && contains(enemy.ZONES, battle.zone)) {
-			validEnemies.push_back(enemy);
+	for (auto enemy : ENEMIES) {
+		if (enemy.second.LEVEL < rating && contains(enemy.second.ZONES, battle.zone)) {
+			validEnemies.push_back(enemy.second);
 		}
 	}
 

@@ -106,6 +106,127 @@ std::string commandLeave(int playerIndex, Character& C, std::vector<std::string>
 	return "*RED*You can't leave from here . . .";
 }
 
+/*
+function Equip(C, invIndex) {
+	if (C.INVENTORY[invIndex].type == "weapon" || C.INVENTORY[invIndex].type == "armor" || C.INVENTORY[invIndex].type == "staff" || C.INVENTORY[invIndex].type == "pole") {
+		let index = BattleIndex(C.ID);
+		if (C.INVENTORY[invIndex].type == "armor") {
+			for (let i = 0; i < C.INVENTORY.length; i++) {
+				if (C.INVENTORY[i].type == "armor" && C.INVENTORY[i].equipped) {
+					C.INVENTORY[i].equipped = false;
+				}
+			}
+		}
+		else {
+			if (C.INVENTORY[invIndex].type == "pole" || C.INVENTORY[invIndex].type == "staff" || C.INVENTORY[invIndex].hands == 2) {
+				if (C.LEFT > -1 && C.LEFT < C.INVENTORY.length) {
+					C.INVENTORY[C.LEFT].equipped = false;
+				}
+				if (C.RIGHT > -1 && C.RIGHT < C.INVENTORY.length) {
+					C.INVENTORY[C.RIGHT].equipped = false;
+				}
+				C.LEFT = invIndex;
+				C.RIGHT = invIndex;
+				resetPercent(C, LEFT);
+				resetPercent(C, RIGHT);
+			}
+			else {
+				if (C.LEFT == -1) {
+					C.LEFT = invIndex;
+					resetPercent(C, LEFT);
+				}
+				else if (C.RIGHT == -1) {
+					C.RIGHT = invIndex;
+					resetPercent(C, RIGHT);
+				}
+				else if (C.LEFT == C.RIGHT) {
+					C.INVENTORY[C.LEFT].equipped = false;
+					C.LEFT = -1;
+					C.RIGHT = -1;
+				}
+				if (C.LEFT != invIndex && C.RIGHT != invIndex) {
+					let ran = rand(2);
+					if (ran == 0) {
+						C.LEFT = invIndex;
+						resetPercent(C, LEFT);
+					}
+					else {
+						C.RIGHT = invIndex;
+						resetPercent(C, RIGHT);
+					}
+				}
+			}
+		}
+		if (index > -1 && battles[index].started) {
+			if (C.INVENTORY[invIndex].type == "weapon" || C.INVENTORY[invIndex].type == "staff") {
+				C.ENDED = true;
+			}
+		}
+		C.INVENTORY[invIndex].equipped = true;
+		return "You equip the *BLUE*" + C.INVENTORY[invIndex].name + "*GREY*.\n";
+	}
+	else {
+		return "*RED*You can't equip that.\n";
+	}
+}*/
+
+std::string commandRemove(int playerIndex, Character& C, std::vector<std::string> words) {
+	std::string args = low(join(words));
+	std::vector<std::string> ids = findItem(args, C.INVENTORY);
+	for (std::string id : ids) {
+		C.INVENTORY[id].equipped = false;
+		sendStat(C.ID, "DEQUIP", id);
+		return "You unequip the *GREEN*" + getItem(itemId(C.INVENTORY[id])).id;
+	}
+	return "*RED*Unable to equip '" + args + "'";
+}
+
+std::string commandEquip(int playerIndex, Character& C, std::vector<std::string> words) {
+	std::string msg = "";
+	std::string args = low(join(words));
+	std::vector<std::string> ids = findItem(args, C.INVENTORY);
+	for (std::string id : ids) {
+		if (!C.INVENTORY[id].equipped) {
+			UI_Item item = getItem(C.INVENTORY[id].id);
+			std::string type = item.type;
+			if (type == "armor") {
+				for (auto compItem : C.INVENTORY) {
+					std::string compType = getItem(compItem.second.id).type;
+					if (type == "armor" && compType == "armor") {
+						C.INVENTORY[compItem.first].equipped = false;
+					}
+				}
+			}
+			else if (type == "weapon" || type == "staff") {
+				bool swapLeft = item.twoHanded || (C.INVENTORY.count(C.LEFT) > 0 && C.INVENTORY.count(C.RIGHT) > 0);
+				bool swapRight = item.twoHanded || !swapLeft;
+				if (swapLeft) {
+					if (C.INVENTORY.count(C.LEFT) > 0) {
+						C.INVENTORY[C.LEFT].equipped = false;
+						sendStat(C.ID, "DEQUIP", C.LEFT);
+					}
+					setStat(C, "LEFT", id);
+				}
+				if (swapRight) {
+					if (C.INVENTORY.count(C.RIGHT) > 0) {
+						C.INVENTORY[C.RIGHT].equipped = false;
+						sendStat(C.ID, "DEQUIP", C.RIGHT);
+					}
+					setStat(C, "RIGHT", id);
+				}
+				C.INVENTORY[id].equipped = true;
+				sendStat(C.ID, "EQUIP", id);
+				msg = "You equip the *GREEN*" + item.id;
+				break;
+			}
+			else {
+				return "*RED*You can't equip that.";
+			}
+		}
+	}
+	return msg;
+}
+
 std::string commandBuy(int playerIndex, Character& C, std::vector<std::string> words) {
 	if (C.TRADING == "") {
 		return "*RED*You must trade with a merchant first.";
@@ -114,6 +235,7 @@ std::string commandBuy(int playerIndex, Character& C, std::vector<std::string> w
 	if (C.BACKPACK && args == "backpack") {
 		return "*RED*You already have a backpack.";
 	}
+
 	NPC npc = getNPC(C.TRADING);
 	bool found = false;
 	for (std::string word : npc.ITEMS) {
@@ -132,7 +254,7 @@ std::string commandBuy(int playerIndex, Character& C, std::vector<std::string> w
 
 	if (canTake(C, args)) {
 		Item newItem(args);
-		C.INVENTORY.push_back(newItem);
+		C.INVENTORY[newItem.id] = newItem;
 		C.GOLD -= item.cost;
 		sendItem(C.ID, newItem);
 		sendStat(C.ID, "GOLD", C.GOLD);
@@ -193,6 +315,12 @@ void command(std::string input, int playerIndex) {
 	}
 	else if (keyword == "start") {
 		msg = commandStart(playerIndex, CHARACTERS[id]);
+	}
+	else if (keyword == "equip") {
+		msg = commandEquip(playerIndex, CHARACTERS[id], words);
+	}
+	else if (keyword == "remove" || keyword == "dequip") {
+		msg = commandRemove(playerIndex, CHARACTERS[id], words);
 	}
 	else if (keyword == "trade") {
 		std::string trading = CHARACTERS[id].TRADING;

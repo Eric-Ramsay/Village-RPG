@@ -74,6 +74,9 @@ void charInfo(char c, int& sX, int& sY, int& sW) {
 	else if (c == '.') {
 		sX = 23; sY = 48; sW = 1;
 	}
+	else if (c == ';') {
+		sX = 82; sY = 48; sW = 2;
+	}
 	else if (c == ':') {
 		sX = 69; sY = 48; sW = 2;
 	}

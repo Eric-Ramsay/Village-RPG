@@ -99,12 +99,14 @@ struct UI_Item {
 		cost = value;
 		subclass = wepType;
 		description = desc;
+		twoHanded = twoH;
 		attacks = atks;
 		attack = P_Attack(min, max, chance, pen);
 		AP = ap;
 		range = rng;
 		rarity = rare;
 	}
+	UI_Item() {}
 };
 
 struct Item {
@@ -114,7 +116,7 @@ struct Item {
 	std::vector<std::string> runes;
 	bool equipped = false;
 	Item(std::string Id = "") {
-		id = Id;
+		id = Id + rand() % 9999;
 	}
 };
 
@@ -162,9 +164,9 @@ struct Character {
 
 	std::vector<Effect> effects = {};
 	std::string COLOR = "";
-	std::vector<Item> INVENTORY = {};
-	int LEFT = -1;
-	int RIGHT = -1;
+	std::unordered_map<std::string, Item> INVENTORY = {};
+	std::string LEFT = "";
+	std::string RIGHT = "";
 
 	int SP = 0;
 	int GOLD = 0;
@@ -263,6 +265,7 @@ struct NPC {
 		DESCRIPTION = d;
 		MERCHANT = isMerchant;
 	}
+	NPC() {}
 };
 
 struct Connection {
@@ -290,4 +293,5 @@ struct Location {
 		id = n;
 		description = desc;
 	}
+	Location() {}
 };

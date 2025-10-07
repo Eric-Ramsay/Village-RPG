@@ -6,6 +6,12 @@ template <typename Type> std::string to_str(const Type& t) {
 }
 
 
+std::string operator+(std::string str, int num)
+{
+	return str + to_str(num);
+}
+
+
 bool endsWith(std::string stringOne, std::string stringTwo) {
 	if (stringOne.size() < stringTwo.size()) {
 		return false;
