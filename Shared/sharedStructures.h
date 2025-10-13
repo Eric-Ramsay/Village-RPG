@@ -110,13 +110,14 @@ struct UI_Item {
 };
 
 struct Item {
-	std::string id = "";
-	std::string name = "";
-	std::string description = "";
+	std::string index = "";
+	std::string key = "";
 	std::vector<std::string> runes;
 	bool equipped = false;
-	Item(std::string Id = "") {
-		id = Id + rand() % 9999;
+	int attacks = 0;
+	Item(std::string id = "") {
+		key = id;
+		index = id + "." + rand() % 9999;
 	}
 };
 

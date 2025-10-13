@@ -4,9 +4,8 @@
 std::string serialize(Item item) {
 	std::string data = "";
 	data += str("ITEM");
-	data += str("ID") + str(item.id);
-	data += str("NAME") + str(item.name);
-	data += str("DESCRIPTION") + str(item.description);
+	data += str("INDEX") + str(item.index);
+	data += str("ATTACKS") + str(item.attacks);
 	data += str("EQUIPPED") + str(item.equipped);
 	data += str("RUNES");
 	for (std::string rune : item.runes) {

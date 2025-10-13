@@ -1,5 +1,5 @@
 #pragma once
-std::string commandTravel(int playerIndex, Character& C, std::vector<std::string> words, int index) {
+std::string commandTravel(int playerIndex, Character& C, std::vector<std::string> words) {
 	if (words.size() == 0 || words[0].size() == 0) {
 		return "*RED*Command not understood. . . ";
 	}
@@ -70,7 +70,6 @@ std::string commandDelve(int playerIndex, Character& C, std::vector<std::string>
 	return "*YELLOW*You delve deeper. . .";
 }
 
-
 std::string commandStart(int playerIndex, Character& C) {
 	if (BATTLES.count(C.LOCATION) == 0) {
 		return "*RED*You must be in combat!";
@@ -82,6 +81,67 @@ std::string commandStart(int playerIndex, Character& C) {
 
 	startBattle(BATTLES[C.LOCATION]);
 	return "";
+}
+
+std::string commandAttack(int playerIndex, Character& C, std::vector<std::string> words) {
+	std::string args = low(join(words));
+	if (BATTLES.count(C.LOCATION) == 0) {
+		return "*RED*You must be in combat to attack.";
+	}
+	std::string wepId = C.LEFT;
+	// Determine Weapon to Attack with
+	if (C.LEFT == "" && C.RIGHT == "") {
+		return "*RED*You must equip a weapon!";
+	}
+	if (C.INVENTORY[C.LEFT].attacks == 0 && C.INVENTORY[C.RIGHT].attacks == 0) {
+		return "*RED*You can't make any more attacks!";
+	}
+	UI_Item left = getItem(C.LEFT);
+	UI_Item right = getItem(C.RIGHT);
+	if (C.LEFT == "" || C.INVENTORY[C.LEFT].attacks == 0 || left.AP > C.AP) {
+		wepId = C.RIGHT;
+	}
+	else {
+		if (C.INVENTORY[C.RIGHT].attacks > 0 && right.range > left.range) {
+			wepId = C.RIGHT;
+		}
+	}
+
+	UI_Item item = getItem(C.INVENTORY[wepId].key);
+	if (item.AP > C.AP) {
+		return "*RED*You don't have enough AP!";
+	}
+
+	int x = C.X;
+	int y = C.Y;
+	Battle battle = BATTLES[C.LOCATION];
+	std::string target = "";
+	bool found = false;
+	for (std::string enemyId : battle.teams[1]) {
+		Character enemy = CHARACTERS[enemyId];
+		int eX = enemy.X;
+		int eY = enemy.Y;
+		if (low(enemy.NAME) == args) {
+			found = true;
+			if (atkDist(x, y, eX, eY) <= item.range) {
+				target = enemyId;
+				break;
+			}
+		}
+	}
+	if (target == "") {
+		if (found) {
+			return "*RED*That enemy is too far to attack.";
+		}
+		return "*RED*Couldn't find enemy '*GREY*" + args + "*RED*'";
+	}
+
+	setStat(C, "AP", C.AP - item.AP);
+	C.INVENTORY[wepId].attacks--;
+	sendItem(C.ID, C.INVENTORY[wepId]);
+	std::string msg = dealDamage(item.attack, C.ID, target, battle.teams[0], battle.teams[1]).msg + "\n";
+	msg += handleCombat(battle.id);
+	return msg;
 }
 
 std::string commandLeave(int playerIndex, Character& C, std::vector<std::string> words) {
@@ -106,77 +166,13 @@ std::string commandLeave(int playerIndex, Character& C, std::vector<std::string>
 	return "*RED*You can't leave from here . . .";
 }
 
-/*
-function Equip(C, invIndex) {
-	if (C.INVENTORY[invIndex].type == "weapon" || C.INVENTORY[invIndex].type == "armor" || C.INVENTORY[invIndex].type == "staff" || C.INVENTORY[invIndex].type == "pole") {
-		let index = BattleIndex(C.ID);
-		if (C.INVENTORY[invIndex].type == "armor") {
-			for (let i = 0; i < C.INVENTORY.length; i++) {
-				if (C.INVENTORY[i].type == "armor" && C.INVENTORY[i].equipped) {
-					C.INVENTORY[i].equipped = false;
-				}
-			}
-		}
-		else {
-			if (C.INVENTORY[invIndex].type == "pole" || C.INVENTORY[invIndex].type == "staff" || C.INVENTORY[invIndex].hands == 2) {
-				if (C.LEFT > -1 && C.LEFT < C.INVENTORY.length) {
-					C.INVENTORY[C.LEFT].equipped = false;
-				}
-				if (C.RIGHT > -1 && C.RIGHT < C.INVENTORY.length) {
-					C.INVENTORY[C.RIGHT].equipped = false;
-				}
-				C.LEFT = invIndex;
-				C.RIGHT = invIndex;
-				resetPercent(C, LEFT);
-				resetPercent(C, RIGHT);
-			}
-			else {
-				if (C.LEFT == -1) {
-					C.LEFT = invIndex;
-					resetPercent(C, LEFT);
-				}
-				else if (C.RIGHT == -1) {
-					C.RIGHT = invIndex;
-					resetPercent(C, RIGHT);
-				}
-				else if (C.LEFT == C.RIGHT) {
-					C.INVENTORY[C.LEFT].equipped = false;
-					C.LEFT = -1;
-					C.RIGHT = -1;
-				}
-				if (C.LEFT != invIndex && C.RIGHT != invIndex) {
-					let ran = rand(2);
-					if (ran == 0) {
-						C.LEFT = invIndex;
-						resetPercent(C, LEFT);
-					}
-					else {
-						C.RIGHT = invIndex;
-						resetPercent(C, RIGHT);
-					}
-				}
-			}
-		}
-		if (index > -1 && battles[index].started) {
-			if (C.INVENTORY[invIndex].type == "weapon" || C.INVENTORY[invIndex].type == "staff") {
-				C.ENDED = true;
-			}
-		}
-		C.INVENTORY[invIndex].equipped = true;
-		return "You equip the *BLUE*" + C.INVENTORY[invIndex].name + "*GREY*.\n";
-	}
-	else {
-		return "*RED*You can't equip that.\n";
-	}
-}*/
-
 std::string commandRemove(int playerIndex, Character& C, std::vector<std::string> words) {
 	std::string args = low(join(words));
 	std::vector<std::string> ids = findItem(args, C.INVENTORY);
 	for (std::string id : ids) {
 		C.INVENTORY[id].equipped = false;
 		sendStat(C.ID, "DEQUIP", id);
-		return "You unequip the *GREEN*" + getItem(itemId(C.INVENTORY[id])).id;
+		return "You unequip the *GREEN*" + pretty(C.INVENTORY[id].key);
 	}
 	return "*RED*Unable to equip '" + args + "'";
 }
@@ -187,11 +183,11 @@ std::string commandEquip(int playerIndex, Character& C, std::vector<std::string>
 	std::vector<std::string> ids = findItem(args, C.INVENTORY);
 	for (std::string id : ids) {
 		if (!C.INVENTORY[id].equipped) {
-			UI_Item item = getItem(C.INVENTORY[id].id);
+			UI_Item item = getItem(C.INVENTORY[id].key);
 			std::string type = item.type;
 			if (type == "armor") {
 				for (auto compItem : C.INVENTORY) {
-					std::string compType = getItem(compItem.second.id).type;
+					std::string compType = getItem(compItem.second.key).type;
 					if (type == "armor" && compType == "armor") {
 						C.INVENTORY[compItem.first].equipped = false;
 					}
@@ -254,7 +250,7 @@ std::string commandBuy(int playerIndex, Character& C, std::vector<std::string> w
 
 	if (canTake(C, args)) {
 		Item newItem(args);
-		C.INVENTORY[newItem.id] = newItem;
+		C.INVENTORY[newItem.index] = newItem;
 		C.GOLD -= item.cost;
 		sendItem(C.ID, newItem);
 		sendStat(C.ID, "GOLD", C.GOLD);
@@ -262,7 +258,6 @@ std::string commandBuy(int playerIndex, Character& C, std::vector<std::string> w
 	}
 	return "*RED*You don't have room in your inventory to buy that!\n";
 }
-
 
 std::string createCharacter(int playerIndex, std::string name) {
 	std::time_t t = std::time(0);
@@ -306,7 +301,7 @@ void command(std::string input, int playerIndex) {
 		}
 	}
 	else if (keyword == "go" || keyword == "enter" || keyword == "travel") {
-		msg = commandTravel(playerIndex, CHARACTERS[id], words, -1);
+		msg = commandTravel(playerIndex, CHARACTERS[id], words);
 		sendStat(id, "LOCATION", CHARACTERS[id].LOCATION);
 	}
 	else if (keyword == "delve") {
@@ -321,6 +316,9 @@ void command(std::string input, int playerIndex) {
 	}
 	else if (keyword == "remove" || keyword == "dequip") {
 		msg = commandRemove(playerIndex, CHARACTERS[id], words);
+	}
+	else if (keyword == "attack") {
+		msg = commandAttack(playerIndex, CHARACTERS[id], words);
 	}
 	else if (keyword == "trade") {
 		std::string trading = CHARACTERS[id].TRADING;
@@ -337,7 +335,7 @@ void command(std::string input, int playerIndex) {
 	else if (keyword == "end") {
 		if (BATTLES.count(CHARACTERS[id].LOCATION) > 0) {
 			setStat(CHARACTERS[id], "ENDED", true);
-			msg = handleCombat(BATTLES[CHARACTERS[id].LOCATION]);
+			msg = handleCombat(CHARACTERS[id].LOCATION);
 		}
 		else {
 			msg = "*RED*You must be in combat. Did you mean to *YELLOW*quit*RED* the game?";

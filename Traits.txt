@@ -1,0 +1,35 @@
+Trait/Achievement Ideas
+-----------------------
+Each turn, heal the lowest HP ally within 2 tiles 10% of your Max HP.
+
+You can rest at the church for free to recover HP.
+
+The first time you die, wake up at the church with 1 HP.
+
++25% Damage, but you can only target a single enemy each turn.
+
+You can sell items for 75% of their value. You can't drop items.
+
+You can use magic without staves or wands.
+
+Spells cost stamina instead of AP.
+
+You can brew potions and tinctures in combat.
+
+Potions and tinctures heal 5 HP when used.
+
+You're accompanied by a familiar.
+
+Start with +4 SP
+
+You're accompanied by a servant.
+
++100G
+
+Whenever you dodge an attack, deal damage to your attacker
+
+Armor doesn't reduce your stamina
+
+MAG grants +1 Cast per Turn
+
+Gain damage per tile of distance between you and your enemy.

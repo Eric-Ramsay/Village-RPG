@@ -1,11 +1,6 @@
 #pragma once
-
-std::string itemId(Item item) {
-	return split(low(item.id), '.')[0];
-}
-
 std::string itemId(std::string id) {
-	return split(low(id), '.')[0];
+	return split(id, '.')[0];
 }
 
 Location getLocation(std::string id) {
@@ -19,16 +14,15 @@ Location getLocation(std::string id) {
 NPC getNPC(std::string id) {
 	if (PEOPLE.count(low(id)) == 0) {
 		std::cout << "Error, NPC " + id + " not found!" << std::endl;
-		return PEOPLE[0];
+		return PEOPLE.begin()->second;
 	}
 	return PEOPLE[low(id)];
 }
 
 UI_Item getItem(std::string id) {
-	id = itemId(id);
 	if (ITEMS.count(id) == 0) {
 		std::cout << "Error, Item " + id + " not found!" << std::endl;
-		return ITEMS[0];
+		return ITEMS.begin()->second;
 	}
 	return ITEMS[low(id)];
 }
@@ -59,14 +53,12 @@ Item parseItem(std::string data) {
 	Item item;
 	while (data.length() > 0) {
 		std::string type = readStr(data);
-		if (type == "ID") {
-			item.id = readStr(data);
+		if (type == "INDEX") {
+			item.index = readStr(data);
+			item.key = split(item.index, '.')[0];
 		}
-		if (type == "NAME") {
-			item.name = readStr(data);
-		}
-		if (type == "DESCRIPTION") {
-			item.description = readStr(data);
+		if (type == "ATTACKS") {
+			item.attacks = readInt(data);
 		}
 		if (type == "EQUIPPED") {
 			item.equipped = (bool)readInt(data);
@@ -286,7 +278,7 @@ void parseChange(Character& character, std::string type, std::string data) {
 	}
 	else if (type == "ITEM") {
 		Item item = parseItem(data);
-		character.INVENTORY[item.id] = item;
+		character.INVENTORY[item.index] = item;
 	}
 	else if (type == "INVENTORY") {
 		character.INVENTORY = {};
@@ -390,6 +382,10 @@ bool isNum(std::string s) {
 	return s.find_first_not_of("0123456789") == std::string::npos;
 }
 
+int atkDist(int x1, int y1, int x2, int y2) {
+	return max(abs(x1 - x2), abs(y1 - y2));
+}
+
 std::vector<int> findItem(std::string args, std::vector<Item> inventory) {
 	std::vector<int> indices = {};
 
@@ -400,7 +396,7 @@ std::vector<int> findItem(std::string args, std::vector<Item> inventory) {
 		}
 	}
 	for (int i = 0; i < inventory.size(); i++) {
-		if (low(inventory[i].id) == args) {
+		if (low(inventory[i].key) == args) {
 			indices.push_back(i);
 		}
 	}
@@ -417,8 +413,8 @@ std::vector<std::string> findItem(std::string args, std::unordered_map<std::stri
 		return { args };
 	}
 	for (auto item : inventory) {
-		if (itemId(item.second) == args) {
-			ids.push_back(item.second.id);
+		if (item.second.key == args) {
+			ids.push_back(item.second.index);
 		}
 	}
 

@@ -64,7 +64,7 @@ void DrawCharacterUI() {
 		if (item.second.equipped) {
 			color = "*TEAL*";
 		}
-		Print("*PINK*" + padNum(itemCount) + "*GREY*) " + color + pretty(item.second.id), x, y + 80 + 10 * itemCount);
+		Print("*PINK*" + padNum(itemCount) + "*GREY*) " + color + pretty(item.second.key), x, y + 80 + 10 * itemCount);
 	}
 	int num = (5 + (5 * C.BACKPACK)) - itemCount;
 	for (int i = itemCount; i < itemCount + num; i++) {
@@ -97,8 +97,8 @@ void DrawBattle() {
 	Print("*PINK*Enemies", 200, 18);
 	for (int i = 0; i < BATTLE.teams[1].size(); i++) {
 		Character C = CHARACTERS[BATTLE.teams[1][i]];
-		Print("*RED*P" + to_str(i + 11) + " *GREY*" + C.NAME, 200, 28 + (i * 10));
-		tiles[C.Y][C.X] = "*RED*" + to_str(i + 11);
+		Print("*RED*E" + to_str(i + 1) + " *GREY*" + C.NAME, 200, 28 + (i * 10));
+		tiles[C.Y][C.X] = "*RED*" + to_str(i + 1);
 	}
 
 	Print("*YELLOW*Allies", 200, 107);
@@ -112,8 +112,8 @@ void DrawBattle() {
 		if (C.ENDED) {
 			nColor = "*BLACK*";
 		}
-		Print(pColor + "P" + to_str(i + 11) + " " + nColor + C.NAME, 200, 117 + (i * 10));
-		tiles[C.Y][C.X] = "*GREEN*" + to_str(i + 11);
+		Print(pColor + "P" + to_str(i + 1) + " " + nColor + C.NAME, 200, 117 + (i * 10));
+		tiles[C.Y][C.X] = "*GREEN*" + to_str(i + 1);
 	}
 
 	for (int i = 0; i < 12; i++) {

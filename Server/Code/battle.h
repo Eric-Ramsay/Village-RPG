@@ -37,7 +37,7 @@ bool validateBattle(std::string id) {
 
 bool turnCompleted(std::vector<std::string> ids) {
 	for (std::string id : ids) {
-		if (CHARACTERS[id].HP > 0 && !CHARACTERS[id].ENDED) {
+		if (CHARACTERS[id].HP > 0 && (!CHARACTERS[id].ENDED && CHARACTERS[id].TYPE == "player")) {
 			return false;
 		}
 	}
@@ -64,6 +64,15 @@ std::string startTurn(Battle& battle) {
 		if (C->TYPE == "player") {
 			setStat(*C, "AP", 12);
 			setStat(*C, "ENDED", false);
+			for (auto item : C->INVENTORY) {
+				if (item.second.equipped) {
+					UI_Item rawItem = getItem(item.second.key);
+					if (rawItem.type == "weapon") {
+						C->INVENTORY[item.first].attacks = rawItem.attacks;
+						sendItem(C->ID, item.second);
+					}
+				}
+			}
 		}
 		else {
 			C->AP = 12;
@@ -74,26 +83,23 @@ std::string startTurn(Battle& battle) {
 	return msg;
 }
 
-std::string handleCombat(Battle& battle) {
+std::string handleCombat(std::string id) {
+	Battle* battle = &BATTLES[id];
 	std::string msg = "";
-	if (battle.round == 0) {
+	if (battle->round == 0) {
 		return "";
 	}
-	int maxTurns = 0;
-	while (maxTurns++ < 10 && turnCompleted(battle.teams[battle.turn])) {
-		battle.turn = !battle.turn;
-		startTurn(battle);
-
-		if (validateBattle(battle.id)) {
-			if (battle.teams[1].size() == 0) {
-				msg = winBattle(battle);
-			}
-			updateBattle(battle);
+	if (validateBattle(battle->id)) {
+		if (battle->teams[1].size() == 0) {
+			msg = winBattle(*battle);
+			updateBattle(*battle);
 		}
-		else {
-			return msg;
+		else if (turnCompleted(battle->teams[battle->turn])) {
+			battle->turn = !battle->turn;
+			startTurn(*battle);
 		}
 	}
+	
 	return msg;
 }
 

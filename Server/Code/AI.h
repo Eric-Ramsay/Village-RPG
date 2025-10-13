@@ -1,9 +1,4 @@
 #pragma once
-
-int atkDist(int x1, int y1, int x2, int y2) {
-	return max(abs(x1 - x2), abs(y1 - y2));
-}
-
 std::vector<std::string> findTargets(int x, int y, int range, std::vector<std::string> potentialTargets) {
 	std::vector<std::string> targets = {};
 	for (std::string id : potentialTargets) {
