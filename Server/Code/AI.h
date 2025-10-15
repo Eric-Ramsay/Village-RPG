@@ -1,4 +1,27 @@
 #pragma once
+Result dealDamage(Attack attack, std::string attackerId, std::string targetId, std::vector<std::string> allies, std::vector<std::string> enemies) {
+	Result result;
+	if (CHARACTERS.count(attackerId) * CHARACTERS.count(targetId) == 0) {
+		return result;
+	}
+	Character* attacker = &CHARACTERS[attackerId];
+	Character* target = &CHARACTERS[targetId];
+
+	int hitValue = rand() % 100;
+	int dmg = attack.min + rand() % (attack.max - attack.min);
+	if (hitValue < attack.hitChance) {
+		result.msg = "*RED*" + name(target) + " takes *ORANGE*" + to_str(dmg) + "*RED* damage!";
+		result.damage = dmg;
+		setStat(*target, "HP", target->HP - dmg);
+	}
+	else {
+		result.msg += "*RED*" + name(attacker) + " misses!";
+		result.damage = 0;
+	}
+
+	return result;
+}
+
 std::vector<std::string> findTargets(int x, int y, int range, std::vector<std::string> potentialTargets) {
 	std::vector<std::string> targets = {};
 	for (std::string id : potentialTargets) {
@@ -95,7 +118,9 @@ std::string enemyAttack(int enemyIndex, std::vector<std::string> allies, std::ve
 		}
 	}
 
-	sendToIds("TEXT", msg, playerIds);
+	if (msg != "") {
+		sendToIds("TEXT", msg, playerIds);
+	}
 
 
 	sendStat(C->ID, "X", C->X);

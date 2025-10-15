@@ -149,6 +149,8 @@ enum STATS {
 	AVD
 };
 
+// Idea: Overload the equal operator to send data to call sendData
+// You can use the preprocessor # operator to get a variable name, then uppercase it
 struct Character {
 	std::string USER = "";
 	std::string ID = "";

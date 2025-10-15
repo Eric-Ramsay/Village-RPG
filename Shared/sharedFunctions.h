@@ -420,3 +420,20 @@ std::vector<std::string> findItem(std::string args, std::unordered_map<std::stri
 
 	return ids;
 }
+
+std::string name(Character C) {
+	std::string msg = "";
+	std::vector<std::string> words = split(C.NAME);
+	for (int i = 0; i < words.size(); i++) {
+		words[i] = pretty(words[i]);
+	}
+	msg = join(words);
+	if (C.TYPE != "player") {
+		msg = "the " + msg;
+	}
+	return msg;
+}
+
+std::string name(Character* C) {
+	return name(*C);
+}

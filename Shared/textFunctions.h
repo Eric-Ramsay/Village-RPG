@@ -26,9 +26,12 @@ bool endsWith(std::string stringOne, std::string stringTwo) {
 
 std::vector<std::string> split(std::string str, char delim = ' ') {
 	std::vector<std::string> strings = { "" };
-	for (char c : str) {
+	for (int i = 0; i < str.size(); i++) {
+		char c = str[i];
 		if (c == delim) {
-			strings.push_back("");
+			if (i < str.size() - 1) {
+				strings.push_back("");
+			}
 		}
 		else {
 			strings[strings.size() - 1] += c;

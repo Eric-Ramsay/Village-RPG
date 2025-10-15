@@ -30,10 +30,10 @@ namespace Gdiplus {
 #include "..\..\Shared\sharedFunctions.h"
 #include "utilities.h"
 #include "audio.h"
-#include "server.h"
-#include "listener.h"
 #include "draw.h"
 #include "text.h"
+#include "server.h"
+#include "listener.h"
 
 #include "..\..\Shared\init.h"
 #include "UI.h"
@@ -168,6 +168,7 @@ int main()
 				else if (event.key.code == sf::Keyboard::Enter) {
 					replace(input, "  ", " ");
 					logs.push_back(input);
+
 					if (input == "scan") {
 						scanLines = !scanLines;
 					}
@@ -229,7 +230,7 @@ int main()
 			if (UI.signInState == COMPLETED) {
 				DrawUI();
 			}
-			for (int i = 1; i <= 3; i++) {
+			for (int i = 1; i <= 6; i++) {
 				if (logs.size() >= i) {
 					Print(logs[logs.size() - i], 10, HEIGHT - (11 + i * 15));
 				}

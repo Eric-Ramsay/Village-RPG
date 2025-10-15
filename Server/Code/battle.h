@@ -94,9 +94,11 @@ std::string handleCombat(std::string id) {
 			msg = winBattle(*battle);
 			updateBattle(*battle);
 		}
-		else if (turnCompleted(battle->teams[battle->turn])) {
-			battle->turn = !battle->turn;
-			startTurn(*battle);
+		else {
+			while (turnCompleted(battle->teams[battle->turn])) {
+				battle->turn = !battle->turn;
+				startTurn(*battle);
+			}
 		}
 	}
 	

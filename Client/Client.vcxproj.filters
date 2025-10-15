@@ -54,11 +54,11 @@
     <ClInclude Include="Code\globals.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="listener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Shared\sharedFunctions.h">
       <Filter>Shared Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\listener.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,8 +3,12 @@ std::string commandTravel(int playerIndex, Character& C, std::vector<std::string
 	if (words.size() == 0 || words[0].size() == 0) {
 		return "*RED*Command not understood. . . ";
 	}
+	std::string battleId = "";
 	if (BATTLES.count(C.LOCATION) > 0) {
-		return "*RED*You must leave this battle first!\n";
+		if (BATTLES[C.LOCATION].round > 0) {
+			return "*RED*You must flee the battle first!\n";
+		}
+		battleId = C.LOCATION;
 	}
 	std::string direction = "";
 	Location location = getLocation(C.LOCATION);
@@ -21,7 +25,10 @@ std::string commandTravel(int playerIndex, Character& C, std::vector<std::string
 	if (destination.id != "error") {
 		C.TRADING = "";
 		sendStat(C.ID, "TRADING", "", { playerIndex });
-		C.LOCATION = destination.id;
+		setStat(C, "LOCATION", destination.id);
+		if (battleId != "") {
+			validateBattle(battleId);
+		}
 		return "You travel to the " + destination.id;
 	}
 	if (words[0][0] == 'n') {
@@ -41,7 +48,10 @@ std::string commandTravel(int playerIndex, Character& C, std::vector<std::string
 			if (low(con.direction) == direction) {
 				C.TRADING = "";
 				sendStat(C.ID, "TRADING", "", { playerIndex });
-				C.LOCATION = con.location;
+				setStat(C, "LOCATION", con.location);
+				if (battleId != "") {
+					validateBattle(battleId);
+				}
 				return "You travel " + direction + ".";
 			}
 		}
@@ -63,7 +73,7 @@ std::string commandDelve(int playerIndex, Character& C, std::vector<std::string>
 		id = C.LOCATION + to_str(rand() % 9999);
 		BATTLES[id] = Battle(id, C.LOCATION);
 	}
-	C.LOCATION = id;
+	setStat(C, "LOCATION", id);
 	BATTLES[id].teams[0].push_back(C.ID);
 	save(BATTLES[id]);
 	sendBattle(BATTLES[id], { playerIndex });
@@ -153,14 +163,14 @@ std::string commandLeave(int playerIndex, Character& C, std::vector<std::string>
 	std::string id = C.LOCATION;
 	if (BATTLES.count(id) > 0) {
 		if (BATTLES[id].round == 0) {
-			C.LOCATION = BATTLES[id].zone;
+			setStat(C, "LOCATION", BATTLES[id].zone);
 			validateBattle(id);
 			return "*YELLOW*You leave the battle . . .";
 		}
 	}
 	Location loc = getLocation(C.LOCATION);
 	if (loc.parent != "") {
-		C.LOCATION = loc.parent;
+		setStat(C, "LOCATION", loc.parent);
 		return "You travel to the " + loc.parent;
 	}
 	return "*RED*You can't leave from here . . .";
@@ -285,6 +295,34 @@ void commandTrade(int playerIndex, Character& C, std::string id) {
 	}
 }
 
+std::string commandSleep(int playerIndex, Character& C) {
+	if (C.HP >= MaxHP(C)) {
+		return "You're already full HP.";
+	}
+	std::string msg = "";
+	if (low(C.LOCATION) == "tavern") {
+		if (C.GOLD >= 5) {
+			std::vector<std::string> dialogues = {
+				"You gamble a little in common room, but come out even in the end.",
+				"You dream about giant slugs.",
+				"Penelope brings you a mug of water as she shows you to your room, and sets it at your bedside.",
+				"You wake up to the sound of laughter from the floor below you, and you feel refreshed.",
+				"A dog is barking somewhere in the village.",
+				"You stumble on your way up the stairs.",
+				"The bed is soft and warm.",
+				"You dream of swimming in a cold river on a hot summer day.",
+				"The wind shakes the shutters to your room.",
+				"You hear rain tapping on the roof above you."
+			};
+			setStat(C, "GOLD", C.GOLD - 5);
+			setStat(C, "HP", MaxHP(C));
+			return "*GREEN*You pay five gold to sleep at the tavern. *GREY*\n\n" + dialogues[rand() % dialogues.size()] + "\n";
+		}
+		return "*RED*You can't afford to rent a room here!\n";
+	}
+	return "*RED*You have to be at the tavern to sleep.\n";
+}
+
 void command(std::string input, int playerIndex) {
 	std::string id = players[playerIndex].ID;
 	std::string msg = "";
@@ -302,11 +340,9 @@ void command(std::string input, int playerIndex) {
 	}
 	else if (keyword == "go" || keyword == "enter" || keyword == "travel") {
 		msg = commandTravel(playerIndex, CHARACTERS[id], words);
-		sendStat(id, "LOCATION", CHARACTERS[id].LOCATION);
 	}
 	else if (keyword == "delve") {
 		msg = commandDelve(playerIndex, CHARACTERS[id], words);
-		sendStat(id, "LOCATION", CHARACTERS[id].LOCATION);
 	}
 	else if (keyword == "start") {
 		msg = commandStart(playerIndex, CHARACTERS[id]);
@@ -343,7 +379,6 @@ void command(std::string input, int playerIndex) {
 	}
 	else if (keyword == "leave" || keyword == "back" || keyword == "stop") {
 		msg = commandLeave(playerIndex, CHARACTERS[id], words);
-		sendStat(id, "LOCATION", CHARACTERS[id].LOCATION);
 	}
 	else if (keyword == "move") {
 		int x = readInt(words[0]);
@@ -363,6 +398,9 @@ void command(std::string input, int playerIndex) {
 			CHARACTERS[id].HP = num;
 			sendStat(id, "HP", CHARACTERS[id].HP);
 		}
+	}
+	else if (keyword == "rest" || keyword == "sleep") {
+		msg = commandSleep(playerIndex, CHARACTERS[id]);
 	}
 	else if (keyword == "gold") {
 		CHARACTERS[id].GOLD += 25;

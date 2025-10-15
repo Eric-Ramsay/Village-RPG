@@ -9,7 +9,10 @@ void processMessages() {
 			std::string type = firstProcess->type;
 			std::cout << type << " " << std::endl;
 			if (type == "TEXT") {
-				logs.push_back(data);
+				std::vector < std::string> lines = splitLines(data);
+				for (std::string line : lines) {
+					logs.push_back(line);
+				}
 			}
 			if (type == "READY") {
 				logs.push_back("*TEAL*Connected!");

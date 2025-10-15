@@ -159,13 +159,13 @@
     <ClInclude Include="Code\audio.h" />
     <ClInclude Include="Code\draw.h" />
     <ClInclude Include="Code\globals.h" />
+    <ClInclude Include="Code\listener.h" />
     <ClInclude Include="Code\miniaudio.h" />
     <ClInclude Include="Code\server.h" />
     <ClInclude Include="Code\structures.h" />
     <ClInclude Include="Code\text.h" />
     <ClInclude Include="Code\UI.h" />
     <ClInclude Include="Code\utilities.h" />
-    <ClInclude Include="listener.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Code\shader.frag" />
