@@ -316,7 +316,7 @@ std::string commandSleep(int playerIndex, Character& C) {
 			};
 			setStat(C, "GOLD", C.GOLD - 5);
 			setStat(C, "HP", MaxHP(C));
-			return "*GREEN*You pay five gold to sleep at the tavern. *GREY*\n\n" + dialogues[rand() % dialogues.size()] + "\n";
+			return "*GREEN*You pay five gold to sleep at the tavern. *GREY*\n" + dialogues[rand() % dialogues.size()] + "\n";
 		}
 		return "*RED*You can't afford to rent a room here!\n";
 	}
@@ -383,13 +383,13 @@ void command(std::string input, int playerIndex) {
 	else if (keyword == "move") {
 		int x = readInt(words[0]);
 		int y = readInt(words[0]);
-		if (x >= 0 && x < 12) {
-			CHARACTERS[id].X = x;
-			sendStat(id, "X", CHARACTERS[id].X);
-		}
-		if (y >= 0 && y < 12) {
-			CHARACTERS[id].Y = y;
-			sendStat(id, "Y", CHARACTERS[id].Y);
+		if (x >= 0 && y >= 0 && x < 12 && y < 12) {
+			std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[id], BATTLES[CHARACTERS[id].LOCATION]);
+			if (movementCosts[y][x] <= CHARACTERS[id].AP) {
+				setStat(CHARACTERS[id], "AP", CHARACTERS[id].AP - movementCosts[y][x]);
+				setStat(CHARACTERS[id], "X", x);
+				setStat(CHARACTERS[id], "Y", y);
+			}
 		}
 	}
 	else if (keyword == "hp") {

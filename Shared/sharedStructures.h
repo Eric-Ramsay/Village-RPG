@@ -246,6 +246,7 @@ struct Battle {
 
 	std::vector<Hazard> hazards;
 	std::vector<std::string> teams[2];
+	std::vector<std::string> dead[2];
 	std::vector<Item> loot;
 
 	Battle(std::string ID, std::string Zone) {

@@ -39,10 +39,10 @@ void DrawCharacterUI() {
 	Character C = CHARACTERS[ID];
 	Print("*GREEN*" + pretty(C.NAME) + " *BLACK*| *PINK*Level " + C.LEVEL + "*BLACK* | *YELLOW*" + C.XP + "*GREY*/*GREEN*" + 100 * C.LEVEL + "*GREY* XP", x, y);
 	Print(DrawBar(C.HP, MaxHP(C), 20, "*RED*"), x, y + 10);
-	Print(DrawBar(MaxStamina(C), MaxStamina(C), 20, "*GREEN*"), x, y + 20);
+	Print(DrawBar(C.STAMINA, MaxStamina(C), 20, "*GREEN*"), x, y + 20);
 	Print("*TEAL*\4 *GREY*" + to_str(C.ARMOR[0]), x, y + 30);
 	Print("*TEAL*\5 *GREY*" + to_str(C.ARMOR[1]), x, y + 40);
-	Print("*GREEN*AP: 7 ", x + 30, y + 30);
+	Print("*GREEN*AP: " + to_str(C.AP), x + 30, y + 30);
 	std::vector<std::string> stats = {
 		"VIT", "END", "DEX", "MAG", "WEP", "AVD"
 	};

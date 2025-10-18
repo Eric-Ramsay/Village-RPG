@@ -1,21 +1,21 @@
 ID!!!eric eric 17603311563!!!
 USER!!!eric!!!
-HP!!!7!
+HP!!!30!
 X!!!7!
-Y!!!9!
+Y!!!10!
 ARMOR!!!0!0!
 MAXHP!!!30!
 TYPE!!!player!!!
 NAME!!!eric!!!
-LOCATION!!!Wilted Woods4627!!!
-STAMINA!!!0!
+LOCATION!!!Tavern!!!
+STAMINA!!!16!
 DESCRIPTION!!!!!!
-TRADING!!!!!!
+TRADING!!!Clyde!!!
 LEVEL!!!1!
 XP!!!0!
 SP!!!0!
-GOLD!!!30!
-AP!!!6!
+GOLD!!!15!
+AP!!!0!
 BACKPACK!!!0!
 ENDED!!!0!
 ATTACKS!!!0!

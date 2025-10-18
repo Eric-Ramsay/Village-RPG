@@ -49,6 +49,10 @@ int MaxStamina(Character C) {
 	return 20 + C.STATS[END] * 10;
 }
 
+int MaxAP(Character C) {
+	return 6 + C.STATS[DEX] * 3 + C.STATS[AVD];
+}
+
 Item parseItem(std::string data) {
 	Item item;
 	while (data.length() > 0) {

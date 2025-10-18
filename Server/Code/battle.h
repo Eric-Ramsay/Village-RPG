@@ -10,6 +10,7 @@ bool validateBattle(std::string id) {
 			if (CHARACTERS.count(character) == 0 || CHARACTERS[character].LOCATION != BATTLES[id].id || CHARACTERS[character].HP <= 0) {
 				BATTLES[id].teams[i].erase(BATTLES[id].teams[i].begin() + j);
 				if (CHARACTERS[character].HP <= 0) {
+					BATTLES[id].dead[i].push_back(CHARACTERS[character].ID);
 					removeCharacter(CHARACTERS[character]);
 				}
 			}
@@ -49,8 +50,39 @@ std::string winBattle(Battle& battle) {
 	battle.round = 0;
 
 	// Have dead characters drop some of their gear
+	for (std::string id : battle.dead[0]) {
 
-	// Give out loot, gold, XP
+	}
+
+	// Give out loot
+	for (std::string id : battle.dead[1]) {
+
+	}
+
+	// Give out gold and XP
+	int goldReward = min(200, 10 + (battle.difficulty / 20));
+	int expReward = battle.difficulty;
+	msg += "*GREEN*Each player gains " + goldReward + " gold and " + expReward + " experience!\n";
+	for (std::string id : battle.teams[0]) {
+		Character* C = &CHARACTERS[id];
+		setStat(*C, "GOLD", CHARACTERS[id].GOLD + goldReward);
+		C->XP += expReward;
+		bool levelled = false;
+		while (C->XP > C->LEVEL * 100) {
+			C->XP -= C->LEVEL * 100;
+			C->SP++;
+			C->LEVEL++;
+			levelled = true;
+		}
+		if (levelled) {
+			sendStat(id, "SP", C->SP);
+			sendStat(id, "LEVEL", C->LEVEL);
+		}
+		sendStat(id, "XP", C->XP);
+	}
+
+	battle.dead[0] = {};
+	battle.dead[1] = {};
 
 	return msg;
 }
@@ -62,7 +94,10 @@ std::string startTurn(Battle& battle) {
 		std::string id = battle.teams[battle.turn][i];
 		Character* C = &CHARACTERS[id];
 		if (C->TYPE == "player") {
-			setStat(*C, "AP", 12);
+			C->STAMINA = min(C->STAMINA + 2 * (1 + C->STATS[END]), MaxStamina(*C));
+			int diff = min(C->STAMINA, MaxAP(*C) - C->AP);
+			setStat(*C, "AP", C->AP + diff);
+			setStat(*C, "STAMINA", C->STAMINA - diff);
 			setStat(*C, "ENDED", false);
 			for (auto item : C->INVENTORY) {
 				if (item.second.equipped) {
@@ -147,6 +182,8 @@ void startBattle(Battle& battle) {
 		if (CHARACTERS[id].TYPE == "player") {
 			num++;
 			lvl += CHARACTERS[id].LEVEL;
+			CHARACTERS[id].STAMINA = MaxStamina(CHARACTERS[id]);
+			CHARACTERS[id].AP = MaxAP(CHARACTERS[id]);
 		}
 	}
 
