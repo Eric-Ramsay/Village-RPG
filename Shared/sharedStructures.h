@@ -149,8 +149,13 @@ enum STATS {
 	AVD
 };
 
-// Idea: Overload the equal operator to send data to call sendData
-// You can use the preprocessor # operator to get a variable name, then uppercase it
+struct Drop {
+	std::string item;
+	int dropChance;
+};
+
+// (Bad) Idea: Overload the equal operator to send data to call sendData
+// You can('t) use the preprocessor # operator to get a variable name, then uppercase it
 struct Character {
 	std::string USER = "";
 	std::string ID = "";
@@ -197,27 +202,20 @@ struct Character {
 	int MaxHP = 30;
 	int PHASE = 0;
 	int MOVES = 0;
-	std::vector<std::string> ZONES;
-	std::vector<std::string> LOOT;
+	std::vector<int> ZONES;
+	std::vector<Drop> LOOT;
 
 	Character() {}
 
 	Character(std::string name, int hp, std::vector<int> armor, int difficulty, std::vector<int> zones, int moves, std::string type, std::string desc)
 	{
-		std::vector<std::string> zoneNames = {
-			"Haunted Crypts",
-			"Acrid Swamp",
-			"Wilted Woods"
-		};
 		NAME = name;
 		ID = name;
 		MaxHP = hp;
 		ARMOR[0] = armor[0];
 		ARMOR[1] = armor[1];
 		LEVEL = difficulty;
-		for (int zone : zones) {
-			ZONES.push_back(zoneNames[zone]);
-		}
+		ZONES = zones;
 		MOVES = moves;
 		TYPE = type;
 		DESCRIPTION = desc;
@@ -240,6 +238,7 @@ enum ZONE {
 struct Battle {
 	std::string id = "";
 	std::string zone = "";
+	int zoneIndex = 0;
 	int turn = 0;
 	int round = 0;
 	int difficulty = 0;
@@ -247,11 +246,21 @@ struct Battle {
 	std::vector<Hazard> hazards;
 	std::vector<std::string> teams[2];
 	std::vector<std::string> dead[2];
-	std::vector<Item> loot;
+	std::unordered_map<std::string, Item> loot;
 
 	Battle(std::string ID, std::string Zone) {
 		id = ID;
 		zone = Zone;
+		std::vector<std::string> zoneNames = {
+			"Haunted Crypts",
+			"Acrid Swamp",
+			"Wilted Woods"
+		};
+		for (int i = 0; i < zoneNames.size(); i++) {
+			if (zoneNames[i] == zone) {
+				zoneIndex = i;
+			}
+		}
 	}
 
 	Battle() {}

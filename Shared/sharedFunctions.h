@@ -280,6 +280,9 @@ void parseChange(Character& character, std::string type, std::string data) {
 			character.INVENTORY[id].equipped = false;
 		}
 	}
+	else if (type == "REMOVE_ITEM") {
+		character.INVENTORY.erase(data);
+	}
 	else if (type == "ITEM") {
 		Item item = parseItem(data);
 		character.INVENTORY[item.index] = item;
@@ -299,19 +302,19 @@ void parseChange(Battle& battle, std::string type, std::string data) {
 	if (type == "ID") {
 		battle.id = readStr(data);
 	}
-	if (type == "ZONE") {
+	else if (type == "ZONE") {
 		battle.zone = readStr(data);
 	}
-	if (type == "TURN") {
+	else if (type == "TURN") {
 		battle.turn = readInt(data);
 	}
-	if (type == "DIFFICULTY") {
+	else if (type == "DIFFICULTY") {
 		battle.difficulty = readInt(data);
 	}
-	if (type == "ROUND") {
+	else if (type == "ROUND") {
 		battle.round = readInt(data);
 	}
-	if (type == "ONE" || type == "TWO") {
+	else if (type == "ONE" || type == "TWO") {
 		int index = 0;
 		if (type == "TWO") {
 			index = 1;
@@ -321,8 +324,12 @@ void parseChange(Battle& battle, std::string type, std::string data) {
 			battle.teams[index].push_back(readStr(data));
 		}
 	}
-	if (type == "ITEM") {
-		battle.loot.push_back(parseItem(data));
+	else if (type == "REMOVE_ITEM") {
+		battle.loot.erase(data);
+	}
+	else if (type == "ITEM") {
+		Item item = parseItem(data);
+		battle.loot[item.index] = item;
 	}
 }
 

@@ -51,18 +51,54 @@ std::string winBattle(Battle& battle) {
 
 	// Have dead characters drop some of their gear
 	for (std::string id : battle.dead[0]) {
-
+		std::string path = "./Saves/Characters/Graveyard/" + id;
+		Character character = load<Character>(path);
+		for (auto item : character.INVENTORY) {
+			int dropChance = 20;
+			if (item.second.equipped) {
+				dropChance *= 2;
+			}
+			if (rand() % 100 < dropChance) {
+				battle.loot[item.second.index] = item.second;
+			}
+		}
 	}
 
 	// Give out loot
-	for (std::string id : battle.dead[1]) {
+	int lootMax = max(20, battle.difficulty / 3);
+	int lootValue = 0;
+	std::unordered_map<std::string, UI_Item> dropList;
+	for (std::string str : battle.dead[1]) {
+		std::string id = split(str, '.')[0];
+		for (Drop drop : ENEMIES[id].LOOT) {
+			int chance = rand() % 100;
+			if (chance < drop.dropChance) {
+				UI_Item item = getItem(drop.item);
+				dropList[drop.item] = item;
+				lootValue += item.cost;
+			}
+		}
+	}
+
+	if (lootValue < lootMax) {
+		for (Drop drop : zoneLoot[battle.zoneIndex]) {
+			int chance = rand() % 100;
+			if (chance < drop.dropChance) {
+				UI_Item item = getItem(drop.item);
+				dropList[drop.item] = item;
+				lootValue += item.cost;
+			}
+		}
+	}
+
+	while (lootValue < lootMax) {
 
 	}
 
 	// Give out gold and XP
 	int goldReward = min(200, 10 + (battle.difficulty / 20));
 	int expReward = battle.difficulty;
-	msg += "*GREEN*Each player gains " + goldReward + " gold and " + expReward + " experience!\n";
+	msg = msg + "*GREEN*Each player gains " + goldReward + " gold and " + expReward + " experience!\n";
 	for (std::string id : battle.teams[0]) {
 		Character* C = &CHARACTERS[id];
 		setStat(*C, "GOLD", CHARACTERS[id].GOLD + goldReward);
@@ -141,7 +177,7 @@ std::string handleCombat(std::string id) {
 }
 
 void summon(Battle& battle, Character enemy, int team = 1) {
-	std::string id = enemy.NAME + " " + battle.id + " " + to_str(rand() % 9999);
+	std::string id = enemy.NAME + "." + battle.id + "." + to_str(rand() % 9999);
 	enemy.ID = id;
 	enemy.LOCATION = battle.id;
 	battle.teams[team].push_back(id);
@@ -192,7 +228,7 @@ void startBattle(Battle& battle) {
 
 	std::vector<Character> validEnemies = {};
 	for (auto enemy : ENEMIES) {
-		if (enemy.second.LEVEL < rating && contains(enemy.second.ZONES, battle.zone)) {
+		if (enemy.second.LEVEL < rating && contains(enemy.second.ZONES, battle.zoneIndex)) {
 			validEnemies.push_back(enemy.second);
 		}
 	}
