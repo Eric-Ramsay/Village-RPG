@@ -227,6 +227,7 @@ int main() {
 
 	init();
 
+
 	// Load all Characters
 	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Characters/")) {
 		std::string path = entry.path().string();

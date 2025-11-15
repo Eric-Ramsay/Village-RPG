@@ -149,8 +149,11 @@ UI_Item TwoH(std::string n, int v, WEAPON_CLASS wepType, std::string d, int atks
 }
 
 void initItems() {	//	 Name		G		Type		Description												#	%		Min		Max		Pen		AP		Range
-	ITEMS["dagger"] = OneH("Dagger", 25, BLADE, "A simple dagger, lightweight and easy to use.", 3, 70, 2, 4, 0, 1, 1);
+	ITEMS["dagger"] = OneH("Dagger", 25, BLADE, "A simple dagger, lightweight and easy to use.", 3, 70, 200, 400, 0, 1, 1);
 	ITEMS["longbow"] = TwoH("Longbow", 50, RANGED, "A powerful bow thats almost as tall as its user.", 1, 80, 108, 114, 20, 6, 6);
+
+	genericLoot.push_back(ITEMS["longbow"]);
+	genericLoot.push_back(ITEMS["dagger"]);
 }
 
 void initPeople() {

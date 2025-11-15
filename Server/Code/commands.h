@@ -106,8 +106,8 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 	if (C.INVENTORY[C.LEFT].attacks == 0 && C.INVENTORY[C.RIGHT].attacks == 0) {
 		return "*RED*You can't make any more attacks!";
 	}
-	UI_Item left = getItem(C.LEFT);
-	UI_Item right = getItem(C.RIGHT);
+	UI_Item left = getItem(C.INVENTORY[C.LEFT].id);
+	UI_Item right = getItem(C.INVENTORY[C.RIGHT].id);
 	if (C.LEFT == "" || C.INVENTORY[C.LEFT].attacks == 0 || left.AP > C.AP) {
 		wepId = C.RIGHT;
 	}
@@ -117,7 +117,7 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 		}
 	}
 
-	UI_Item item = getItem(C.INVENTORY[wepId].key);
+	UI_Item item = getItem(C.INVENTORY[wepId].id);
 	if (item.AP > C.AP) {
 		return "*RED*You don't have enough AP!";
 	}
@@ -182,7 +182,7 @@ std::string commandRemove(int playerIndex, Character& C, std::vector<std::string
 	for (std::string id : ids) {
 		C.INVENTORY[id].equipped = false;
 		sendStat(C.ID, "DEQUIP", id);
-		return "You unequip the *GREEN*" + pretty(C.INVENTORY[id].key);
+		return "You unequip the *GREEN*" + pretty(C.INVENTORY[id].id);
 	}
 	return "*RED*Unable to equip '" + args + "'";
 }
@@ -193,11 +193,11 @@ std::string commandEquip(int playerIndex, Character& C, std::vector<std::string>
 	std::vector<std::string> ids = findItem(args, C.INVENTORY);
 	for (std::string id : ids) {
 		if (!C.INVENTORY[id].equipped) {
-			UI_Item item = getItem(C.INVENTORY[id].key);
+			UI_Item item = getItem(C.INVENTORY[id].id);
 			std::string type = item.type;
 			if (type == "armor") {
 				for (auto compItem : C.INVENTORY) {
-					std::string compType = getItem(compItem.second.key).type;
+					std::string compType = getItem(compItem.second.id).type;
 					if (type == "armor" && compType == "armor") {
 						C.INVENTORY[compItem.first].equipped = false;
 					}
@@ -275,6 +275,7 @@ std::string createCharacter(int playerIndex, std::string name) {
 	std::string id = players[playerIndex].USERNAME + " " + name + " " + to_str(t) + to_str(rand() % 99);
 
 	newCharacter.GOLD = 30;
+	newCharacter.AP = 20;
 	newCharacter.HP = 30;
 	newCharacter.ID = id;
 	newCharacter.NAME = name;
@@ -381,14 +382,18 @@ void command(std::string input, int playerIndex) {
 		msg = commandLeave(playerIndex, CHARACTERS[id], words);
 	}
 	else if (keyword == "move") {
-		int x = readInt(words[0]);
-		int y = readInt(words[0]);
-		if (x >= 0 && y >= 0 && x < 12 && y < 12) {
-			std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[id], BATTLES[CHARACTERS[id].LOCATION]);
-			if (movementCosts[y][x] <= CHARACTERS[id].AP) {
-				setStat(CHARACTERS[id], "AP", CHARACTERS[id].AP - movementCosts[y][x]);
-				setStat(CHARACTERS[id], "X", x);
-				setStat(CHARACTERS[id], "Y", y);
+		if (BATTLES.count(CHARACTERS[id].LOCATION) > 0) {
+			int x = readInt(words[0]);
+			int y = readInt(words[0]);
+			if (x >= 0 && y >= 0 && x < 12 && y < 12) {
+				std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[id], BATTLES[CHARACTERS[id].LOCATION]);
+				if (movementCosts[y][x] <= CHARACTERS[id].AP) {
+					if (BATTLES[CHARACTERS[id].LOCATION].round != 0) {
+						setStat(CHARACTERS[id], "AP", CHARACTERS[id].AP - movementCosts[y][x]);
+					}
+					setStat(CHARACTERS[id], "X", x);
+					setStat(CHARACTERS[id], "Y", y);
+				}
 			}
 		}
 	}

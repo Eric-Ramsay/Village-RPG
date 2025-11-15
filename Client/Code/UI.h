@@ -64,7 +64,7 @@ void DrawCharacterUI() {
 		if (item.second.equipped) {
 			color = "*TEAL*";
 		}
-		Print("*PINK*" + padNum(itemCount) + "*GREY*) " + color + pretty(item.second.key), x, y + 80 + 10 * itemCount);
+		Print("*PINK*" + padNum(itemCount) + "*GREY*) " + color + pretty(item.second.id), x, y + 80 + 10 * itemCount);
 	}
 	int num = (5 + (5 * C.BACKPACK)) - itemCount;
 	for (int i = itemCount; i < itemCount + num; i++) {
@@ -99,7 +99,9 @@ void DrawBattle() {
 		Character C = CHARACTERS[BATTLE.teams[1][i]];
 		Print("*RED*E" + to_str(i + 1) + " *GREY*" + C.NAME, 200, 28 + (i * 10));
 		tiles[C.Y][C.X] = "*RED*" + to_str(i + 1);
+		Print(DrawBar(C.HP, MaxHP(C), 8, "*RED*"), 300, 28 + (i * 10));
 	}
+	
 
 	Print("*YELLOW*Allies", 200, 107);
 	for (int i = 0; i < BATTLE.teams[0].size(); i++) {
@@ -109,7 +111,7 @@ void DrawBattle() {
 			pColor = "*BLUE*";
 		}
 		std::string nColor = "*GREY*";
-		if (C.ENDED) {
+		if (BATTLE.round > 0 && C.ENDED) {
 			nColor = "*BLACK*";
 		}
 		Print(pColor + "P" + to_str(i + 1) + " " + nColor + C.NAME, 200, 117 + (i * 10));
@@ -118,7 +120,7 @@ void DrawBattle() {
 
 	for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < 12; j++) {
-			if (movementCosts[i][j] <= CHARACTERS[ID].AP) {
+			if (BATTLE.round > 0 && movementCosts[i][j] <= CHARACTERS[ID].AP) {
 				Draw(32, 80, 16, 16, (j * 16), 11 + (i * 16), 1, sf::Color(135, 155, 0));
 			}
 			if (tiles[i][j] == "blank_tile") {

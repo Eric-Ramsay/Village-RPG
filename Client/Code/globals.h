@@ -25,8 +25,8 @@ int vertSize = 200000;
 
 Battle BATTLE;
 
-int WIDTH = 16 * 40;
-int HEIGHT = 9 * 40;
+int WIDTH = 640;
+int HEIGHT = 360;
 
 std::string input = "";
 int holdingBackspace = 0;
@@ -43,3 +43,6 @@ std::string PASSWORD = "123";
 bool blur = false;
 bool scanLines = false;
 bool quit = false;
+
+std::vector<std::vector<Drop>> zoneLoot = { {}, {}, {}, {} };
+std::vector<UI_Item> genericLoot = {};

@@ -111,13 +111,13 @@ struct UI_Item {
 
 struct Item {
 	std::string index = "";
-	std::string key = "";
+	std::string id = "";
 	std::vector<std::string> runes;
 	bool equipped = false;
 	int attacks = 0;
-	Item(std::string id = "") {
-		key = id;
-		index = id + "." + rand() % 9999;
+	Item(std::string id1 = "") {
+		id = id1;
+		index = id1 + "." + rand() % 9999;
 	}
 };
 
@@ -238,7 +238,6 @@ enum ZONE {
 struct Battle {
 	std::string id = "";
 	std::string zone = "";
-	int zoneIndex = 0;
 	int turn = 0;
 	int round = 0;
 	int difficulty = 0;
@@ -256,11 +255,6 @@ struct Battle {
 			"Acrid Swamp",
 			"Wilted Woods"
 		};
-		for (int i = 0; i < zoneNames.size(); i++) {
-			if (zoneNames[i] == zone) {
-				zoneIndex = i;
-			}
-		}
 	}
 
 	Battle() {}

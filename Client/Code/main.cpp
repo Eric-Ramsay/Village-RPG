@@ -249,10 +249,9 @@ int main()
 			}
 			texture.display();
 			sprite.setTexture(texture.getTexture());
-			sprite.setScale((UI.W) / texture.getSize().x, UI.H / texture.getSize().y);
-
-			sprite.setTexture(texture.getTexture());
-			sprite.setScale((UI.W) / texture.getSize().x, UI.H / texture.getSize().y);
+			float xScale = (float)UI.W / texture.getSize().x;
+			float yScale = (float)UI.H / texture.getSize().y;
+			sprite.setScale(xScale, yScale);
 
 			shader.setUniform("texture", texture.getTexture());
 			shader.setUniform("pixel_width", 1.0f / texture.getSize().x);

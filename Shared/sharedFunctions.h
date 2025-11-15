@@ -59,7 +59,7 @@ Item parseItem(std::string data) {
 		std::string type = readStr(data);
 		if (type == "INDEX") {
 			item.index = readStr(data);
-			item.key = split(item.index, '.')[0];
+			item.id = split(item.index, '.')[0];
 		}
 		if (type == "ATTACKS") {
 			item.attacks = readInt(data);
@@ -127,6 +127,9 @@ std::vector<std::vector<PathTile>> createMap(Battle b) {
 }
 
 std::vector<std::vector<int>> moveCosts(Character C, Battle battle) {
+	if (battle.round == 0) {
+		return std::vector<std::vector<int>> (12, std::vector<int>(12));
+	}
 	int team = 1;
 	for (std::string id : battle.teams[0]) {
 		if (C.ID == id) {
@@ -407,7 +410,7 @@ std::vector<int> findItem(std::string args, std::vector<Item> inventory) {
 		}
 	}
 	for (int i = 0; i < inventory.size(); i++) {
-		if (low(inventory[i].key) == args) {
+		if (low(inventory[i].id) == args) {
 			indices.push_back(i);
 		}
 	}
@@ -424,7 +427,7 @@ std::vector<std::string> findItem(std::string args, std::unordered_map<std::stri
 		return { args };
 	}
 	for (auto item : inventory) {
-		if (item.second.key == args) {
+		if (item.second.id == args) {
 			ids.push_back(item.second.index);
 		}
 	}

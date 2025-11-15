@@ -1,4 +1,13 @@
 #pragma once
+int getZoneIndex(std::string zone) {
+	for (int i = 0; i < zoneNames.size(); i++) {
+		if (zoneNames[i] == zone) {
+			return i;
+		}
+	}
+	return 0;
+}
+
 bool validateBattle(std::string id) {
 	if (BATTLES.count(id) == 0) {
 		return false;
@@ -67,32 +76,32 @@ std::string winBattle(Battle& battle) {
 	// Give out loot
 	int lootMax = max(20, battle.difficulty / 3);
 	int lootValue = 0;
-	std::unordered_map<std::string, UI_Item> dropList;
+	std::vector<std::string> dropList = {};
 	for (std::string str : battle.dead[1]) {
 		std::string id = split(str, '.')[0];
 		for (Drop drop : ENEMIES[id].LOOT) {
 			int chance = rand() % 100;
 			if (chance < drop.dropChance) {
 				UI_Item item = getItem(drop.item);
-				dropList[drop.item] = item;
+				dropList.push_back(item.id);
 				lootValue += item.cost;
 			}
 		}
 	}
 
-	if (lootValue < lootMax) {
-		for (Drop drop : zoneLoot[battle.zoneIndex]) {
-			int chance = rand() % 100;
-			if (chance < drop.dropChance) {
-				UI_Item item = getItem(drop.item);
-				dropList[drop.item] = item;
-				lootValue += item.cost;
-			}
+	for (Drop drop : zoneLoot[getZoneIndex(battle.zone)]) {
+		int chance = rand() % 100;
+		if (chance < drop.dropChance) {
+			UI_Item item = getItem(drop.item);
+			dropList.push_back(item.id);
+			lootValue += item.cost;
 		}
 	}
 
 	while (lootValue < lootMax) {
-
+		int index = rand() % genericLoot.size();
+		dropList.push_back(genericLoot[index].id);
+		lootValue += genericLoot[index].cost;
 	}
 
 	// Give out gold and XP
@@ -137,7 +146,7 @@ std::string startTurn(Battle& battle) {
 			setStat(*C, "ENDED", false);
 			for (auto item : C->INVENTORY) {
 				if (item.second.equipped) {
-					UI_Item rawItem = getItem(item.second.key);
+					UI_Item rawItem = getItem(item.second.id);
 					if (rawItem.type == "weapon") {
 						C->INVENTORY[item.first].attacks = rawItem.attacks;
 						sendItem(C->ID, item.second);
@@ -166,8 +175,11 @@ std::string handleCombat(std::string id) {
 			updateBattle(*battle);
 		}
 		else {
-			while (turnCompleted(battle->teams[battle->turn])) {
+			while (turnCompleted(battle->teams[battle->turn]) && validateBattle(battle->id)) {
 				battle->turn = !battle->turn;
+				if (battle->turn == 0) {
+					battle->round++;
+				}
 				startTurn(*battle);
 			}
 		}
@@ -211,6 +223,8 @@ void startBattle(Battle& battle) {
 	battle.round = 1;
 	battle.turn = 0;
 
+	int zoneIndex = getZoneIndex(battle.zone);
+
 	float lvl = 0.0;
 	int num = 0;
 
@@ -228,7 +242,7 @@ void startBattle(Battle& battle) {
 
 	std::vector<Character> validEnemies = {};
 	for (auto enemy : ENEMIES) {
-		if (enemy.second.LEVEL < rating && contains(enemy.second.ZONES, battle.zoneIndex)) {
+		if (enemy.second.LEVEL < rating && contains(enemy.second.ZONES, zoneIndex)) {
 			validEnemies.push_back(enemy.second);
 		}
 	}
