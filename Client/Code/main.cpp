@@ -94,6 +94,7 @@ int main()
 	UI.H = sf::VideoMode::getDesktopMode().height;
 	window.create(sf::VideoMode(UI.W, UI.H), "Village RPG", sf::Style::Fullscreen);
 
+	window.setMouseCursorVisible(false);
 	window.setKeyRepeatEnabled(false);
 	window.setVerticalSyncEnabled(UI.vSync);
 	srand(time(NULL));
@@ -167,7 +168,7 @@ int main()
 				}
 				else if (event.key.code == sf::Keyboard::Enter) {
 					replace(input, "  ", " ");
-					logs.push_back(input);
+					logs.push_back("*BLACK*> " + input);
 
 					if (input == "scan") {
 						scanLines = !scanLines;
@@ -230,7 +231,7 @@ int main()
 			if (UI.signInState == COMPLETED) {
 				DrawUI();
 			}
-			for (int i = 1; i <= 6; i++) {
+			for (int i = 1; i <= 7; i++) {
 				if (logs.size() >= i) {
 					Print(logs[logs.size() - i], 10, HEIGHT - (11 + i * 15));
 				}
@@ -259,6 +260,11 @@ int main()
 			shader.setUniform("big_pixel", 1.0f / window.getSize().y);
 			shader.setUniform("scanLines", scanLines);
 			shader.setUniform("blur", blur);
+
+
+			int x = sf::Mouse::getPosition().x;
+			int y = sf::Mouse::getPosition().y;
+			Draw(0, 144, 16, 16, x, y, 4);
 
 			window.draw(sprite, &shader);
 

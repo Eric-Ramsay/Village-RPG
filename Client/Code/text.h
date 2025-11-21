@@ -244,10 +244,10 @@ int Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1
 					charInfo(c, sX, sY, sW);
 					if (color == "sensitive") {
 						charInfo('\1', sX, sY, sW);
-						Draw(sX, sY, sW, 8, drawX, drawY, scale);
+						Draw(sX, sY - 1, sW, 9, drawX, drawY - 1, scale);
 					}
 					else {
-						Draw(sX, sY, sW, 8, drawX, drawY, scale, getColor(color));
+						Draw(sX, sY, sW, 9, drawX, drawY - 1, scale, getColor(color));
 					}
 					drawX += (sW + 1) * scale;
 				}

@@ -8,6 +8,21 @@ std::string padNum(int num) {
 	return to_str(num);
 }
 
+void handleClick(Tab& tab, int mX, int mY) {
+	if (!tab.visible) {
+		return;
+	}
+	int x = tab.x;
+	int y = tab.y;
+	if (mY >= y && mY <= y + 9) {
+		int len = measureText(tab.tabString) / 2;
+		if (mX >= x - (len / 2) && mX <= x + (len / 2)) {
+			tab.index = (mX - x) / (len / tab.tabs.size());
+			tab.setTabString();
+		}
+	}
+}
+
 void DrawTrade() {
 	if (CHARACTERS.count(ID) == 0) {
 		return;
@@ -33,6 +48,8 @@ void DrawTrade() {
 void DrawCharacterUI() {
 	int x = 460;
 	int y = 5;
+	int w = 160;
+	int h = 208;
 	if (CHARACTERS.count(ID) == 0) {
 		return;
 	}
@@ -55,26 +72,41 @@ void DrawCharacterUI() {
 		}
 		Print("*TEAL*" + stats[i] + " - *GREY*" + C.STATS[i], xPos, yPos);
 	}
-	Print("*YELLOW*Inventory *GREY*- *YELLOW*" + to_str(C.GOLD) + " Gold", x, y + 80);
+
+	playerMenu.x = x + w / 2;
+	playerMenu.y = 87;
+	CPrint(playerMenu.tabString, playerMenu.x, playerMenu.y);
 	
-	int itemCount = 0;
-	for (auto item : C.INVENTORY) {
-		itemCount++;
-		std::string color = "";
-		if (item.second.equipped) {
-			color = "*TEAL*";
+
+	if (playerMenu.index == 0) {
+		Print("*PURPLE*Inventory*GREY* - *YELLOW*" + to_str(C.GOLD) + " Gold", x, y + 94);
+		int itemCount = 0;
+		for (auto item : C.INVENTORY) {
+			itemCount++;
+			std::string color = "";
+			if (item.second.equipped) {
+				color = "*TEAL*";
+			}
+			Print("*PINK*" + padNum(itemCount) + "*GREY*) " + color + pretty(item.second.id), x, y + 94 + 10 * itemCount);
 		}
-		Print("*PINK*" + padNum(itemCount) + "*GREY*) " + color + pretty(item.second.id), x, y + 80 + 10 * itemCount);
+		int num = (5 + (5 * C.BACKPACK)) - itemCount;
+		for (int i = itemCount; i < itemCount + num; i++) {
+			Print("*PINK*" + padNum(i + 1) + "*GREY*) *BLACK*---", x, y + 104 + 10 * i);
+		}
 	}
-	int num = (5 + (5 * C.BACKPACK)) - itemCount;
-	for (int i = itemCount; i < itemCount + num; i++) {
-		Print("*PINK*" + padNum(i + 1) + "*GREY*) *BLACK*---", x, y + 90 + 10 * i);
+	else if (playerMenu.index == 1) {
+
+	}
+	else {
+
 	}
 }
 
 void DrawBattle() {
 	std::string msg = "";
-	Print("*RED*" + BATTLE.zone, 1, 1);
+	int x = 0;
+	int y = 0;
+	Print("*RED*" + BATTLE.zone, x, y + 1);
 
 	std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[ID], BATTLE);
 
@@ -94,16 +126,16 @@ void DrawBattle() {
 	tiles[6][1] = "water_tile";
 	tiles[6][0] = "water_tile";
 
-	Print("*PINK*Enemies", 200, 18);
+	Print("*PINK*Enemies", x + 200, y + 18);
 	for (int i = 0; i < BATTLE.teams[1].size(); i++) {
 		Character C = CHARACTERS[BATTLE.teams[1][i]];
-		Print("*RED*E" + to_str(i + 1) + " *GREY*" + C.NAME, 200, 28 + (i * 10));
+		Print("*RED*E" + to_str(i + 1) + " *GREY*" + C.NAME, x + 200, y + 28 + (i * 10));
 		tiles[C.Y][C.X] = "*RED*" + to_str(i + 1);
-		Print(DrawBar(C.HP, MaxHP(C), 8, "*RED*"), 300, 28 + (i * 10));
+		Print(DrawBar(C.HP, MaxHP(C), 8, "*RED*"),  x + 300, y + 28 + (i * 10));
 	}
 	
 
-	Print("*YELLOW*Allies", 200, 107);
+	Print("*YELLOW*Allies", x + 200, y + 107);
 	for (int i = 0; i < BATTLE.teams[0].size(); i++) {
 		Character C = CHARACTERS[BATTLE.teams[0][i]];
 		std::string pColor = "*GREEN*";
@@ -114,23 +146,23 @@ void DrawBattle() {
 		if (BATTLE.round > 0 && C.ENDED) {
 			nColor = "*BLACK*";
 		}
-		Print(pColor + "P" + to_str(i + 1) + " " + nColor + C.NAME, 200, 117 + (i * 10));
+		Print(pColor + "P" + to_str(i + 1) + " " + nColor + C.NAME, x + 200, y + 117 + (i * 10));
 		tiles[C.Y][C.X] = "*GREEN*" + to_str(i + 1);
 	}
 
 	for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < 12; j++) {
 			if (BATTLE.round > 0 && movementCosts[i][j] <= CHARACTERS[ID].AP) {
-				Draw(32, 80, 16, 16, (j * 16), 11 + (i * 16), 1, sf::Color(135, 155, 0));
+				Draw(32, 80, 16, 16, (x + j * 16), y + 11 + (i * 16), 1, sf::Color(135, 155, 0));
 			}
 			if (tiles[i][j] == "blank_tile") {
-				Draw(0, 80, 16, 16, (j * 16), 11 + (i * 16));
+				Draw(0, 80, 16, 16, (x + j * 16), y + 11 + (i * 16));
 			}
 			else if (tiles[i][j] == "water_tile") {
-				Draw(16, 80, 16, 16, (j * 16), 11 + (i * 16));
+				Draw(16, 80, 16, 16, (x + j * 16), y + 11 + (i * 16));
 			}
 			else {
-				CPrint(tiles[i][j], 12 + (j * 16), 15 + (i * 16));
+				CPrint(tiles[i][j], x + 12 + (j * 16), y + 15 + (i * 16));
 			}
 		}
 	}

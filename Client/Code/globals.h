@@ -7,7 +7,7 @@ Message* bufferEnd = nullptr;
 Message* firstProcess = nullptr;
 
 bool connected = true;
-std::string IP = "10.0.0.11";
+std::string IP = "10.0.0.143";
 sockaddr_in hint;
 int port = 1234;
 SOCKET sock;
@@ -46,3 +46,5 @@ bool quit = false;
 
 std::vector<std::vector<Drop>> zoneLoot = { {}, {}, {}, {} };
 std::vector<UI_Item> genericLoot = {};
+
+Tab playerMenu({ "INV", "EFF", "MAG" });

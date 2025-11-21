@@ -1,4 +1,4 @@
-ID!!!Crazed Wolf.Wilted Woods6843.4312!!!
+ID!!!Crazed Wolf.Wilted Woods9246.7265!!!
 USER!!!!!!
 HP!!!30!
 X!!!0!
@@ -7,4 +7,4 @@ ARMOR!!!2!0!
 MAXHP!!!40!
 TYPE!!!animal!!!
 NAME!!!Crazed Wolf!!!
-LOCATION!!!Wilted Woods6843!!!
+LOCATION!!!Wilted Woods9246!!!
