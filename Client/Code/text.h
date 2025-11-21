@@ -120,7 +120,14 @@ int measureText(std::string text, float scale = 1, int textSize = 2) {
 	return size * scale;
 }
 
-sf::Color getColor(std::string text = "") {
+sf::Color getColor(std::string input = "") {
+	std::string text = "";
+	for (char c : input) {
+		if (c != '*') {
+			text += c;
+		}
+	}
+	text = low(text);
 	if (text == "yellow") {
 		return sf::Color(180, 140, 0);
 	}

@@ -8,19 +8,66 @@ std::string padNum(int num) {
 	return to_str(num);
 }
 
+void setTabString(Tab& tab) {
+	tab.tabString = "";
+	for (int i = 0; i < tab.tabs.size(); i++) {
+		if (tab.index == i) {
+			tab.tabString += tab.onColor;
+		}
+		else {
+			tab.tabString += tab.offColor;
+		}
+		tab.tabString += " " + tab.tabs[i] + " ";
+		int len = measureText(" " + tab.tabs[i] + " ");
+		tab.tabSizes[i] = len;
+		//if (i < tab.tabs.size() - 1) {
+		//	tab.tabSizes[i] += 1;
+		//	tab.tabString += tab.breakColor + "|";
+		//}
+	}
+}
+
 void handleClick(Tab& tab, int mX, int mY) {
 	if (!tab.visible) {
 		return;
 	}
-	int x = tab.x;
-	int y = tab.y;
-	if (mY >= y && mY <= y + 9) {
-		int len = measureText(tab.tabString) / 2;
-		if (mX >= x - (len / 2) && mX <= x + (len / 2)) {
-			tab.index = (mX - x) / (len / tab.tabs.size());
-			tab.setTabString();
+	int y = tab.y - 3;
+	if (mY >= y && mY <= y + 13) {
+		int len = measureText(tab.tabString);
+		int x = tab.x - (len / 2);
+		if (mX >= x && mX <= x + len) {
+			for (int i = 0; i < tab.tabSizes.size(); i++) {
+				x += tab.tabSizes[i];
+				if (mX < x) {
+					tab.index = i;
+					setTabString(tab);
+					return;
+				}
+			}
 		}
+		
 	}
+}
+
+void DrawTabs(Tab& tab, int x1, int y1) {
+	tab.x = x1;
+	tab.y = y1;
+	tab.visible = true;
+	int len = measureText(tab.tabString);
+	int x = tab.x - (len / 2);
+	int y = tab.y - 3;
+	std::vector<sf::Color> colors = { sf::Color::Red, sf::Color::Green, sf::Color::Blue, sf::Color::Cyan };
+	for (int i = 0; i < tab.tabSizes.size(); i++) {
+		int w = tab.tabSizes[i];
+		std::string color = tab.breakColor;
+		if (i == tab.index) {
+			color = tab.indexColor;
+		}
+		fillRect(x, y, w, 13, getColor(color));
+		fillRect(x + 1, y + 1, w - 2, 11, sf::Color::Black);
+		x += w;
+	}
+	CPrint(tab.tabString, tab.x, tab.y);
 }
 
 void DrawTrade() {
@@ -73,13 +120,11 @@ void DrawCharacterUI() {
 		Print("*TEAL*" + stats[i] + " - *GREY*" + C.STATS[i], xPos, yPos);
 	}
 
-	playerMenu.x = x + w / 2;
-	playerMenu.y = 87;
-	CPrint(playerMenu.tabString, playerMenu.x, playerMenu.y);
+	DrawTabs(playerMenu, x + w / 2, 87);
 	
 
 	if (playerMenu.index == 0) {
-		Print("*PURPLE*Inventory*GREY* - *YELLOW*" + to_str(C.GOLD) + " Gold", x, y + 94);
+		Print("*YELLOW*" + to_str(C.GOLD) + " Gold", x, y + 94);
 		int itemCount = 0;
 		for (auto item : C.INVENTORY) {
 			itemCount++;
@@ -108,8 +153,9 @@ void DrawBattle() {
 	int y = 0;
 	Print("*RED*" + BATTLE.zone, x, y + 1);
 
-	std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[ID], BATTLE);
+	DrawTabs(combatMenu, 323, y + 10);
 
+	std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[ID], BATTLE);
 	std::vector<std::vector<std::string>> tiles(12, std::vector<std::string>(12, "blank_tile"));
 
 	tiles[0][2] = "water_tile";
@@ -126,27 +172,12 @@ void DrawBattle() {
 	tiles[6][1] = "water_tile";
 	tiles[6][0] = "water_tile";
 
-	Print("*PINK*Enemies", x + 200, y + 18);
 	for (int i = 0; i < BATTLE.teams[1].size(); i++) {
 		Character C = CHARACTERS[BATTLE.teams[1][i]];
-		Print("*RED*E" + to_str(i + 1) + " *GREY*" + C.NAME, x + 200, y + 28 + (i * 10));
 		tiles[C.Y][C.X] = "*RED*" + to_str(i + 1);
-		Print(DrawBar(C.HP, MaxHP(C), 8, "*RED*"),  x + 300, y + 28 + (i * 10));
 	}
-	
-
-	Print("*YELLOW*Allies", x + 200, y + 107);
 	for (int i = 0; i < BATTLE.teams[0].size(); i++) {
 		Character C = CHARACTERS[BATTLE.teams[0][i]];
-		std::string pColor = "*GREEN*";
-		if (C.TYPE != "player") {
-			pColor = "*BLUE*";
-		}
-		std::string nColor = "*GREY*";
-		if (BATTLE.round > 0 && C.ENDED) {
-			nColor = "*BLACK*";
-		}
-		Print(pColor + "P" + to_str(i + 1) + " " + nColor + C.NAME, x + 200, y + 117 + (i * 10));
 		tiles[C.Y][C.X] = "*GREEN*" + to_str(i + 1);
 	}
 
@@ -165,6 +196,35 @@ void DrawBattle() {
 				CPrint(tiles[i][j], x + 12 + (j * 16), y + 15 + (i * 16));
 			}
 		}
+	}
+
+	y += 10;
+
+	if (combatMenu.index == 0) {
+		Print("*PINK*Enemies", x + 200, y + 10);
+		for (int i = 0; i < BATTLE.teams[1].size(); i++) {
+			Character C = CHARACTERS[BATTLE.teams[1][i]];
+			Print("*RED*E" + to_str(i + 1) + " *GREY*" + C.NAME, x + 200, y + 20 + (i * 10));
+			Print(DrawBar(C.HP, MaxHP(C), 8, "*RED*"), x + 300, y + 20 + (i * 10));
+		}
+
+
+		Print("*YELLOW*Allies", x + 200, y + 107);
+		for (int i = 0; i < BATTLE.teams[0].size(); i++) {
+			Character C = CHARACTERS[BATTLE.teams[0][i]];
+			std::string pColor = "*GREEN*";
+			if (C.TYPE != "player") {
+				pColor = "*BLUE*";
+			}
+			std::string nColor = "*GREY*";
+			if (BATTLE.round > 0 && C.ENDED) {
+				nColor = "*BLACK*";
+			}
+			Print(pColor + "P" + to_str(i + 1) + " " + nColor + C.NAME, x + 200, y + 117 + (i * 10));
+		}
+	}
+	else {
+
 	}
 }
 

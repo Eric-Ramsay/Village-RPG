@@ -85,6 +85,8 @@ void processMessages() {
 					std::string type = readStr(str);
 					parseChange(BATTLE, type, str);
 				}
+				combatMenu.tabs[1] = "LOOT (" + to_str(BATTLE.loot.size()) + ")";
+				setTabString(combatMenu);
 			}
 			Message* temp = firstProcess;
 			firstProcess = firstProcess->next;

@@ -33,10 +33,10 @@ namespace Gdiplus {
 #include "draw.h"
 #include "text.h"
 #include "server.h"
-#include "listener.h"
 
 #include "..\..\Shared\init.h"
 #include "UI.h"
+#include "listener.h"
 
 
 void handleLoginInput(std::string input) {
@@ -65,8 +65,31 @@ void handleLoginInput(std::string input) {
 	}
 }
 
+void initTabs() {
+	tabList.push_back(&playerMenu);
+	tabList.push_back(&combatMenu);
+
+	for (int i = 0; i < tabList.size(); i++) {
+		setTabString(*tabList[i]);
+	}
+}
+
+void updateTabs(int mX, int mY) {
+	for (int i = 0; i < tabList.size(); i++) {
+		handleClick(*tabList[i], mX, mY);
+	}
+}
+
+void hideTabs() {
+	for (int i = 0; i < tabList.size(); i++) {
+		tabList[i]->visible = false;
+	}
+}
+
 int main()
 {
+	initTabs();
+
 	srand(time(NULL));
 	std::cout << rand() % 100 << std::endl;
 	init();
@@ -118,6 +141,13 @@ int main()
 			}
 			else if (event.type == sf::Event::GainedFocus) {
 				UI.inGame = true;
+			}
+			else if (event.type == sf::Event::MouseButtonReleased) {
+				int x = sf::Mouse::getPosition().x;
+				int y = sf::Mouse::getPosition().y;
+				int xScale = UI.W / WIDTH;
+				int yScale = UI.H / HEIGHT;
+				updateTabs(x/xScale, y/yScale);
 			}
 			else if (event.type == sf::Event::KeyPressed) {
 				int c = 0;
@@ -229,6 +259,7 @@ int main()
 			texture.clear(sf::Color(0, 5, 10));
 
 			if (UI.signInState == COMPLETED) {
+				hideTabs();
 				DrawUI();
 			}
 			for (int i = 1; i <= 7; i++) {

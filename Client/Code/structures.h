@@ -90,32 +90,21 @@ struct Tab {
 	int y;
 	int index = 0;
 	std::vector<std::string> tabs;
+	std::vector<int> tabSizes = {};
 	std::string tabString = "";
 	std::string breakColor = "*PINK*";
 	std::string onColor = "*GREY*";
 	std::string offColor = "*BLACK*";
+	std::string indexColor = "*PURPLE*";
 	bool visible = false;
 
-	void setTabString() {
-		for (int i = 0; i < tabs.size(); i++) {
-			if (index == i) {
-				tabString += onColor;
-			}
-			else {
-				tabString += offColor;
-			}
-			tabString += tabs[i];
-			if (i < tabs.size() - 1) {
-				tabString += " " + breakColor + "| ";
-			}
-		}
-	}
-
-	Tab(std::vector<std::string> t, std::string selColor = "*WHITE*", std::string bColor = "*PINK*", std::string deselColor = "*BLACK*") {
+	Tab(std::vector<std::string> t = {}, std::string selColor = "*WHITE*", std::string bColor = "*PINK*", std::string deselColor = "*BLACK*") {
 		tabs = t;
 		onColor = selColor;
 		offColor = deselColor;
 		breakColor = bColor;
-		setTabString();
+		for (int i = 0; i < tabs.size(); i++) {
+			tabSizes.push_back(0);
+		}
 	}
 };
