@@ -20,7 +20,7 @@ NPC getNPC(std::string id) {
 }
 
 UI_Item getItem(std::string id) {
-	if (ITEMS.count(id) == 0) {
+	if (ITEMS.count(low(id)) == 0) {
 		std::cout << "Error, Item " + id + " not found!" << std::endl;
 		return ITEMS.begin()->second;
 	}
@@ -333,6 +333,14 @@ void parseChange(Battle& battle, std::string type, std::string data) {
 	else if (type == "ITEM") {
 		Item item = parseItem(data);
 		battle.loot[item.index] = item;
+	}
+	else if (type == "LOOT") {
+		battle.loot = {};
+		std::vector<std::string> lines = split(data, '\n');
+		for (int i = 0; i < lines.size(); i++) {
+			std::string header = readStr(lines[i]);
+			parseChange(battle, "ADD_ITEM", lines[i]);
+		}
 	}
 }
 

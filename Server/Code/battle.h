@@ -12,6 +12,7 @@ bool validateBattle(std::string id) {
 	if (BATTLES.count(id) == 0) {
 		return false;
 	}
+	bool update = false;
 	int numCharacters = 0;
 	for (int i = 0; i < 2; i++) {
 		for (int j = BATTLES[id].teams[i].size() - 1; j >= 0; j--) {
@@ -21,6 +22,7 @@ bool validateBattle(std::string id) {
 				if (CHARACTERS[character].HP <= 0) {
 					BATTLES[id].dead[i].push_back(CHARACTERS[character].ID);
 					removeCharacter(CHARACTERS[character]);
+					update = true;
 				}
 			}
 			else if (CHARACTERS[character].TYPE == "player") {
@@ -41,6 +43,9 @@ bool validateBattle(std::string id) {
 		}
 		BATTLES.erase(id);
 		return false;
+	}
+	else if (update) {
+		updateBattle(BATTLES[id]);
 	}
 	return true;
 }
@@ -124,6 +129,10 @@ std::string winBattle(Battle& battle) {
 			sendStat(id, "LEVEL", C->LEVEL);
 		}
 		sendStat(id, "XP", C->XP);
+	}
+	for (std::string id : dropList) {
+		Item newItem(id);
+		battle.loot[newItem.index] = newItem;
 	}
 
 	battle.dead[0] = {};
@@ -239,6 +248,7 @@ void startBattle(Battle& battle) {
 
 	lvl /= (float)num;
 	int rating = 45 * num * std::pow(1.22, lvl) + (15 * (lvl - 1) * num);
+	battle.difficulty = rating;
 
 	std::vector<Character> validEnemies = {};
 	for (auto enemy : ENEMIES) {

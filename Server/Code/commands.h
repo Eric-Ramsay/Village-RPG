@@ -94,7 +94,7 @@ std::string commandStart(int playerIndex, Character& C) {
 }
 
 std::string commandAttack(int playerIndex, Character& C, std::vector<std::string> words) {
-	std::string args = low(join(words));
+	std::string args = join(words);
 	if (BATTLES.count(C.LOCATION) == 0) {
 		return "*RED*You must be in combat to attack.";
 	}
@@ -177,7 +177,7 @@ std::string commandLeave(int playerIndex, Character& C, std::vector<std::string>
 }
 
 std::string commandRemove(int playerIndex, Character& C, std::vector<std::string> words) {
-	std::string args = low(join(words));
+	std::string args = join(words);
 	std::vector<std::string> ids = findItem(args, C.INVENTORY);
 	for (std::string id : ids) {
 		C.INVENTORY[id].equipped = false;
@@ -189,7 +189,7 @@ std::string commandRemove(int playerIndex, Character& C, std::vector<std::string
 
 std::string commandEquip(int playerIndex, Character& C, std::vector<std::string> words) {
 	std::string msg = "";
-	std::string args = low(join(words));
+	std::string args = join(words);
 	std::vector<std::string> ids = findItem(args, C.INVENTORY);
 	for (std::string id : ids) {
 		if (!C.INVENTORY[id].equipped) {
@@ -237,7 +237,7 @@ std::string commandBuy(int playerIndex, Character& C, std::vector<std::string> w
 	if (C.TRADING == "") {
 		return "*RED*You must trade with a merchant first.";
 	}
-	std::string args = low(join(words));
+	std::string args = join(words);
 	if (C.BACKPACK && args == "backpack") {
 		return "*RED*You already have a backpack.";
 	}
@@ -275,17 +275,56 @@ std::string createCharacter(int playerIndex, std::string name) {
 	std::string id = players[playerIndex].USERNAME + " " + name + " " + to_str(t) + to_str(rand() % 99);
 
 	newCharacter.GOLD = 30;
-	newCharacter.AP = 20;
+	newCharacter.AP = 6;
+	newCharacter.STAMINA = 20;
 	newCharacter.HP = 30;
 	newCharacter.ID = id;
 	newCharacter.NAME = name;
 	newCharacter.USER = players[playerIndex].USERNAME;
+
+	Item dagger("dagger");
+	dagger.equipped = true;
+	newCharacter.LEFT = dagger.index;
+	newCharacter.INVENTORY[dagger.index] = dagger;
 
 	players[playerIndex].ID = id;
 	CHARACTERS[id] = newCharacter;
 	
 	sendCharacter(newCharacter);
 	return id;
+}
+
+std::string commandTake(int playerIndex, Character& C, std::vector<std::string> words) {
+	std::string args = join(words);
+	if (BATTLES.count(C.LOCATION) == 0) {
+		return "*RED*You must be in combat to attack.";
+	}
+
+	Battle* battle = &BATTLES[C.LOCATION];
+	std::string index = "";
+	std::string id = "";
+	if (battle->loot.count(args) > 0) {
+		id = battle->loot[args].id;
+		index = args;
+	}
+	else {
+		for (auto item : battle->loot) {
+			if (low(item.second.id) == low(args)) {
+				id = args;
+				index = item.first;
+			}
+		}
+	}
+	if (index == "") {
+		return "*RED*Couldn't find item '" + args + "'";
+	}
+
+	C.INVENTORY[index] = battle->loot[index];
+	removeLoot(*battle, index);
+
+	sendItem(C.ID, C.INVENTORY[index]);
+
+	return "";
 }
 
 void commandTrade(int playerIndex, Character& C, std::string id) {
@@ -330,16 +369,26 @@ void command(std::string input, int playerIndex) {
 	std::vector<std::string> words = split(low(input));
 	std::string keyword = words[0];
 	words.erase(words.begin());
+
 	if (keyword == "character") {
-		if (words.size() == 0) {
-			msg = "*RED*Please enter a character name!";
-		}
-		else {
-			id = createCharacter(playerIndex, words[0]);
-			players[playerIndex].ID = id;
+		if (players[playerIndex].ID == "") {
+			if (words.size() == 0) {
+				msg = "*RED*Please enter a character name!";
+			}
+			else {
+				id = createCharacter(playerIndex, words[0]);
+				players[playerIndex].ID = id;
+			}
 		}
 	}
-	else if (keyword == "go" || keyword == "enter" || keyword == "travel") {
+
+	if (players[playerIndex].ID == "") {
+		sendData("TEXT", "*RED*You need to make a character!", { playerIndex });
+		return;
+	}
+
+	
+	if (keyword == "go" || keyword == "enter" || keyword == "travel") {
 		msg = commandTravel(playerIndex, CHARACTERS[id], words);
 	}
 	else if (keyword == "delve") {
@@ -404,6 +453,9 @@ void command(std::string input, int playerIndex) {
 			sendStat(id, "HP", CHARACTERS[id].HP);
 		}
 	}
+	else if (keyword == "take") {
+		msg = commandTake(playerIndex, CHARACTERS[id], words);
+	}
 	else if (keyword == "rest" || keyword == "sleep") {
 		msg = commandSleep(playerIndex, CHARACTERS[id]);
 	}
@@ -413,7 +465,11 @@ void command(std::string input, int playerIndex) {
 	}
 	else if (keyword == "suicide") {
 		msg = "*RED*You've lost the will to go on. . .";
+		std::string loc = CHARACTERS[id].LOCATION;
 		removeCharacter(CHARACTERS[id]);
+		if (BATTLES.count(loc) > 0) {
+			validateBattle(CHARACTERS[id].LOCATION);
+		}
 	}
 	std::cout << msg << std::endl;
 	if (CHARACTERS.count(id) > 0) {

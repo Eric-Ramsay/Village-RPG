@@ -75,6 +75,7 @@ std::string serialize(Character C) {
 	data += addLine("HITS", C.HITS);
 	data += addLine("MISSES", C.MISSES);
 	data += addLine("STATS", C.STATS);
+	data += "INVENTORY!!!\n";
 	data += serialize(C.INVENTORY);
 	return data;
 }
@@ -96,6 +97,7 @@ std::string serialize(Battle battle) {
 		data += str(id);
 	}
 	data += "\n";
+	data += "LOOT!!!\n";
 	data += serialize(battle.loot);
 	return data;
 }
@@ -111,7 +113,10 @@ void graveSave(Character character) {
 }
 
 void save(Character character) {
-	if (character.TYPE == "player") {
+	if (character.ID == "") {
+		std::cout << "Saving weird character!" << std::endl;
+	}
+	else if (character.TYPE == "player") {
 		saveToFile("Characters/" + character.ID, serialize(character));
 	}
 	else {

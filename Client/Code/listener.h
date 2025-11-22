@@ -66,6 +66,9 @@ void processMessages() {
 				if (C.USER == USERNAME) {
 					ID = C.ID;
 				}
+				if (C.ID == "" || C.NAME == "") {
+					std::cout << "Weird Character Received" << std::endl;
+				}
 				CHARACTERS[C.ID] = C;
 			}
 			if (type == "REMOVE_CHARACTER") {

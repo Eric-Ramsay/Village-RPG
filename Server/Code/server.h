@@ -83,6 +83,24 @@ void updateBattle(Battle battle) {
 	sendBattle(battle, indices);
 }
 
+void removeLoot(Battle& battle, std::string index) {
+	std::vector<int> indices = {};
+	for (int i = 0; i < 2; i++) {
+		for (std::string id : battle.teams[i]) {
+			for (int i = 0; i < players.size(); i++) {
+				if (players[i].ID == id) {
+					indices.push_back(i);
+				}
+			}
+		}
+	}
+	if (battle.loot.count(index) > 0) {
+		battle.loot.erase(index);
+		save(battle);
+		sendData("BATTLE", "REMOVE_ITEM!!!" + index, indices);
+	}
+}
+
 void removeCharacter(Character character) {
 	sendData("REMOVE_CHARACTER", character.ID);
 	if (character.TYPE == "player") {
@@ -91,6 +109,11 @@ void removeCharacter(Character character) {
 	}
 	else {
 		std::remove(("./Saves/Characters/Enemies/" + character.ID + ".txt").c_str());
+	}
+	for (int i = 0; i < players.size(); i++) {
+		if (players[i].ID == character.ID) {
+			players[i].ID = "";
+		}
 	}
 	CHARACTERS.erase(character.ID);
 }

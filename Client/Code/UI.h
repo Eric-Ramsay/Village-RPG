@@ -105,8 +105,9 @@ void DrawCharacterUI() {
 	Print(DrawBar(C.HP, MaxHP(C), 20, "*RED*"), x, y + 10);
 	Print(DrawBar(C.STAMINA, MaxStamina(C), 20, "*GREEN*"), x, y + 20);
 	Print("*TEAL*\4 *GREY*" + to_str(C.ARMOR[0]), x, y + 30);
-	Print("*TEAL*\5 *GREY*" + to_str(C.ARMOR[1]), x, y + 40);
-	Print("*GREEN*AP: " + to_str(C.AP), x + 30, y + 30);
+	Print("*TEAL*\5 *GREY*" + to_str(C.ARMOR[1]), x + 30, y + 30);
+	Print("*GREEN*AP: " + to_str(C.AP), x + 60, y + 30);
+	Print("*PURPLE*SP: *GREY*" + to_str(C.SP), x, y + 40);
 	std::vector<std::string> stats = {
 		"VIT", "END", "DEX", "MAG", "WEP", "AVD"
 	};
@@ -118,6 +119,9 @@ void DrawCharacterUI() {
 			yPos -= 30;
 		}
 		Print("*TEAL*" + stats[i] + " - *GREY*" + C.STATS[i], xPos, yPos);
+		if (C.SP > 0) {
+			Print("*TEAL*\6", xPos + 50, yPos);
+		}
 	}
 
 	DrawTabs(playerMenu, x + w / 2, 87);
@@ -208,7 +212,6 @@ void DrawBattle() {
 			Print(DrawBar(C.HP, MaxHP(C), 8, "*RED*"), x + 300, y + 20 + (i * 10));
 		}
 
-
 		Print("*YELLOW*Allies", x + 200, y + 107);
 		for (int i = 0; i < BATTLE.teams[0].size(); i++) {
 			Character C = CHARACTERS[BATTLE.teams[0][i]];
@@ -224,7 +227,24 @@ void DrawBattle() {
 		}
 	}
 	else {
-
+		int itemCount = 0;
+		for (auto item : BATTLE.loot) {
+			UI_Item baseItem = getItem(item.second.id);
+			itemCount++;
+			std::string text = "*PINK*" + padNum(itemCount) + "*GREY*) *TEAL*" + pretty(item.second.id);
+			int xPos = (x + 200);
+			int yPos = (y + 1 + 10 * itemCount);
+			int w = measureText(text);
+			int h = 9;
+			Print(text, xPos, yPos);
+			Print("*YELLOW*" + to_str(baseItem.cost), xPos + 200, yPos);
+			// Check if player clicks on any of these items
+			if (UI.mousePressed) {
+				if (UI.mX >= xPos && UI.mX <= xPos + w && UI.mY >= yPos && UI.mY <= yPos + h) {
+					sendData("COMMAND", "TAKE " + item.second.index);
+				}
+			}
+		}
 	}
 }
 

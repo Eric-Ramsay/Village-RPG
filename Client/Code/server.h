@@ -48,7 +48,7 @@ void connect() {
 	int connection = connect(sock, (sockaddr*)&hint, sizeof(hint));
 	if (connection == SOCKET_ERROR) {
 		int error = WSAGetLastError();
-		std::cout << "Error #" << error << " Retrying Connection. . ." << std::endl;
+  		std::cout << "Error #" << error << " Retrying Connection. . ." << std::endl;
 		connect();
 	}
 	std::cout << "Connected." << std::endl;

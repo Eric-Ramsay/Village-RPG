@@ -129,10 +129,17 @@ int main()
 	sf::Shader shader;
 	shader.loadFromFile("./Code/shader.frag", sf::Shader::Fragment);
 
+	int xScale = UI.W / WIDTH;
+	int yScale = UI.H / HEIGHT;
+
 	while (!quit && window.isOpen()) {
 		Sleep(1);
 		sf::Event event;
+		UI.mouseReleased = false;
+		UI.mousePressed = false;
 		while (window.pollEvent(event)) {
+			UI.mX = sf::Mouse::getPosition().x / xScale;
+			UI.mY = sf::Mouse::getPosition().y / yScale;
 			if (event.type == sf::Event::Closed) {
 				window.close();
 			}
@@ -142,85 +149,90 @@ int main()
 			else if (event.type == sf::Event::GainedFocus) {
 				UI.inGame = true;
 			}
-			else if (event.type == sf::Event::MouseButtonReleased) {
-				int x = sf::Mouse::getPosition().x;
-				int y = sf::Mouse::getPosition().y;
-				int xScale = UI.W / WIDTH;
-				int yScale = UI.H / HEIGHT;
-				updateTabs(x/xScale, y/yScale);
-			}
-			else if (event.type == sf::Event::KeyPressed) {
-				int c = 0;
-				int keyCode = (int)event.key.code;
-				if (keyCode >= sf::Keyboard::A && keyCode <= sf::Keyboard::Z) {
-					char add = 'a';
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-						add = 'A';
+			else if (UI.inGame) {
+				if (event.type == sf::Event::MouseButtonPressed) {
+					UI.mousePressed = true;
+					UI.mouseHeld = true;
+				}
+				else if (event.type == sf::Event::MouseButtonReleased) {
+					UI.mouseHeld = false;
+					UI.mouseReleased = true;
+					
+					updateTabs(UI.mX, UI.mY);
+				}
+				else if (event.type == sf::Event::KeyPressed) {
+					int c = 0;
+					int keyCode = (int)event.key.code;
+					if (keyCode >= sf::Keyboard::A && keyCode <= sf::Keyboard::Z) {
+						char add = 'a';
+						if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+							add = 'A';
+						}
+						c = add + (keyCode - (int)sf::Keyboard::A);
 					}
-					c = add + (keyCode - (int)sf::Keyboard::A);
-				}
-				else if (event.key.code >= sf::Keyboard::Num0 && event.key.code <= sf::Keyboard::Num9) {
-					c = (char)(event.key.code - sf::Keyboard::Num0 + '0');
-				}
-				else if (event.key.code == sf::Keyboard::Space) {
-					c = (char)(event.key.code - sf::Keyboard::Space + ' ');
-				}
-				else if (event.key.code == sf::Keyboard::Backspace) {
-					if (input.length() > 0) {
-						input.pop_back();
+					else if (event.key.code >= sf::Keyboard::Num0 && event.key.code <= sf::Keyboard::Num9) {
+						c = (char)(event.key.code - sf::Keyboard::Num0 + '0');
 					}
-				}
-				else if (event.key.code == sf::Keyboard::Right) {
-					sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X + 1) + str(CHARACTERS[ID].Y));
-				}
-				else if (event.key.code == sf::Keyboard::Left) {
-					sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X - 1) + str(CHARACTERS[ID].Y));
-				}
-				else if (event.key.code == sf::Keyboard::Up) {
-					sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X) + str(CHARACTERS[ID].Y - 1));
-				}
-				else if (event.key.code == sf::Keyboard::Down) {
-					sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X) + str(CHARACTERS[ID].Y + 1));
-				}
-				else if (event.key.code == sf::Keyboard::Escape) {
-					if (UI.signInState < COMPLETED && UI.signInState > CHOOSE) {
-						if (UI.signInState == LOGIN_USERNAME) {
-							UI.signInState = CHOOSE;
+					else if (event.key.code == sf::Keyboard::Space) {
+						c = (char)(event.key.code - sf::Keyboard::Space + ' ');
+					}
+					else if (event.key.code == sf::Keyboard::Backspace) {
+						if (input.length() > 0) {
+							input.pop_back();
+						}
+					}
+					else if (event.key.code == sf::Keyboard::Right) {
+						sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X + 1) + str(CHARACTERS[ID].Y));
+					}
+					else if (event.key.code == sf::Keyboard::Left) {
+						sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X - 1) + str(CHARACTERS[ID].Y));
+					}
+					else if (event.key.code == sf::Keyboard::Up) {
+						sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X) + str(CHARACTERS[ID].Y - 1));
+					}
+					else if (event.key.code == sf::Keyboard::Down) {
+						sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X) + str(CHARACTERS[ID].Y + 1));
+					}
+					else if (event.key.code == sf::Keyboard::Escape) {
+						if (UI.signInState < COMPLETED && UI.signInState > CHOOSE) {
+							if (UI.signInState == LOGIN_USERNAME) {
+								UI.signInState = CHOOSE;
+							}
+							else {
+								UI.signInState = (LOGIN)((int)UI.signInState - 1);
+							}
+							stateMessage(UI.signInState);
+						}
+					}
+					if (c != 0) {
+						input += (char)c;
+					}
+					else if (event.key.code == sf::Keyboard::Enter) {
+						replace(input, "  ", " ");
+						logs.push_back("*BLACK*> " + input);
+
+						if (input == "scan") {
+							scanLines = !scanLines;
+						}
+						else if (input == "blur") {
+							blur = !blur;
+						}
+						else if (input == "trade") {
+							if (PEOPLE.count(low(input)) > 0) {
+								PEOPLE[low(input)].index++;
+							}
+						}
+						else if (input == "quit") {
+							quit = true;
+						}
+						else if (UI.signInState == COMPLETED) {
+							sendData("COMMAND", input);
 						}
 						else {
-							UI.signInState = (LOGIN)((int)UI.signInState - 1);
+							handleLoginInput(input);
 						}
-						stateMessage(UI.signInState);
+						input = "";
 					}
-				}
-				if (c != 0) {
-					input += (char)c;
-				}
-				else if (event.key.code == sf::Keyboard::Enter) {
-					replace(input, "  ", " ");
-					logs.push_back("*BLACK*> " + input);
-
-					if (input == "scan") {
-						scanLines = !scanLines;
-					}
-					else if (input == "blur") {
-						blur = !blur;
-					}
-					else if (input == "trade") {
-						if (PEOPLE.count(low(input)) > 0) {
-							PEOPLE[low(input)].index++;
-						}
-					}
-					else if (input == "quit") {
-						quit = true;
-					}
-					else if (UI.signInState == COMPLETED) {
-						sendData("COMMAND", input);
-					}
-					else {
-						handleLoginInput(input);
-					}
-					input = "";
 				}
 			}
 		}

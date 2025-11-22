@@ -77,6 +77,7 @@ struct UIState {
 	bool WINDOW_DRAW = false;
 
 	bool mouseHeld = false;
+	bool mouseReleased = false;
 	bool mousePressed = false;
 
 	bool UIClick = false;
