@@ -109,6 +109,7 @@ int main()
 	float FPS = 0;
 	bool updateFPS = true;
 	auto clock = sf::Clock{};
+	float timeSinceLastClick = 0;
 	float elapsedTime = 0;
 	float targetTime = .04f;
 
@@ -132,11 +133,15 @@ int main()
 	int xScale = UI.W / WIDTH;
 	int yScale = UI.H / HEIGHT;
 
+	
+
 	while (!quit && window.isOpen()) {
 		Sleep(1);
 		sf::Event event;
 		UI.mouseReleased = false;
 		UI.mousePressed = false;
+		UI.rightPressed = false;
+		UI.doubleClicked = false;
 		while (window.pollEvent(event)) {
 			UI.mX = sf::Mouse::getPosition().x / xScale;
 			UI.mY = sf::Mouse::getPosition().y / yScale;
@@ -151,14 +156,32 @@ int main()
 			}
 			else if (UI.inGame) {
 				if (event.type == sf::Event::MouseButtonPressed) {
-					UI.mousePressed = true;
-					UI.mouseHeld = true;
+					if (event.mouseButton.button == sf::Mouse::Left) {
+						UI.mousePressed = true;
+						UI.mouseHeld = true;
+					}
+					else if (event.mouseButton.button == sf::Mouse::Right) {
+						UI.rightPressed = true;
+						UI.rightHeld = true;
+					}
 				}
 				else if (event.type == sf::Event::MouseButtonReleased) {
-					UI.mouseHeld = false;
-					UI.mouseReleased = true;
-					
-					updateTabs(UI.mX, UI.mY);
+					if (event.mouseButton.button == sf::Mouse::Left) {
+						UI.mouseHeld = false;
+						UI.mouseReleased = true;
+						if (timeSinceLastClick < .5) {
+							UI.doubleClicked = true;
+							timeSinceLastClick += 1;
+						}
+						else {
+							timeSinceLastClick = 0;
+						}
+						updateTabs(UI.mX, UI.mY);
+					}
+					else if (event.mouseButton.button == sf::Mouse::Right) {
+						UI.rightReleased = true;
+						UI.rightHeld = false;
+					}
 				}
 				else if (event.type == sf::Event::KeyPressed) {
 					int c = 0;
@@ -242,6 +265,7 @@ int main()
 				updateFPS = false;
 			}
 			elapsedTime += clock.getElapsedTime().asSeconds();
+			timeSinceLastClick += clock.getElapsedTime().asSeconds();
 			clock.restart();
 			if (elapsedTime >= targetTime) {
 				elapsedTime -= targetTime;

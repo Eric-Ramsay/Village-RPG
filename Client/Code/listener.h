@@ -82,6 +82,14 @@ void processMessages() {
 				std::string stat = readStr(data);
 				parseChange(CHARACTERS[id], stat, data);
 			}
+			if (type == "STATS") {
+				std::string id = readStr(data);
+				std::vector<std::string> strings = split(data, '\n');
+				for (std::string str : strings) {
+					std::string type = readStr(str);
+					parseChange(CHARACTERS[id], type, str);
+				}
+			}
 			if (type == "BATTLE") {
 				std::vector<std::string> strings = split(data, '\n');
 				for (std::string str : strings) {

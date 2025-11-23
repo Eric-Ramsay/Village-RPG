@@ -98,23 +98,40 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 	if (BATTLES.count(C.LOCATION) == 0) {
 		return "*RED*You must be in combat to attack.";
 	}
-	std::string wepId = C.LEFT;
 	// Determine Weapon to Attack with
+	if (C.RIGHT != "" && C.INVENTORY.count(C.RIGHT) == 0) {
+		C.RIGHT = "";
+	}
+	if (C.LEFT != "" && C.INVENTORY.count(C.LEFT) == 0) {
+		C.LEFT = "";
+	}
 	if (C.LEFT == "" && C.RIGHT == "") {
 		return "*RED*You must equip a weapon!";
 	}
-	if (C.INVENTORY[C.LEFT].attacks == 0 && C.INVENTORY[C.RIGHT].attacks == 0) {
+
+	std::string leftItem = C.LEFT;
+	std::string rightItem = C.RIGHT;
+	
+	if (leftItem == "") {
+		leftItem = C.RIGHT;
+	}
+	if (rightItem == "") {
+		rightItem = C.LEFT;
+	}
+
+	if (C.INVENTORY[leftItem].attacks == 0 && C.INVENTORY[rightItem].attacks == 0) {
 		return "*RED*You can't make any more attacks!";
 	}
-	UI_Item left = getItem(C.INVENTORY[C.LEFT].id);
-	UI_Item right = getItem(C.INVENTORY[C.RIGHT].id);
-	if (C.LEFT == "" || C.INVENTORY[C.LEFT].attacks == 0 || left.AP > C.AP) {
-		wepId = C.RIGHT;
+
+	std::string wepId = leftItem;
+
+	UI_Item left = getItem(C.INVENTORY[leftItem].id);
+	UI_Item right = getItem(C.INVENTORY[rightItem].id);
+	if (C.LEFT == "" || C.INVENTORY[leftItem].attacks == 0 || left.AP > C.AP) {
+		wepId = rightItem;
 	}
-	else {
-		if (C.INVENTORY[C.RIGHT].attacks > 0 && right.range > left.range) {
-			wepId = C.RIGHT;
-		}
+	else if (C.INVENTORY[rightItem].attacks > 0 && right.range > left.range) {
+		wepId = rightItem;
 	}
 
 	UI_Item item = getItem(C.INVENTORY[wepId].id);
@@ -131,7 +148,7 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 		Character enemy = CHARACTERS[enemyId];
 		int eX = enemy.X;
 		int eY = enemy.Y;
-		if (low(enemy.NAME) == args) {
+		if (low(enemy.ID) == args || low(enemy.NAME) == args) {
 			found = true;
 			if (atkDist(x, y, eX, eY) <= item.range) {
 				target = enemyId;
@@ -149,9 +166,12 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 	setStat(C, "AP", C.AP - item.AP);
 	C.INVENTORY[wepId].attacks--;
 	sendItem(C.ID, C.INVENTORY[wepId]);
+
 	std::string msg = dealDamage(item.attack, C.ID, target, battle.teams[0], battle.teams[1]).msg + "\n";
-	msg += handleCombat(battle.id);
-	return msg;
+	sendText(msg, battleIndices(battle));
+
+	handleCombat(battle.id);
+	return "";
 }
 
 std::string commandLeave(int playerIndex, Character& C, std::vector<std::string> words) {
@@ -318,6 +338,9 @@ std::string commandTake(int playerIndex, Character& C, std::vector<std::string> 
 	if (index == "") {
 		return "*RED*Couldn't find item '" + args + "'";
 	}
+	if (!canTake(C, battle->loot[index].id)) {
+		return "*RED*You don't have room in your inventory for that.";
+	}
 
 	C.INVENTORY[index] = battle->loot[index];
 	removeLoot(*battle, index);
@@ -333,6 +356,46 @@ void commandTrade(int playerIndex, Character& C, std::string id) {
 		C.TRADING = npc.NAME;
 		sendStat(C.ID, "TRADING", npc.NAME, { playerIndex });
 	}
+}
+
+std::string commandLevel(int playerIndex, Character& C, std::string stat) {
+	if (C.SP == 0) {
+		return "*RED*You don't have any SP";
+	}
+	std::vector<std::string> stats = {
+		"VIT", "END", "DEX", "MAG", "WEP", "AVD"
+	};
+	int index = -1;
+	for (int i = 0; i < stats.size(); i++) {
+		if (low(stats[i]) == low(stat)) {
+			index = i;
+			break;
+		}
+	}
+	if (C.STATS[index] == 99 || (index == AVD && C.STATS[AVD] >= 10)) {
+		return "*RED*You can't increase this stat any further.\n";
+	}
+	std::string changes = str(C.ID);
+
+	C.STATS[index]++;
+	changes += addLine("STATS", C.STATS);
+	C.SP--;
+	changes += addLine("SP", C.SP);
+	if (index == VIT) {
+		C.HP += 10;
+		changes += addLine("HP", C.HP);
+	}
+	if (index == END) {
+		C.STAMINA += 10;
+		changes += addLine("STAMINA", C.STAMINA);
+	}
+	if (index == DEX) {
+		C.AP += 3;
+		changes += addLine("AP", C.AP);
+	}
+
+	sendData("STATS", changes);
+	return "*TEAL*You increased your *BLUE*" + stats[index] + "*TEAL* stat to *GREY*" + C.STATS[index] + "*TEAL*";
 }
 
 std::string commandSleep(int playerIndex, Character& C) {
@@ -383,7 +446,7 @@ void command(std::string input, int playerIndex) {
 	}
 
 	if (players[playerIndex].ID == "") {
-		sendData("TEXT", "*RED*You need to make a character!", { playerIndex });
+		sendText("*RED*You need to make a character!", { playerIndex });
 		return;
 	}
 
@@ -393,6 +456,9 @@ void command(std::string input, int playerIndex) {
 	}
 	else if (keyword == "delve") {
 		msg = commandDelve(playerIndex, CHARACTERS[id], words);
+	}
+	else if (keyword == "level") {
+		msg = commandLevel(playerIndex, CHARACTERS[id], words[0]);
 	}
 	else if (keyword == "start") {
 		msg = commandStart(playerIndex, CHARACTERS[id]);
@@ -421,7 +487,7 @@ void command(std::string input, int playerIndex) {
 	else if (keyword == "end") {
 		if (BATTLES.count(CHARACTERS[id].LOCATION) > 0) {
 			setStat(CHARACTERS[id], "ENDED", true);
-			msg = handleCombat(CHARACTERS[id].LOCATION);
+			handleCombat(CHARACTERS[id].LOCATION);
 		}
 		else {
 			msg = "*RED*You must be in combat. Did you mean to *YELLOW*quit*RED* the game?";
@@ -440,8 +506,12 @@ void command(std::string input, int playerIndex) {
 					if (BATTLES[CHARACTERS[id].LOCATION].round != 0) {
 						setStat(CHARACTERS[id], "AP", CHARACTERS[id].AP - movementCosts[y][x]);
 					}
-					setStat(CHARACTERS[id], "X", x);
-					setStat(CHARACTERS[id], "Y", y);
+					CHARACTERS[id].X = x;
+					CHARACTERS[id].Y = y;
+					std::string changes = str(id);
+					changes += addLine("X", x);
+					changes += addLine("Y", y);
+					sendData("STATS", changes);
 				}
 			}
 		}
@@ -468,14 +538,12 @@ void command(std::string input, int playerIndex) {
 		std::string loc = CHARACTERS[id].LOCATION;
 		removeCharacter(CHARACTERS[id]);
 		if (BATTLES.count(loc) > 0) {
-			validateBattle(CHARACTERS[id].LOCATION);
+			validateBattle(loc);
 		}
 	}
 	std::cout << msg << std::endl;
 	if (CHARACTERS.count(id) > 0) {
 		save(CHARACTERS[id]);
 	}
-	if (msg != "") {
-		sendData("TEXT", msg, { playerIndex });
-	}
+	sendText(msg, { playerIndex });
 }

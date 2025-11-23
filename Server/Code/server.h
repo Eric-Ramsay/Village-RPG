@@ -36,6 +36,9 @@ void sendToIds(std::string type, std::string data, std::vector<std::string> send
 
 void sendCharacter(Character character, std::vector<int> sendList = {}) {
 	std::string data = serialize(character);
+	if (character.ID == "") {
+		std::cout << "Weird Charcter Detected" << std::endl;
+	}
 	sendData("CHARACTER", data, sendList);
 }
 
@@ -52,7 +55,16 @@ void sendStat(std::string id, std::string stat, std::vector<int> value, std::vec
 }
 
 void sendItem(std::string id, Item item, std::vector<int> sendList = {}) {
+	if (item.id == "") {
+		std::cout << "Weird Item detected" << std::endl;
+	}
 	sendData("STAT", id + "!!!ITEM!!!" + serialize(item), sendList);
+}
+
+void sendText(std::string text, std::vector<int> sendList = {}) {
+	if (text != "") {
+		sendData("TEXT", text, sendList);
+	}
 }
 
 /*void sendInventory(std::string id, std::unordered_map<Item> inventory, std::vector<int> sendList = {}) {
@@ -68,7 +80,7 @@ void sendBattle(Battle battle, std::vector<int> sendList = {}) {
 	sendData("BATTLE", data, sendList);
 }
 
-void updateBattle(Battle battle) {
+std::vector<int> battleIndices(Battle battle) {
 	std::vector<int> indices = {};
 	for (int i = 0; i < 2; i++) {
 		for (std::string id : battle.teams[i]) {
@@ -79,25 +91,19 @@ void updateBattle(Battle battle) {
 			}
 		}
 	}
+	return indices;
+}
+
+void updateBattle(Battle battle) {
 	save(battle);
-	sendBattle(battle, indices);
+	sendBattle(battle, battleIndices(battle));
 }
 
 void removeLoot(Battle& battle, std::string index) {
-	std::vector<int> indices = {};
-	for (int i = 0; i < 2; i++) {
-		for (std::string id : battle.teams[i]) {
-			for (int i = 0; i < players.size(); i++) {
-				if (players[i].ID == id) {
-					indices.push_back(i);
-				}
-			}
-		}
-	}
 	if (battle.loot.count(index) > 0) {
 		battle.loot.erase(index);
 		save(battle);
-		sendData("BATTLE", "REMOVE_ITEM!!!" + index, indices);
+		sendData("BATTLE", "REMOVE_ITEM!!!" + index, battleIndices(battle));
 	}
 }
 

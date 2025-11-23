@@ -3,6 +3,9 @@
 
 std::string serialize(Item item) {
 	std::string data = "";
+	if (item.id == "") {
+		return data;
+	}
 	data += str("ITEM");
 	data += str("INDEX") + str(item.index);
 	data += str("ATTACKS") + str(item.attacks);

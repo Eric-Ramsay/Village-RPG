@@ -121,11 +121,17 @@ void DrawCharacterUI() {
 		Print("*TEAL*" + stats[i] + " - *GREY*" + C.STATS[i], xPos, yPos);
 		if (C.SP > 0) {
 			Print("*TEAL*\6", xPos + 50, yPos);
+			if (UI.mouseReleased) {
+				int w = 9;
+				int h = 9;
+				if (UI.mX >= xPos + 50 && UI.mX <= xPos + 50 + w && UI.mY >= yPos && UI.mY <= yPos + h) {
+					sendData("COMMAND", "LEVEL " + stats[i]);
+				}
+			}
 		}
 	}
 
 	DrawTabs(playerMenu, x + w / 2, 87);
-	
 
 	if (playerMenu.index == 0) {
 		Print("*YELLOW*" + to_str(C.GOLD) + " Gold", x, y + 94);
@@ -133,10 +139,19 @@ void DrawCharacterUI() {
 		for (auto item : C.INVENTORY) {
 			itemCount++;
 			std::string color = "";
+			std::string command = "EQUIP";
 			if (item.second.equipped) {
 				color = "*TEAL*";
+				command = "REMOVE";
 			}
-			Print("*PINK*" + padNum(itemCount) + "*GREY*) " + color + pretty(item.second.id), x, y + 94 + 10 * itemCount);
+			std::string str = "*PINK*" + padNum(itemCount) + "*GREY*) " + color + pretty(item.second.id);
+			Print(str, x, y + 94 + 10 * itemCount);
+			int len = measureText(str);
+			if (UI.doubleClicked) {
+				if (UI.mX >= x && UI.mX <= x + len && UI.mY >= y + 94 + 10 * itemCount && UI.mY <= y + 103 + 10 * itemCount) {
+					sendData("COMMAND", command + " " + item.first);
+				}
+			}
 		}
 		int num = (5 + (5 * C.BACKPACK)) - itemCount;
 		for (int i = itemCount; i < itemCount + num; i++) {
@@ -162,7 +177,7 @@ void DrawBattle() {
 	std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[ID], BATTLE);
 	std::vector<std::vector<std::string>> tiles(12, std::vector<std::string>(12, "blank_tile"));
 
-	tiles[0][2] = "water_tile";
+	/*tiles[0][2] = "water_tile";
 	tiles[1][2] = "water_tile";
 	tiles[2][2] = "water_tile";
 	tiles[2][3] = "water_tile";
@@ -174,7 +189,7 @@ void DrawBattle() {
 	tiles[6][3] = "water_tile";
 	tiles[6][2] = "water_tile";
 	tiles[6][1] = "water_tile";
-	tiles[6][0] = "water_tile";
+	tiles[6][0] = "water_tile";*/
 
 	for (int i = 0; i < BATTLE.teams[1].size(); i++) {
 		Character C = CHARACTERS[BATTLE.teams[1][i]];
@@ -187,6 +202,8 @@ void DrawBattle() {
 
 	for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < 12; j++) {
+			int xPos = (x + j * 16);
+			int yPos = y + 11 + (i * 16);
 			if (BATTLE.round > 0 && movementCosts[i][j] <= CHARACTERS[ID].AP) {
 				Draw(32, 80, 16, 16, (x + j * 16), y + 11 + (i * 16), 1, sf::Color(135, 155, 0));
 			}
@@ -198,6 +215,19 @@ void DrawBattle() {
 			}
 			else {
 				CPrint(tiles[i][j], x + 12 + (j * 16), y + 15 + (i * 16));
+			}
+			if (UI.mX >= xPos && UI.mX <= xPos + 16 && UI.mY >= yPos && UI.mY <= yPos + 16) {
+				if (UI.rightPressed) {
+					sendData("COMMAND", "MOVE " + str(j) + str(i));
+				}
+				else if (UI.doubleClicked) {
+					for (int a = 0; a < BATTLE.teams[1].size(); a++) {
+						Character C = CHARACTERS[BATTLE.teams[1][a]];
+						if (C.Y == i && C.X == j) {
+							sendData("COMMAND", "ATTACK " + C.ID);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -228,18 +258,23 @@ void DrawBattle() {
 	}
 	else {
 		int itemCount = 0;
+		std::string helpMsg = "*YELLOW*Double click to take items";
+		if (BATTLE.loot.size() == 0) {
+			helpMsg = "*BLACK*There's no loot here . . .";
+		}
+		CPrint(helpMsg, 323, y + 13);
 		for (auto item : BATTLE.loot) {
 			UI_Item baseItem = getItem(item.second.id);
 			itemCount++;
 			std::string text = "*PINK*" + padNum(itemCount) + "*GREY*) *TEAL*" + pretty(item.second.id);
 			int xPos = (x + 200);
-			int yPos = (y + 1 + 10 * itemCount);
+			int yPos = (y + 14 + 10 * itemCount);
 			int w = measureText(text);
 			int h = 9;
 			Print(text, xPos, yPos);
 			Print("*YELLOW*" + to_str(baseItem.cost), xPos + 200, yPos);
 			// Check if player clicks on any of these items
-			if (UI.mousePressed) {
+			if (UI.doubleClicked) {
 				if (UI.mX >= xPos && UI.mX <= xPos + w && UI.mY >= yPos && UI.mY <= yPos + h) {
 					sendData("COMMAND", "TAKE " + item.second.index);
 				}

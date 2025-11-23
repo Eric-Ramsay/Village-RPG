@@ -17,7 +17,10 @@ bool validateBattle(std::string id) {
 	for (int i = 0; i < 2; i++) {
 		for (int j = BATTLES[id].teams[i].size() - 1; j >= 0; j--) {
 			std::string character = BATTLES[id].teams[i][j];
-			if (CHARACTERS.count(character) == 0 || CHARACTERS[character].LOCATION != BATTLES[id].id || CHARACTERS[character].HP <= 0) {
+			if (CHARACTERS.count(character) == 0 || CHARACTERS[character].LOCATION != BATTLES[id].id) {
+				BATTLES[id].teams[i].erase(BATTLES[id].teams[i].begin() + j);
+			}
+			else if (CHARACTERS[character].HP <= 0) {
 				BATTLES[id].teams[i].erase(BATTLES[id].teams[i].begin() + j);
 				if (CHARACTERS[character].HP <= 0) {
 					BATTLES[id].dead[i].push_back(CHARACTERS[character].ID);
@@ -141,7 +144,7 @@ std::string winBattle(Battle& battle) {
 	return msg;
 }
 
-std::string startTurn(Battle& battle) {
+void startTurn(Battle& battle) {
 	std::string msg = "";
 	// Handle Effects for team who's starting (battle.turn)
 	for (int i = battle.teams[battle.turn].size() - 1; i >= 0; i--) {
@@ -169,14 +172,14 @@ std::string startTurn(Battle& battle) {
 			C->ENDED = true;
 		}
 	}
-	return msg;
+	sendText(msg, battleIndices(battle));
 }
 
-std::string handleCombat(std::string id) {
+void handleCombat(std::string id) {
 	Battle* battle = &BATTLES[id];
 	std::string msg = "";
 	if (battle->round == 0) {
-		return "";
+		return;
 	}
 	if (validateBattle(battle->id)) {
 		if (battle->teams[1].size() == 0) {
@@ -193,13 +196,14 @@ std::string handleCombat(std::string id) {
 			}
 		}
 	}
-	
-	return msg;
+	sendText(msg, battleIndices(*battle));
 }
 
-void summon(Battle& battle, Character enemy, int team = 1) {
+void summon(Battle& battle, Character enemy, int x = 0, int y = 0, int team = 1) {
 	std::string id = enemy.NAME + "." + battle.id + "." + to_str(rand() % 9999);
 	enemy.ID = id;
+	enemy.X = x;
+	enemy.Y = y;
 	enemy.LOCATION = battle.id;
 	battle.teams[team].push_back(id);
 	CHARACTERS[id] = enemy;
@@ -272,9 +276,11 @@ void startBattle(Battle& battle) {
 		validEnemies = newTeams;
 	}
 
-	summon(battle, enemies, 1, false);
-
-	startTurn(battle);
+	for (Character enemy : enemies) {
+		int x = rand() % 12;
+		int y = rand() % 2;
+		summon(battle, enemy, x, y);
+	}
 
 	updateBattle(battle);
 }
