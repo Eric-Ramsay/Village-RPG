@@ -86,6 +86,12 @@ struct UIState {
 
 	bool UIClick = false;
 
+	int view = 0;
+	bool viewLocked = false;
+	Item viewedItem;
+	Character viewedCharacter;
+	std::string viewedEffect;
+
 	LOGIN signInState = CHOOSE;
 };
 

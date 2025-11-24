@@ -126,6 +126,60 @@ std::vector<std::vector<PathTile>> createMap(Battle b) {
 	return tiles;
 }
 
+int w_attacks(Character C, Item item) {
+	UI_Item baseItem = getItem(item.id);
+
+	return baseItem.attacks;
+}
+
+int maxRunes(Character C, Item item) {
+	int max = 0;
+	UI_Item baseItem = getItem(item.id);
+	if (baseItem.type == "weapon") {
+		max = 1 + 2 * (1 + baseItem.twoHanded);
+		if (baseItem.subclass == "blade") {
+			max++;
+		}
+	}
+	else if (baseItem.type == "armor") {
+		max = 5;
+	}
+	else if (baseItem.type == "staff") {
+		max = 5;
+	}
+	return max;
+}
+
+int w_AP(Character C, Item item) {
+	UI_Item baseItem = getItem(item.id);
+
+	return baseItem.AP;
+}
+
+int w_pen(Character C, Item item) {
+	UI_Item baseItem = getItem(item.id);
+
+	return baseItem.attack.pen;
+}
+
+int w_min(Character C, Item item) {
+	UI_Item baseItem = getItem(item.id);
+
+	return baseItem.attack.min;
+}
+
+int w_max(Character C, Item item) {
+	UI_Item baseItem = getItem(item.id);
+
+	return baseItem.attack.max;
+}
+
+int w_range(Character C, Item item) {
+	UI_Item baseItem = getItem(item.id);
+
+	return baseItem.range;
+}
+
 std::vector<std::vector<int>> moveCosts(Character C, Battle battle) {
 	if (battle.round == 0) {
 		return std::vector<std::vector<int>> (12, std::vector<int>(12));

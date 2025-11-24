@@ -199,16 +199,25 @@ std::string commandLeave(int playerIndex, Character& C, std::vector<std::string>
 std::string commandRemove(int playerIndex, Character& C, std::vector<std::string> words) {
 	std::string args = join(words);
 	std::vector<std::string> ids = findItem(args, C.INVENTORY);
+	std::string changes = str(C.ID);
 	for (std::string id : ids) {
 		C.INVENTORY[id].equipped = false;
-		sendStat(C.ID, "DEQUIP", id);
+		changes += addLine("DEQUIP", id);
+		if (C.LEFT == id) {
+			C.LEFT = "";
+			changes += addLine("LEFT", "");
+		}
+		if (C.RIGHT == id) {
+			C.RIGHT = "";
+			changes += addLine("RIGHT", "");
+		}
+		sendData("STATS", changes);
 		return "You unequip the *GREEN*" + pretty(C.INVENTORY[id].id);
 	}
 	return "*RED*Unable to equip '" + args + "'";
 }
 
 std::string commandEquip(int playerIndex, Character& C, std::vector<std::string> words) {
-	std::string msg = "";
 	std::string args = join(words);
 	std::vector<std::string> ids = findItem(args, C.INVENTORY);
 	for (std::string id : ids) {
@@ -224,33 +233,57 @@ std::string commandEquip(int playerIndex, Character& C, std::vector<std::string>
 				}
 			}
 			else if (type == "weapon" || type == "staff") {
-				bool swapLeft = item.twoHanded || (C.INVENTORY.count(C.LEFT) > 0 && C.INVENTORY.count(C.RIGHT) > 0);
-				bool swapRight = item.twoHanded || !swapLeft;
-				if (swapLeft) {
+				std::string changes = str(C.ID);
+				bool twoHanded = item.twoHanded;
+				if (C.INVENTORY.count(C.LEFT) > 0) {
+					UI_Item right = getItem(C.INVENTORY[C.LEFT].id);
+					if (right.twoHanded) {
+						twoHanded = true;
+					}
+				}
+				if (C.INVENTORY.count(C.RIGHT) > 0) {
+					UI_Item right = getItem(C.INVENTORY[C.RIGHT].id);
+					if (right.twoHanded) {
+						twoHanded = true;
+					}
+				}
+
+				if (twoHanded) {
 					if (C.INVENTORY.count(C.LEFT) > 0) {
 						C.INVENTORY[C.LEFT].equipped = false;
-						sendStat(C.ID, "DEQUIP", C.LEFT);
+						changes += addLine("DEQUIP", C.LEFT);
 					}
-					setStat(C, "LEFT", id);
-				}
-				if (swapRight) {
 					if (C.INVENTORY.count(C.RIGHT) > 0) {
 						C.INVENTORY[C.RIGHT].equipped = false;
-						sendStat(C.ID, "DEQUIP", C.RIGHT);
+						changes += addLine("DEQUIP", C.RIGHT);
 					}
-					setStat(C, "RIGHT", id);
+					C.LEFT = id;
+					C.RIGHT = id;
+				}
+				else {
+					if (C.RIGHT == "") {
+						C.RIGHT = id;
+					}
+					else {
+						if (C.INVENTORY.count(C.LEFT) > 0) {
+							C.INVENTORY[C.LEFT].equipped = false;
+						}
+						C.LEFT = id;
+					}
 				}
 				C.INVENTORY[id].equipped = true;
-				sendStat(C.ID, "EQUIP", id);
-				msg = "You equip the *GREEN*" + item.id;
-				break;
+				changes += addLine("LEFT", C.LEFT);
+				changes += addLine("RIGHT", C.RIGHT);
+				changes += addLine("EQUIP", id);
+				sendData("STATS", changes);
+				return "You equip the *GREEN*" + item.id;
 			}
 			else {
 				return "*RED*You can't equip that.";
 			}
 		}
 	}
-	return msg;
+	return "*RED*Item couldn't be found!";
 }
 
 std::string commandBuy(int playerIndex, Character& C, std::vector<std::string> words) {

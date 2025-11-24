@@ -1,0 +1,33 @@
+ID!!!eric eric 176401448627!!!
+USER!!!eric!!!
+HP!!!50!
+X!!!5!
+Y!!!4!
+ARMOR!!!0!0!
+MAXHP!!!30!
+TYPE!!!player!!!
+NAME!!!eric!!!
+LOCATION!!!Wilted Woods5552!!!
+STAMINA!!!20!
+DESCRIPTION!!!!!!
+TRADING!!!!!!
+LEVEL!!!3!
+XP!!!51!
+SP!!!0!
+GOLD!!!96!
+AP!!!2!
+BACKPACK!!!0!
+ENDED!!!0!
+ATTACKS!!!0!
+CASTS!!!0!
+X_PREFERENCE!!!0!
+Y_PREFERENCE!!!0!
+LEFT!!!!!!
+RIGHT!!!!!!
+HITS!!!0!0!
+MISSES!!!0!0!
+STATS!!!2!0!0!0!0!0!
+INVENTORY!!!
+ITEM!!!INDEX!!!dagger.5735!!!ATTACKS!!!2!EQUIPPED!!!0!RUNES!!!
+ITEM!!!INDEX!!!dagger.6649!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!
+ITEM!!!INDEX!!!longbow.6063!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!

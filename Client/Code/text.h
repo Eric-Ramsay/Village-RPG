@@ -49,6 +49,9 @@ void charInfo(char c, int& sX, int& sY, int& sW) {
 	else if (c == '/') {
 		sX = 65; sY = 48; sW = 3;
 	}
+	else if (c == '%') {
+		sX = 86; sY = 48;
+	}
 	else if (c == '+') {
 		sY = 48;
 		sX = 6;

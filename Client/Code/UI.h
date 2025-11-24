@@ -92,6 +92,51 @@ void DrawTrade() {
 	}
 }
 
+void DrawViewUI() {
+	Character C = CHARACTERS[ID];
+	int x = 380;
+	int y = 214;
+	int w = 260;
+	int h = 147;
+	if (UI.view == 1) {
+		Item item = UI.viewedItem;
+		UI_Item baseItem = getItem(item.id);
+		if (baseItem.type == "weapon") {
+			std::string text = "*ORANGE*" + pretty(item.id);
+			text += "*BLACK* | *TEAL*" + pretty(baseItem.subclass) + "*BLACK* | *PINK*" + to_str(1 + baseItem.twoHanded) + "H" + "*BLACK* | *YELLOW*" + baseItem.cost + "G";
+			Print(text, x, y);
+
+			std::string description = baseItem.description + "\n\n";
+			description += "Attacks *PINK*" + to_str(w_attacks(C, item)) + "x*GREY* per turn at a cost of *GREEN*" + to_str(w_AP(C, item)) + " AP *GREY*per attack. ";
+			description += "Deals *RED*" + to_str(w_min(C, item)) + "-" + to_str(w_max(C, item)) + "*GREY* damage within *GREEN*" + to_str(w_range(C, item)) + " *GREY*tiles";
+			if (w_pen(C, item) > 0) {
+				description += ", ignoring *RED*" + to_str(w_pen(C, item)) + "% *GREY*of enemy armor.";
+			}
+			Print(description, x, y + 10, w);
+		}
+
+		if (baseItem.type == "weapon" || baseItem.type == "staff" || baseItem.type == "armor") {
+			Print("*BLUE*Runes *BLACK*" + to_str(item.runes.size()) + "/" + maxRunes(CHARACTERS[ID], item), x, y + 80);
+		}
+	}
+	else if (UI.view == 2) {
+		Character C = UI.viewedCharacter;
+		std::string color = "*RED*";
+		if (C.TYPE == "player") {
+			color = "*BLUE*";
+		}
+		Print(color + C.NAME, x, y);
+		if (UI.viewedEffect != "") {
+			Print("*PINK*" + pretty(UI.viewedEffect), x, 340);
+			std::string desc = "blah blah blah";
+			Print(desc, x + 75, 340);
+		}
+	}
+	if (UI.view != 0 && !UI.viewLocked) {
+		CPrint("*BLACK*Press CTRL to lock view", x + w / 2, 340, w);
+	}
+}
+
 void DrawCharacterUI() {
 	int x = 460;
 	int y = 5;
@@ -137,6 +182,8 @@ void DrawCharacterUI() {
 		Print("*YELLOW*" + to_str(C.GOLD) + " Gold", x, y + 94);
 		int itemCount = 0;
 		for (auto item : C.INVENTORY) {
+			int xPos = x;
+			int yPos = y + 104 + 10 * itemCount;
 			itemCount++;
 			std::string color = "";
 			std::string command = "EQUIP";
@@ -145,15 +192,30 @@ void DrawCharacterUI() {
 				command = "REMOVE";
 			}
 			std::string str = "*PINK*" + padNum(itemCount) + "*GREY*) " + color + pretty(item.second.id);
-			Print(str, x, y + 94 + 10 * itemCount);
+			Print(str, xPos, yPos);
 			int len = measureText(str);
-			if (UI.doubleClicked) {
-				if (UI.mX >= x && UI.mX <= x + len && UI.mY >= y + 94 + 10 * itemCount && UI.mY <= y + 103 + 10 * itemCount) {
+			if (range(UI.mX, UI.mY, xPos, yPos, len, 9)) {
+				if (UI.doubleClicked) {
 					sendData("COMMAND", command + " " + item.first);
 				}
+				else if (!UI.viewLocked) {
+					UI.view = 1;
+					UI.viewedItem = item.second;
+				}
+			}
+
+			UI_Item baseItem = getItem(item.second.id);
+			if (baseItem.type == "weapon" || baseItem.type == "staff") {
+				xPos += 100;
+				std::string postText = "*RED*x" + to_str(baseItem.attacks - item.second.attacks);
+				Print(postText, xPos, yPos);
+
+				xPos += 25;
+				postText = "*GREEN*" + to_str(baseItem.AP);
+				Print(postText, xPos, yPos);
 			}
 		}
-		int num = (5 + (5 * C.BACKPACK)) - itemCount;
+		int num = (10 + (5 * C.BACKPACK)) - itemCount;
 		for (int i = itemCount; i < itemCount + num; i++) {
 			Print("*PINK*" + padNum(i + 1) + "*GREY*) *BLACK*---", x, y + 104 + 10 * i);
 		}
@@ -216,15 +278,22 @@ void DrawBattle() {
 			else {
 				CPrint(tiles[i][j], x + 12 + (j * 16), y + 15 + (i * 16));
 			}
-			if (UI.mX >= xPos && UI.mX <= xPos + 16 && UI.mY >= yPos && UI.mY <= yPos + 16) {
+			if (range(UI.mX, UI.mY, xPos, yPos, 16, 16)) {
 				if (UI.rightPressed) {
 					sendData("COMMAND", "MOVE " + str(j) + str(i));
 				}
-				else if (UI.doubleClicked) {
+				else {
 					for (int a = 0; a < BATTLE.teams[1].size(); a++) {
 						Character C = CHARACTERS[BATTLE.teams[1][a]];
 						if (C.Y == i && C.X == j) {
-							sendData("COMMAND", "ATTACK " + C.ID);
+							if (UI.doubleClicked) {
+								sendData("COMMAND", "ATTACK " + C.ID);
+							}
+							else if (!UI.viewLocked) {
+								UI.view = 2;
+								UI.viewedCharacter = C;
+							}
+							break;
 						}
 					}
 				}
@@ -238,8 +307,18 @@ void DrawBattle() {
 		Print("*PINK*Enemies", x + 200, y + 10);
 		for (int i = 0; i < BATTLE.teams[1].size(); i++) {
 			Character C = CHARACTERS[BATTLE.teams[1][i]];
-			Print("*RED*E" + to_str(i + 1) + " *GREY*" + C.NAME, x + 200, y + 20 + (i * 10));
-			Print(DrawBar(C.HP, MaxHP(C), 8, "*RED*"), x + 300, y + 20 + (i * 10));
+			int len = measureText("*RED*E" + to_str(i + 1) + " *GREY*" + C.NAME);
+			int xPos = x + 200;
+			int yPos = y + 20 + (i * 10);
+			Print("*RED*E" + to_str(i + 1) + " *GREY*" + C.NAME, xPos, yPos);
+
+			if (!UI.viewLocked && range(UI.mX, UI.mY, xPos, yPos, len, 9)) {
+				UI.view = 2;
+				UI.viewedCharacter = C;
+			}
+
+			xPos = x + 300;
+			Print(DrawBar(C.HP, MaxHP(C), 8, "*RED*"), xPos, yPos);
 		}
 
 		Print("*YELLOW*Allies", x + 200, y + 107);
@@ -274,9 +353,13 @@ void DrawBattle() {
 			Print(text, xPos, yPos);
 			Print("*YELLOW*" + to_str(baseItem.cost), xPos + 200, yPos);
 			// Check if player clicks on any of these items
-			if (UI.doubleClicked) {
-				if (UI.mX >= xPos && UI.mX <= xPos + w && UI.mY >= yPos && UI.mY <= yPos + h) {
+			if (range(UI.mX, UI.mY, xPos, yPos, w, h)) {
+				if (UI.doubleClicked) {
 					sendData("COMMAND", "TAKE " + item.second.index);
+				}
+				else if (!UI.viewLocked) {
+					UI.view = 1;
+					UI.viewedItem = item.second;
 				}
 			}
 		}
@@ -361,5 +444,6 @@ void DrawUI() {
 		else {
 			DrawRoom();
 		}
+		DrawViewUI();
 	}
 }

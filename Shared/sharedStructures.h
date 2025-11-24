@@ -89,12 +89,12 @@ struct UI_Item {
 	int attacks = 0;
 	bool equipped = false;
 	Attack attack;
-	WEAPON_CLASS subclass;
+	std::string subclass;
 
 	// Armor Stats
 	std::vector<int> armor = {};
 	//WEAPON NAME, Name	Class, 	Description,  #Atks	Value 	Chance 	MinDmg 	MaxDmg 	Pen% 	AP 		Range	Rare?
-	UI_Item(std::string name, int value, WEAPON_CLASS wepType, std::string desc, bool twoH, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
+	UI_Item(std::string name, int value, std::string wepType, std::string desc, bool twoH, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
 		type = "weapon";
 		id = low(name);
 		name = name;

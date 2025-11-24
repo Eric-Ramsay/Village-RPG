@@ -24,8 +24,8 @@ namespace Gdiplus {
 
 #include "miniaudio.h"
 #include "..\..\Shared\textFunctions.h"
-#include "structures.h"
 #include "..\..\Shared\sharedStructures.h"
+#include "structures.h"
 #include "globals.h"
 #include "..\..\Shared\sharedFunctions.h"
 #include "utilities.h"
@@ -142,6 +142,7 @@ int main()
 		UI.mousePressed = false;
 		UI.rightPressed = false;
 		UI.doubleClicked = false;
+
 		while (window.pollEvent(event)) {
 			UI.mX = sf::Mouse::getPosition().x / xScale;
 			UI.mY = sf::Mouse::getPosition().y / yScale;
@@ -204,17 +205,10 @@ int main()
 							input.pop_back();
 						}
 					}
-					else if (event.key.code == sf::Keyboard::Right) {
-						sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X + 1) + str(CHARACTERS[ID].Y));
-					}
-					else if (event.key.code == sf::Keyboard::Left) {
-						sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X - 1) + str(CHARACTERS[ID].Y));
-					}
-					else if (event.key.code == sf::Keyboard::Up) {
-						sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X) + str(CHARACTERS[ID].Y - 1));
-					}
-					else if (event.key.code == sf::Keyboard::Down) {
-						sendData("COMMAND", "MOVE " + str(CHARACTERS[ID].X) + str(CHARACTERS[ID].Y + 1));
+					else if (event.key.code == sf::Keyboard::LControl || event.key.code == sf::Keyboard::RControl) {
+						if (UI.view > 0) {
+							UI.viewLocked = !UI.viewLocked;
+						}
 					}
 					else if (event.key.code == sf::Keyboard::Escape) {
 						if (UI.signInState < COMPLETED && UI.signInState > CHOOSE) {
@@ -296,6 +290,9 @@ int main()
 
 			if (UI.signInState == COMPLETED) {
 				hideTabs();
+				if (!UI.viewLocked) {
+					UI.view = 0;
+				}
 				DrawUI();
 			}
 			for (int i = 1; i <= 7; i++) {

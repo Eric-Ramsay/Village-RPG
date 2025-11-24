@@ -140,17 +140,17 @@ void initEnemies() {
 	}
 }
 
-UI_Item OneH(std::string n, int v, WEAPON_CLASS wepType, std::string d, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
+UI_Item OneH(std::string n, int v, std::string wepType, std::string d, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
 	return UI_Item(n, v, wepType, d, false, atks, chance, min, max, pen, ap, rng, rare);
 }
 
-UI_Item TwoH(std::string n, int v, WEAPON_CLASS wepType, std::string d, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
+UI_Item TwoH(std::string n, int v, std::string wepType, std::string d, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
 	return UI_Item(n, v, wepType, d, true, atks, chance, min, max, pen, ap, rng, rare);
 }
 
 void initItems() {	//	 Name		G		Type		Description												#	%		Min		Max		Pen		AP		Range
-	ITEMS["dagger"] = OneH("Dagger", 25, BLADE, "A simple dagger, lightweight and easy to use.", 3, 70, 200, 400, 0, 1, 1);
-	ITEMS["longbow"] = TwoH("Longbow", 50, RANGED, "A powerful bow thats almost as tall as its user.", 1, 80, 108, 114, 20, 6, 6);
+	ITEMS["dagger"] = OneH("Dagger", 25, "blade", "A simple dagger, lightweight and easy to use.", 3, 70, 200, 400, 0, 1, 1);
+	ITEMS["longbow"] = TwoH("Longbow", 50, "ranged", "A powerful bow thats almost as tall as its user.", 1, 80, 108, 114, 20, 6, 6);
 
 	genericLoot.push_back(ITEMS["longbow"]);
 	genericLoot.push_back(ITEMS["dagger"]);
