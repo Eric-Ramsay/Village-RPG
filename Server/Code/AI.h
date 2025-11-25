@@ -10,12 +10,12 @@ Result dealDamage(Attack attack, std::string attackerId, std::string targetId, s
 	int hitValue = rand() % 100;
 	int dmg = attack.min + rand() % (attack.max - attack.min);
 	if (hitValue < attack.hitChance) {
-		result.msg = "*ORANGE*" + pretty(name(attacker)) + " *RED*attacks " + name(target) + " for *ORANGE*" + to_str(dmg) + "*RED* damage!";
+		result.msg = "*ORANGE*" + pretty(name(attacker)) + " *RED*attacks " + name(target) + " for *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
 		result.damage = dmg;
 		setStat(*target, "HP", target->HP - dmg);
 	}
 	else {
-		result.msg += "*ORANGE*" + pretty(name(attacker)) + " *RED*misses!";
+		result.msg += "*ORANGE*" + pretty(name(attacker)) + " *RED*misses!\n";
 		result.damage = 0;
 	}
 
@@ -116,10 +116,6 @@ std::string enemyAttack(int enemyIndex, std::vector<std::string> allies, std::ve
 		if (CHARACTERS[id].TYPE == "player") {
 			playerIds.push_back(id);
 		}
-	}
-
-	if (msg != "") {
-		sendToIds("TEXT", msg, playerIds);
 	}
 
 	std::string changes = str(C->ID);

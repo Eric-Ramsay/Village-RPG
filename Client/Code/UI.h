@@ -49,6 +49,23 @@ void handleClick(Tab& tab, int mX, int mY) {
 	}
 }
 
+void DrawButton(std::string text, int x, int y, std::string color = "*ORANGE*") {
+	int w = measureText(text) + 8;
+	int h = 15;
+	fillRect(x, y, w, h, getColor(color));
+	fillRect(x + 1, y + 1, w - 2, h - 2, sf::Color(10, 20, 30));
+	std::string textColor = "*BLACK*";
+	if (range(UI.mX, UI.mY, x, y, w, h)) {
+		if (UI.mouseHeld) {
+			textColor = "*YELLOW*";
+		}
+		else {
+			textColor = "*GREY*";
+		}
+	}
+	Print(textColor + text, x + 4, y + 4);
+}
+
 void DrawTabs(Tab& tab, int x1, int y1) {
 	tab.x = x1;
 	tab.y = y1;
@@ -64,7 +81,7 @@ void DrawTabs(Tab& tab, int x1, int y1) {
 			color = tab.indexColor;
 		}
 		fillRect(x, y, w, 13, getColor(color));
-		fillRect(x + 1, y + 1, w - 2, 11, sf::Color::Black);
+		fillRect(x + 1, y + 1, w - 2, 11, sf::Color(0, 5, 15));
 		x += w;
 	}
 	CPrint(tab.tabString, tab.x, tab.y);
@@ -74,7 +91,7 @@ void DrawTrade() {
 	if (CHARACTERS.count(ID) == 0) {
 		return;
 	}
-	Character C = CHARACTERS[ID];
+	Character C = getCharacter(ID);
 	NPC npc = getNPC(C.TRADING);
 	std::string text = npc.DESCRIPTION;
 	if (npc.CONVERSATIONS.size() > 0) {
@@ -83,7 +100,7 @@ void DrawTrade() {
 		}
 		text += "\n\n" + npc.CONVERSATIONS[npc.index];
 	}
-	int y = 10 + Print(text, 10, 10, 420);
+	int y = 10 + Print(text, 10, 10, 420).h;
 	//Print("*YELLOW*Items for Sale", 10, y);
 	for (int i = 0; i < npc.ITEMS.size(); i++) {
 		UI_Item item = getItem(npc.ITEMS[i]);
@@ -93,12 +110,13 @@ void DrawTrade() {
 }
 
 void DrawViewUI() {
-	Character C = CHARACTERS[ID];
+	Character C = getCharacter(ID);
 	int x = 380;
 	int y = 214;
-	int w = 260;
+	int w = 240;
 	int h = 147;
 	if (UI.view == 1) {
+		// Viewing an Item	
 		Item item = UI.viewedItem;
 		UI_Item baseItem = getItem(item.id);
 		if (baseItem.type == "weapon") {
@@ -106,20 +124,24 @@ void DrawViewUI() {
 			text += "*BLACK* | *TEAL*" + pretty(baseItem.subclass) + "*BLACK* | *PINK*" + to_str(1 + baseItem.twoHanded) + "H" + "*BLACK* | *YELLOW*" + baseItem.cost + "G";
 			Print(text, x, y);
 
-			std::string description = baseItem.description + "\n\n";
-			description += "Attacks *PINK*" + to_str(w_attacks(C, item)) + "x*GREY* per turn at a cost of *GREEN*" + to_str(w_AP(C, item)) + " AP *GREY*per attack. ";
-			description += "Deals *RED*" + to_str(w_min(C, item)) + "-" + to_str(w_max(C, item)) + "*GREY* damage within *GREEN*" + to_str(w_range(C, item)) + " *GREY*tiles";
-			if (w_pen(C, item) > 0) {
-				description += ", ignoring *RED*" + to_str(w_pen(C, item)) + "% *GREY*of enemy armor.";
-			}
-			Print(description, x, y + 10, w);
-		}
+			DrawTabs(viewMenu, x + w/2, y + 15);
 
-		if (baseItem.type == "weapon" || baseItem.type == "staff" || baseItem.type == "armor") {
-			Print("*BLUE*Runes *BLACK*" + to_str(item.runes.size()) + "/" + maxRunes(CHARACTERS[ID], item), x, y + 80);
+			if (viewMenu.index == 0) {
+				std::string description = baseItem.description + "\n\n";
+				description += "Attacks *PINK*" + to_str(w_attacks(C, item)) + "x*GREY* per turn at a cost of *GREEN*" + to_str(w_AP(C, item)) + " AP *GREY*per attack. ";
+				description += "Deals *RED*" + to_str(w_min(C, item)) + "-" + to_str(w_max(C, item)) + "*GREY* damage within *GREEN*" + to_str(w_range(C, item)) + " *GREY*tiles";
+				if (w_pen(C, item) > 0) {
+					description += ", ignoring *RED*" + to_str(w_pen(C, item)) + "% *GREY*of enemy armor.";
+				}
+				Print(description, x, y + 30, w);
+			}
+			else {
+				Print("*BLUE*Runes *BLACK*" + to_str(item.runes.size()) + "/" + maxRunes(getCharacter(ID), item), x, y + 30);
+			}
 		}
 	}
 	else if (UI.view == 2) {
+		// Viewing a Character
 		Character C = UI.viewedCharacter;
 		std::string color = "*RED*";
 		if (C.TYPE == "player") {
@@ -132,8 +154,20 @@ void DrawViewUI() {
 			Print(desc, x + 75, 340);
 		}
 	}
-	if (UI.view != 0 && !UI.viewLocked) {
-		CPrint("*BLACK*Press CTRL to lock view", x + w / 2, 340, w);
+	else {
+		if (UI.tooltip != "") {
+			Tooltip tooltip = TOOLTIPS[UI.tooltip];
+			Print("*TEAL*" + tooltip.title, x, y);
+			Print(tooltip.description, x, y + 15, w);
+		}
+	}
+	if (UI.view != 0) {
+		if (!UI.viewLocked) {
+			CPrint("*BLACK*Press CTRL to lock view", x + w / 2, 340, w);
+		}
+		else {
+			Print("*YELLOW*\7", x + w - 10, y);
+		}
 	}
 }
 
@@ -145,7 +179,7 @@ void DrawCharacterUI() {
 	if (CHARACTERS.count(ID) == 0) {
 		return;
 	}
-	Character C = CHARACTERS[ID];
+	Character C = getCharacter(ID);
 	Print("*GREEN*" + pretty(C.NAME) + " *BLACK*| *PINK*Level " + C.LEVEL + "*BLACK* | *YELLOW*" + C.XP + "*GREY*/*GREEN*" + 100 * C.LEVEL + "*GREY* XP", x, y);
 	Print(DrawBar(C.HP, MaxHP(C), 20, "*RED*"), x, y + 10);
 	Print(DrawBar(C.STAMINA, MaxStamina(C), 20, "*GREEN*"), x, y + 20);
@@ -163,13 +197,15 @@ void DrawCharacterUI() {
 			xPos += 80;
 			yPos -= 30;
 		}
-		Print("*TEAL*" + stats[i] + " - *GREY*" + C.STATS[i], xPos, yPos);
+		Box box = Print("*TEAL*" + stats[i] + " - *GREY*" + C.STATS[i], xPos, yPos);
+		if (mRange(box)) {
+			UI.tooltip = stats[i];
+		}
 		if (C.SP > 0) {
-			Print("*TEAL*\6", xPos + 50, yPos);
-			if (UI.mouseReleased) {
-				int w = 9;
-				int h = 9;
-				if (UI.mX >= xPos + 50 && UI.mX <= xPos + 50 + w && UI.mY >= yPos && UI.mY <= yPos + h) {
+			box = Print("*TEAL*\6", xPos + 50, yPos);
+			if (mRange(box)) {
+				UI.tooltip = stats[i];
+				if (UI.mouseReleased) {
 					sendData("COMMAND", "LEVEL " + stats[i]);
 				}
 			}
@@ -229,36 +265,68 @@ void DrawCharacterUI() {
 }
 
 void DrawBattle() {
+	Battle battle = BATTLE;
 	std::string msg = "";
 	int x = 0;
 	int y = 0;
-	Print("*RED*" + BATTLE.zone, x, y + 1);
+	Print("*RED*" + battle.zone, x, y + 1);
 
 	DrawTabs(combatMenu, 323, y + 10);
 
-	std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[ID], BATTLE);
+	std::vector<std::vector<int>> movementCosts = moveCosts(getCharacter(ID), battle);
 	std::vector<std::vector<std::string>> tiles(12, std::vector<std::string>(12, "blank_tile"));
 
-	/*tiles[0][2] = "water_tile";
-	tiles[1][2] = "water_tile";
-	tiles[2][2] = "water_tile";
-	tiles[2][3] = "water_tile";
-	tiles[2][4] = "water_tile";
-	tiles[3][4] = "water_tile";
-	tiles[4][4] = "water_tile";
-	tiles[5][4] = "water_tile";
-	tiles[5][3] = "water_tile";
-	tiles[6][3] = "water_tile";
-	tiles[6][2] = "water_tile";
-	tiles[6][1] = "water_tile";
-	tiles[6][0] = "water_tile";*/
+	if (battle.round > 0) {
+		std::vector<std::string> texts = {
+		"END",
+		"BRACE",
+		"GUARD",
+		"FLEE"
+		};
+		int w = 16 * 12;
+		for (int i = 0; i < 4; i++) {
+			int len = (measureText(texts[i]) + 8);
+			int x1 = ((1 + 2 * i) * w) / 8 - len / 2;
+			int y1 = 212;
+			if (range(UI.mX, UI.mY, x1 - 4, y1 - 4, len + 8, 15)) {
+				if (UI.mouseReleased) {
+					if (i == 0) {
+						sendData("COMMAND", "end");
+					}
+					else if (i == 1) {
+						sendData("COMMAND", "brace");
+					}
+					else if (i == 2) {
+						UI.guarding = true;
+					}
+					else if (i == 3) {
+						sendData("COMMAND", "flee");
+					}
+				}
+			}
+			DrawButton(texts[i], x1, y1);
+		}
+	}
+	else {
+		int w = 16 * 12;
+		std::string text = "Start the Battle!";
+		int len = measureText(text);
+		int x1 = w / 2 - len / 2;
+		int y1 = 212;
+		DrawButton(text, x1, y1, "*PINK*");
+		if (range(UI.mX, UI.mY, x1 - 4, y1 - 4, len + 8, 15)) {
+			if (UI.mouseReleased) {
+				sendData("COMMAND", "start");
+			}
+		}
+	}
 
-	for (int i = 0; i < BATTLE.teams[1].size(); i++) {
-		Character C = CHARACTERS[BATTLE.teams[1][i]];
+	for (int i = 0; i < battle.teams[1].size(); i++) {
+		Character C = getCharacter(battle.teams[1][i]);
 		tiles[C.Y][C.X] = "*RED*" + to_str(i + 1);
 	}
-	for (int i = 0; i < BATTLE.teams[0].size(); i++) {
-		Character C = CHARACTERS[BATTLE.teams[0][i]];
+	for (int i = 0; i < battle.teams[0].size(); i++) {
+		Character C = getCharacter(battle.teams[0][i]);
 		tiles[C.Y][C.X] = "*GREEN*" + to_str(i + 1);
 	}
 
@@ -266,7 +334,7 @@ void DrawBattle() {
 		for (int j = 0; j < 12; j++) {
 			int xPos = (x + j * 16);
 			int yPos = y + 11 + (i * 16);
-			if (BATTLE.round > 0 && movementCosts[i][j] <= CHARACTERS[ID].AP) {
+			if (battle.round > 0 && movementCosts[i][j] <= getCharacter(ID).AP) {
 				Draw(32, 80, 16, 16, (x + j * 16), y + 11 + (i * 16), 1, sf::Color(135, 155, 0));
 			}
 			if (tiles[i][j] == "blank_tile") {
@@ -276,15 +344,15 @@ void DrawBattle() {
 				Draw(16, 80, 16, 16, (x + j * 16), y + 11 + (i * 16));
 			}
 			else {
-				CPrint(tiles[i][j], x + 12 + (j * 16), y + 15 + (i * 16));
+				CPrint(tiles[i][j], x + 11 + (j * 16), y + 15 + (i * 16));
 			}
 			if (range(UI.mX, UI.mY, xPos, yPos, 16, 16)) {
 				if (UI.rightPressed) {
 					sendData("COMMAND", "MOVE " + str(j) + str(i));
 				}
 				else {
-					for (int a = 0; a < BATTLE.teams[1].size(); a++) {
-						Character C = CHARACTERS[BATTLE.teams[1][a]];
+					for (int a = 0; a < battle.teams[1].size(); a++) {
+						Character C = getCharacter(battle.teams[1][a]);
 						if (C.Y == i && C.X == j) {
 							if (UI.doubleClicked) {
 								sendData("COMMAND", "ATTACK " + C.ID);
@@ -305,8 +373,8 @@ void DrawBattle() {
 
 	if (combatMenu.index == 0) {
 		Print("*PINK*Enemies", x + 200, y + 10);
-		for (int i = 0; i < BATTLE.teams[1].size(); i++) {
-			Character C = CHARACTERS[BATTLE.teams[1][i]];
+		for (int i = 0; i < battle.teams[1].size(); i++) {
+			Character C = getCharacter(battle.teams[1][i]);
 			int len = measureText("*RED*E" + to_str(i + 1) + " *GREY*" + C.NAME);
 			int xPos = x + 200;
 			int yPos = y + 20 + (i * 10);
@@ -322,14 +390,14 @@ void DrawBattle() {
 		}
 
 		Print("*YELLOW*Allies", x + 200, y + 107);
-		for (int i = 0; i < BATTLE.teams[0].size(); i++) {
-			Character C = CHARACTERS[BATTLE.teams[0][i]];
+		for (int i = 0; i < battle.teams[0].size(); i++) {
+			Character C = getCharacter(battle.teams[0][i]);
 			std::string pColor = "*GREEN*";
 			if (C.TYPE != "player") {
 				pColor = "*BLUE*";
 			}
 			std::string nColor = "*GREY*";
-			if (BATTLE.round > 0 && C.ENDED) {
+			if (battle.round > 0 && C.ENDED) {
 				nColor = "*BLACK*";
 			}
 			Print(pColor + "P" + to_str(i + 1) + " " + nColor + C.NAME, x + 200, y + 117 + (i * 10));
@@ -338,11 +406,11 @@ void DrawBattle() {
 	else {
 		int itemCount = 0;
 		std::string helpMsg = "*YELLOW*Double click to take items";
-		if (BATTLE.loot.size() == 0) {
+		if (battle.loot.size() == 0) {
 			helpMsg = "*BLACK*There's no loot here . . .";
 		}
 		CPrint(helpMsg, 323, y + 13);
-		for (auto item : BATTLE.loot) {
+		for (auto item : battle.loot) {
 			UI_Item baseItem = getItem(item.second.id);
 			itemCount++;
 			std::string text = "*PINK*" + padNum(itemCount) + "*GREY*) *TEAL*" + pretty(item.second.id);
@@ -368,7 +436,7 @@ void DrawBattle() {
 
 void DrawRoom() {
 	std::string msg = "";
-	Location room = getLocation(CHARACTERS[ID].LOCATION);
+	Location room = getLocation(getCharacter(ID).LOCATION);
 	if (room.parent != "") {
 		msg = "*RED*" + room.parent + "*GREY* - *BLUE*" + room.id + "*GREY*\n";
 	}
@@ -400,7 +468,7 @@ void DrawRoom() {
 	}
 	for (auto character : CHARACTERS) {
 		Character C = character.second;
-		if (C.ID != CHARACTERS[ID].ID && C.LOCATION == room.id) {
+		if (C.ID != getCharacter(ID).ID && C.LOCATION == room.id) {
 			names.push_back("*BLUE*" + pretty(C.NAME));
 		}
 	}
@@ -435,10 +503,10 @@ void DrawUI() {
 	}
 	else {
 		DrawCharacterUI();
-		if (CHARACTERS[ID].LOCATION == BATTLE.id) {
+		if (getCharacter(ID).LOCATION == BATTLE.id) {
 			DrawBattle();
 		}
-		else if (CHARACTERS[ID].TRADING != "") {
+		else if (getCharacter(ID).TRADING != "") {
 			DrawTrade();
 		}
 		else {

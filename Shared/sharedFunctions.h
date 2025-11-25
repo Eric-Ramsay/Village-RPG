@@ -42,7 +42,7 @@ float max(float a, float b) {
 }
 
 int MaxHP(Character C) {
-	return C.MaxHP;
+	return C.MaxHP + 10 * C.STATS[VIT];
 }
 
 int MaxStamina(Character C) {
@@ -512,4 +512,12 @@ std::string name(Character C) {
 
 std::string name(Character* C) {
 	return name(*C);
+}
+
+Character getCharacter(std::string id) {
+	if (CHARACTERS.count(id) > 0) {
+		return CHARACTERS[id];
+	}
+	std::cout << "Character not found" << std::endl;
+	return Character();
 }

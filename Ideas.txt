@@ -3,6 +3,8 @@
 - Trait System is locked behind Achievement System
 - Trait System replaces Class system from Discord Version
 
+DEF STAT gives +2 / +2 armor per point
+
 Trait/Achievement Ideas
 -----------------------
 Each turn, heal the lowest HP ally within 2 tiles 10% of your Max HP.
@@ -24,22 +26,11 @@ MAG grants +1 Cast per Turn
 Gain damage per tile of distance between you and your enemy.
 +2/+2 Armor
 
-UI:
-- 3 Tabs for Inventory / Spells / Debuffs (Maybe Debuffs always visible)
-- Arrow Keys L + R switches tabs
-- Arrow Keys U + D views enemies
-- Shift switches from Enemy view
-- Scroll Bars are a must. . .
 
-- Press # Key to select spell or inventory slot. Alternatively, click to select.
-	- Drag to swap item slots/spell slots/etc. . .
-	
-	
-Combat Flow: 
-- Press 1 (or 2) to select weapon. Esc deselects.
-- Click enemy. If no more attacks / AP, weapon is deselected. Message in Console should inform, AP depleted/No more attacks.
-- After attack, weapon remains selected until deselect or unusable.
+You can cast spells using a staff. Replace WEP with MAG. Start with Arcane Strike.
 
-- Alternatively, arrow keys can be used to indicate enemy to attack, and enter can be used to send the attack order.
+You can cast spells without using a staff.
 
-Right click moves the player to a tile.
+Spells AP costs are doubled, but replaced by Stamina.
+
+Start with +2 Casts and +4 Spell Slots (base is 1 & 1)

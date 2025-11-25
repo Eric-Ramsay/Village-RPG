@@ -86,13 +86,28 @@ struct UIState {
 
 	bool UIClick = false;
 
+	bool guarding = false;
+
 	int view = 0;
 	bool viewLocked = false;
+
+	std::string tooltip = "";
+
 	Item viewedItem;
 	Character viewedCharacter;
 	std::string viewedEffect;
 
 	LOGIN signInState = CHOOSE;
+};
+
+
+struct Tooltip {
+	std::string title = "";
+	std::string description = "";
+	Tooltip(std::string t = "", std::string d = "") {
+		title = t;
+		description = d;
+	}
 };
 
 

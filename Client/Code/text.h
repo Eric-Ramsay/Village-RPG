@@ -120,7 +120,7 @@ int measureText(std::string text, float scale = 1, int textSize = 2) {
 			}
 		}
 	}
-	return size * scale;
+	return ((size - 1) * scale);
 }
 
 sf::Color getColor(std::string input = "") {
@@ -224,10 +224,13 @@ std::vector<std::string> splitLines(std::string text, int maxLength = WIDTH, int
 }
 
 // Print Function
-int Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1, ALIGN align = LEFT) {
+Box Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1, ALIGN align = LEFT) {
 	bool printing = true;
 	std::string color = "white";
 	std::vector<std::string> lines = splitLines(text, maxLength, scale);
+
+	Box box(dX, dY, 0, 0);
+	int maxX = 0;
 
 	for (int i = 0; i < lines.size(); i++) {
 		int drawX = dX;
@@ -239,6 +242,9 @@ int Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1
 			else {
 				drawX -= measureText(lines[i]);
 			}
+		}
+		if (drawX < box.x) {
+			box.x = drawX;
 		}
 		for (char c : lines[i]) {
 			int drawY = dY + 11 * scale * i;
@@ -271,10 +277,15 @@ int Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1
 					color += c;
 				}
 			}
+			if (drawX > maxX) {
+				maxX = drawX;
+			}
 		}
 	}
 
-	return lines.size() * scale * 11;
+	box.w = maxX - box.x;
+	box.h = lines.size() * scale * 11;
+	return box;
 }
 
 void CPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1) {

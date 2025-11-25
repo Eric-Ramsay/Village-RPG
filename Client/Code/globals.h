@@ -50,3 +50,6 @@ std::vector<UI_Item> genericLoot = {};
 std::vector<Tab*> tabList = {};
 Tab playerMenu({ "INVENTORY", "EFFECTS", "MAGIC" });
 Tab combatMenu({ "BATTLE", "LOOT" }, "*YELLOW*");
+Tab viewMenu({ "DESCRIPTION", "RUNES" }, "*BLUE*");
+
+std::unordered_map<std::string, Tooltip> TOOLTIPS = {};

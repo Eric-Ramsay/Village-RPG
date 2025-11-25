@@ -167,7 +167,7 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 	C.INVENTORY[wepId].attacks--;
 	sendItem(C.ID, C.INVENTORY[wepId]);
 
-	std::string msg = dealDamage(item.attack, C.ID, target, battle.teams[0], battle.teams[1]).msg + "\n";
+	std::string msg = dealDamage(item.attack, C.ID, target, battle.teams[0], battle.teams[1]).msg;
 	sendText(msg, battleIndices(battle));
 
 	handleCombat(battle.id);

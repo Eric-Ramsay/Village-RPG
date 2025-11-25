@@ -68,10 +68,20 @@ void handleLoginInput(std::string input) {
 void initTabs() {
 	tabList.push_back(&playerMenu);
 	tabList.push_back(&combatMenu);
+	tabList.push_back(&viewMenu);
 
 	for (int i = 0; i < tabList.size(); i++) {
 		setTabString(*tabList[i]);
 	}
+}
+
+void initToolTips() {
+	TOOLTIPS["VIT"] = Tooltip("Vitality", "*GREEN*+10*GREY* Max *RED*HP*GREY*\n\n*RED*HP*GREY* is a measure of how much *ORANGE*damage*GREY* you can take before your character *BLACK*dies");
+	TOOLTIPS["END"] = Tooltip("Endurance", "*GREEN*+10*GREY* Max Stamina\n*GREEN*+1 *GREY*Stamina Regeneration\n\n*GREEN*Endurance*GREY* is used to refill your *YELLOW*AP*GREY* at the start of each turn");
+	TOOLTIPS["DEX"] = Tooltip("Dexterity", "*GREEN*+3 AP*GREY* per turn\n\n*YELLOW*AP*GREY* is used to perform actions in your turn, like *ORANGE*attacking*GREY*, *BLUE*casting spells*GREY*, or *GREEN*moving");
+	TOOLTIPS["MAG"] = Tooltip("Magic", "*BLUE*+2*GREY* max learned spells\n*BLUE*+1*GREY* spell casts per turn");
+	TOOLTIPS["WEP"] = Tooltip("Weapon Handling", "*RED*+1 *GREY*Max Attack Damage\n*RED*+5%*GREY* total attack damage");
+	TOOLTIPS["AVD"] = Tooltip("Avoidance", "*GREEN*+5% *GREY*Dodge Chance\n*GREEN*+5% *GREY*Flee Chance\n*YELLOW*+1 AP*GREY* per turn\n\nAvoidance is *ORANGE*capped*GREY* at *RED*10*GREY* points");
 }
 
 void updateTabs(int mX, int mY) {
@@ -93,6 +103,7 @@ int main()
 	srand(time(NULL));
 	std::cout << rand() % 100 << std::endl;
 	init();
+	initToolTips();
 
 	sf::RenderWindow window;
 	sf::RenderTexture texture;
@@ -221,7 +232,7 @@ int main()
 							stateMessage(UI.signInState);
 						}
 					}
-					if (c != 0) {
+					if (c != 0 && input.size() < 50) {
 						input += (char)c;
 					}
 					else if (event.key.code == sf::Keyboard::Enter) {
@@ -286,21 +297,22 @@ int main()
 
 			sf::Sprite sprite;
 			sprite.setPosition(0, 0);
-			texture.clear(sf::Color(0, 5, 10));
+			texture.clear(sf::Color(0, 5, 15));
 
 			if (UI.signInState == COMPLETED) {
 				hideTabs();
 				if (!UI.viewLocked) {
 					UI.view = 0;
 				}
+				UI.tooltip = "";
 				DrawUI();
 			}
 			for (int i = 1; i <= 7; i++) {
 				if (logs.size() >= i) {
-					Print(logs[logs.size() - i], 10, HEIGHT - (11 + i * 15));
+					Print(logs[logs.size() - i], 10, HEIGHT - (11 + i * 15), 350);
 				}
 			}
-			Print("> " + input + "_", 10, HEIGHT - 11);
+			Print("> " + input + "_", 10, HEIGHT - 11, 350);
 
 			if (numVertices > vertSize) {
 				vertSize = numVertices + 1000;

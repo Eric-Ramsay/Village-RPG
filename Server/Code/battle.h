@@ -181,13 +181,13 @@ void handleCombat(std::string id) {
 	if (battle->round == 0) {
 		return;
 	}
-	if (validateBattle(battle->id)) {
+	if (validateBattle(id)) {
 		if (battle->teams[1].size() == 0) {
 			msg = winBattle(*battle);
 			updateBattle(*battle);
 		}
 		else {
-			while (turnCompleted(battle->teams[battle->turn]) && validateBattle(battle->id)) {
+			while (turnCompleted(battle->teams[battle->turn]) && validateBattle(id)) {
 				battle->turn = !battle->turn;
 				if (battle->turn == 0) {
 					battle->round++;
@@ -196,7 +196,9 @@ void handleCombat(std::string id) {
 			}
 		}
 	}
-	sendText(msg, battleIndices(*battle));
+	if (BATTLES.count(id)) {
+		sendText(msg, battleIndices(*battle));
+	}
 }
 
 void summon(Battle& battle, Character enemy, int x = 0, int y = 0, int team = 1) {

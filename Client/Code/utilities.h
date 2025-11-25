@@ -7,6 +7,10 @@ bool range(int x1, int y1, int x2, int y2, int width, int height) {
 	return (x1 >= x2 && y1 >= y2 && x1 <= x2 + width && y1 <= y2 + height);
 }
 
+bool mRange(Box box) {
+	return range(UI.mX, UI.mY, box.x, box.y, box.w, box.h);
+}
+
 void stateMessage(LOGIN state) {
 	if (state == CHOOSE) {
 		logs.push_back("Do you want to *PURPLE*log in*GREY* or *ORANGE*register*GREY* a new account?");
