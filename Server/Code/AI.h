@@ -12,7 +12,7 @@ Result dealDamage(Attack attack, std::string attackerId, std::string targetId, s
 	if (hitValue < attack.hitChance) {
 		result.msg = "*ORANGE*" + pretty(name(attacker)) + " *RED*attacks " + name(target) + " for *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
 		result.damage = dmg;
-		setStat(*target, "HP", target->HP - dmg);
+		target->HP -= dmg;
 	}
 	else {
 		result.msg += "*ORANGE*" + pretty(name(attacker)) + " *RED*misses!\n";

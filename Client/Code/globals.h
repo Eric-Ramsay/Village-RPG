@@ -53,3 +53,5 @@ Tab combatMenu({ "BATTLE", "LOOT" }, "*YELLOW*");
 Tab viewMenu({ "DESCRIPTION", "RUNES" }, "*BLUE*");
 
 std::unordered_map<std::string, Tooltip> TOOLTIPS = {};
+
+std::unordered_map<std::string, sf::Color> COLORS = {};

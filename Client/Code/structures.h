@@ -51,7 +51,7 @@ enum ALIGN {
 };
 
 struct UIState {
-	bool vSync = true;
+	bool vSync = false;
 
 	bool drawingBox = false;
 	C box = C(0, 0);

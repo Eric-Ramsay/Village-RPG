@@ -23,16 +23,6 @@ int nextMessage(std::deque<Message>& msgs) {
 	return msgIndex;
 }
 
-void consoleInput() {
-	for (;;) {
-		Sleep(1);
-		std::string text;
-		std::getline(std::cin, text);
-		sendData("TEXT", text);
-	}
-}
-
-
 
 void connect() {
 	WSAData data;

@@ -84,6 +84,28 @@ void initToolTips() {
 	TOOLTIPS["AVD"] = Tooltip("Avoidance", "*GREEN*+5% *GREY*Dodge Chance\n*GREEN*+5% *GREY*Flee Chance\n*YELLOW*+1 AP*GREY* per turn\n\nAvoidance is *ORANGE*capped*GREY* at *RED*10*GREY* points");
 }
 
+void initColors() {
+	COLORS["yellow"] = sf::Color(180, 140, 0);
+	COLORS["red"] = sf::Color(220, 50, 45);
+	COLORS["green"] = sf::Color(135, 155, 0);
+	COLORS["brown"] = sf::Color(140, 75, 40);
+	COLORS["pink"] = sf::Color(190, 55, 125);
+	COLORS["purple"] = sf::Color(160, 90, 250);
+	COLORS["blue"] = sf::Color(40, 125, 195);
+	COLORS["teal"] = sf::Color(45, 155, 145);
+	COLORS["cyan"] = sf::Color(45, 155, 145);
+	COLORS["orange"] = sf::Color(190, 75, 40);
+	COLORS["black"] = sf::Color(125, 125, 125);
+	COLORS["grey"] = sf::Color(245, 245, 240);
+	COLORS["white"] = sf::Color(255, 255, 255);
+
+	for (auto color : COLORS) {
+		COLORS[caps(color.first)] = color.second;
+		COLORS["*" + color.first + "*"] = color.second;
+		COLORS["*" + caps(color.first) + "*"] = color.second;
+	}
+}
+
 void updateTabs(int mX, int mY) {
 	for (int i = 0; i < tabList.size(); i++) {
 		handleClick(*tabList[i], mX, mY);
@@ -98,6 +120,7 @@ void hideTabs() {
 
 int main()
 {
+	initColors();
 	initTabs();
 
 	srand(time(NULL));
@@ -112,10 +135,8 @@ int main()
 	connect();
 	std::thread thread1(listenToServer);
 	std::thread thread2(processMessages);
-	std::thread thread3(consoleInput);
 	thread1.detach();
 	thread2.detach();
-	thread3.detach();
 
 	float FPS = 0;
 	bool updateFPS = true;
@@ -131,7 +152,7 @@ int main()
 
 	window.setMouseCursorVisible(false);
 	window.setKeyRepeatEnabled(false);
-	window.setVerticalSyncEnabled(UI.vSync);
+	window.setVerticalSyncEnabled(true);
 	srand(time(NULL));
 	//ma_engine_init(NULL, &audio);
 	static sf::Texture sprites = createTexture("./Sprites/sprites.png");
@@ -147,13 +168,11 @@ int main()
 	
 
 	while (!quit && window.isOpen()) {
-		Sleep(1);
 		sf::Event event;
 		UI.mouseReleased = false;
 		UI.mousePressed = false;
 		UI.rightPressed = false;
 		UI.doubleClicked = false;
-
 		while (window.pollEvent(event)) {
 			UI.mX = sf::Mouse::getPosition().x / xScale;
 			UI.mY = sf::Mouse::getPosition().y / yScale;
@@ -264,6 +283,7 @@ int main()
 				}
 			}
 		}
+		Sleep(1);
 		if (UI.inGame) {
 			if (updateFPS) {
 				FPS = 1.f / clock.getElapsedTime().asSeconds();
@@ -312,7 +332,7 @@ int main()
 					Print(logs[logs.size() - i], 10, HEIGHT - (11 + i * 15), 350);
 				}
 			}
-			Print("> " + input + "_", 10, HEIGHT - 11, 350);
+			Print(to_str((int)FPS) + " " + input + "_", 10, HEIGHT - 11, 350);
 
 			if (numVertices > vertSize) {
 				vertSize = numVertices + 1000;

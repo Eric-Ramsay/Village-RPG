@@ -124,47 +124,9 @@ int measureText(std::string text, float scale = 1, int textSize = 2) {
 }
 
 sf::Color getColor(std::string input = "") {
-	std::string text = "";
-	for (char c : input) {
-		if (c != '*') {
-			text += c;
-		}
+	if (COLORS.count(input) > 0) {
+		return COLORS[input];
 	}
-	text = low(text);
-	if (text == "yellow") {
-		return sf::Color(180, 140, 0);
-	}
-	else if (text == "red") {
-		return sf::Color(220, 50, 45);
-	}
-	else if (text == "green") {
-		return sf::Color(135, 155, 0);
-	}
-	else if (text == "pink") {
-		return sf::Color(190, 55, 125);
-	}
-	else if (text == "purple") {
-		return sf::Color(160, 90, 250);
-	}
-	else if (text == "blue") {
-		return sf::Color(40, 125, 195);
-	}
-	else if (text == "teal" || text == "cyan") {
-		return sf::Color(45, 155, 145);
-	}
-	else if (text == "orange") {
-		return sf::Color(190, 75, 40);
-	}
-	else if (text == "black") {
-		return sf::Color(125, 125, 125);
-	}
-	else if (text == "grey") {
-		return sf::Color(245, 245, 240);
-	}
-	else if (text == "brown") {
-		return sf::Color(140, 75, 40);
-	}
-
 	return sf::Color(245, 245, 240);
 }
 

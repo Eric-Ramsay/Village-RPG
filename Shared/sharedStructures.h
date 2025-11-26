@@ -76,7 +76,6 @@ enum WEAPON_CLASS {
 
 struct UI_Item {
 	std::string id = "";
-	std::string name = "";
 	std::string type = "";
 	std::string description = "";
 	int cost = 0;
@@ -97,7 +96,6 @@ struct UI_Item {
 	UI_Item(std::string name, int value, std::string wepType, std::string desc, bool twoH, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
 		type = "weapon";
 		id = low(name);
-		name = name;
 		cost = value;
 		subclass = wepType;
 		description = desc;

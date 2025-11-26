@@ -76,6 +76,17 @@ void processMessages() {
 				if (data == ID) {
 					ID = "";
 				}
+				for (int i = 0; i < 2; i++) {
+					std::vector<std::string> team = {};
+					for (std::string id : BATTLE.teams[i]) {
+						if (id != data) {
+							team.push_back(id);
+						}
+					}
+					BATTLE.teams[i] = team;
+				}
+				
+
 			}
 			if (type == "STAT") {
 				std::string id = readStr(data);

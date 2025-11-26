@@ -289,6 +289,7 @@ void DrawBattle() {
 			int x1 = ((1 + 2 * i) * w) / 8 - len / 2;
 			int y1 = 212;
 			if (range(UI.mX, UI.mY, x1 - 4, y1 - 4, len + 8, 15)) {
+				UI.tooltip = "BUTTON_" + texts[i];
 				if (UI.mouseReleased) {
 					if (i == 0) {
 						sendData("COMMAND", "end");

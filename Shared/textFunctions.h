@@ -103,16 +103,25 @@ std::string trimNum(float x) {
 
 std::string low(std::string a) {
 	std::string word = "";
-	bool skip = false;
 	for (char c : a) {
-		if (c == '*') {
-			skip = !skip;
-		}
-		if (skip) {
-			word += c;
+		if (c >= 'A' && c <= 'Z') {
+			word += (c - 'A') + 'a';
 		}
 		else {
-			word += std::tolower(c);
+			word += c;
+		}
+	}
+	return word;
+}
+
+std::string caps(std::string a) {
+	std::string word = "";
+	for (char c : a) {
+		if (c >= 'a' && c <= 'z') {
+			word += (c - 'a') + 'A';
+		}
+		else {
+			word += c;
 		}
 	}
 	return word;
