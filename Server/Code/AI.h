@@ -1,4 +1,12 @@
-#pragma once
+#pragma once\
+
+std::string Name(Character C) {
+	if (C.TYPE != "player") {
+		return "the " + C.NAME;
+	}
+	return pretty(C.NAME);
+}
+
 Result dealDamage(Attack attack, std::string attackerId, std::string targetId, std::vector<std::string> allies, std::vector<std::string> enemies) {
 	Result result;
 	if (CHARACTERS.count(attackerId) * CHARACTERS.count(targetId) == 0) {
@@ -76,7 +84,7 @@ void moveInRange(Character* C, std::vector<std::string> enemies, int range, std:
 	}
 }
 
-std::string enemyAttack(int enemyIndex, std::vector<std::string> allies, std::vector<std::string> enemies, Battle battle) {
+std::string enemyAttack(int enemyIndex, std::vector<std::string> allies, std::vector<std::string> enemies, Battle battle) {\
 	std::string msg = "";
 	Character* C = &CHARACTERS[allies[enemyIndex]];
 	std::string eName = low(C->NAME);
@@ -95,9 +103,11 @@ std::string enemyAttack(int enemyIndex, std::vector<std::string> allies, std::ve
 		std::vector<std::string> targets = findTargets(C->X, C->Y, 1, enemies);
 		if (targets.size() > 0) {
 			int index = rand() % targets.size();
-			msg += "*RED*The Crazed Wolf*GREY* bites savagely at " + CHARACTERS[enemies[index]].NAME + "!\n";
 			Result result = dealDamage(P_Attack(10, 16, 90), C->ID, CHARACTERS[enemies[index]].ID, allies, enemies);
-			msg += result.msg;
+			msg += "*RED*" + pretty(Name(*C)) + " bites savagely at " + pretty(CHARACTERS[enemies[index]].NAME);
+			if (result.damage > 0) {
+				msg += ", dealing *ORANGE*" + to_str(result.damage) + "*RED* damage!\n";
+			}
 		}
 		else {
 			moveInRange(C, enemies, 1, movementCosts, true);
@@ -118,11 +128,12 @@ std::string enemyAttack(int enemyIndex, std::vector<std::string> allies, std::ve
 		}
 	}
 
-	std::string changes = str(C->ID);
+	/*std::string changes = str("STATS") + str(C->ID);
 	changes += addLine("X", C->X);
 	changes += addLine("Y", C->Y);
 	changes += addLine("HP", C->HP);
-	sendData("STATS", changes);
-	save(*C);
+	data += changes;
+	sendData("BUNDLE", data);
+	save(*C);*/
 	return msg;
 }

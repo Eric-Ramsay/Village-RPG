@@ -172,6 +172,7 @@ void startTurn(Battle& battle) {
 			C->ENDED = true;
 		}
 	}
+	updateBattle(battle);
 	sendText(msg, battleIndices(battle));
 }
 
@@ -213,7 +214,7 @@ void summon(Battle& battle, Character enemy, int x = 0, int y = 0, int team = 1)
 	save(enemy);
 }
 
-void summon(Battle& battle, std::vector<Character> enemyList, int team = 1, bool update = true) {
+void summon(Battle& battle, std::vector<Character> enemyList, int team = 1, bool update = false) {
 	for (Character enemy : enemyList) {
 		summon(battle, enemy, team);
 	}

@@ -11,6 +11,11 @@ std::string operator+(std::string str, int num)
 	return str + to_str(num);
 }
 
+std::string operator+(int num, std::string str)
+{
+	return str + to_str(num);
+}
+
 
 bool endsWith(std::string stringOne, std::string stringTwo) {
 	if (stringOne.size() < stringTwo.size()) {

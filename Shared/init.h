@@ -4,15 +4,15 @@ void initLocations() {
 	std::vector<Location> locations = {};
 	// Buildings
 	Location Tavern("Tavern", "The *BLUE*Tavern*GREY* is four stories, and boasts no fewer than twenty-five rooms for rent, though these days only a few are ever rented out at a time. More than a few townspeople come to the *RED*firelit*GREY* common room for dinner or drinks at its bar, which is enough for *YELLOW*Penelope*GREY* to maintain the establishment.\n\nIt's said that *GREEN*Asha*GREY*, sitting perpetually at the bar and living in a rented room accounts for half of the tavern's total revenue.");
-	Tavern.parent = "Merchant's Lane";
+	Tavern.parent = "Merchant Lane";
 	Tavern.people = { "Penelope", "Asha", "Clyde" };
 
-	Location Tailor("Tailor", "The *BLUE*Tailor Shop*GREY* is well stocked with all the latest gowns and garments, intricately crafted by *YELLOW*Florence*GREY* herself. Painted a dark brown in its interior to accent the colorful fabrics within, it's one of the newest additions to *RED*Merchant's Lane*GREY*. Behind several fashionable displays, hidden in a back corner, is a mannequin adorned in old *CYAN*highland chainmail*GREY*. When asked about it, *YELLOW*Florence*GREY* only looks away with a sly, fading laugh.");
-	Tailor.parent = "Merchant's Lane";
+	Location Tailor("Tailor", "The *BLUE*Tailor Shop*GREY* is well stocked with all the latest gowns and garments, intricately crafted by *YELLOW*Florence*GREY* herself. Painted a dark brown in its interior to accent the colorful fabrics within, it's one of the newest additions to *RED*Merchant Lane*GREY*. Behind several fashionable displays, hidden in a back corner, is a mannequin adorned in old *CYAN*highland chainmail*GREY*. When asked about it, *YELLOW*Florence*GREY* only looks away with a sly, fading laugh.");
+	Tailor.parent = "Merchant Lane";
 	Tailor.people = { "Florence" };
 
 	Location Barber("Barber", "The *BLUE*Barbershop*GREY* is a single, plainly furnished room at the front of *GREEN*Nestra*GREY*'s estate, in what used to be an antechamber. The shop's greatest feature is its window to the estate's atrium garden with its exquisite *WHITE*fountain*GREY*, *WHITE*statues*GREY*, and *WHITE*pillars*GREY*.\n\nHaircuts are *YELLOW*15 Gold*GREY*.\n\nType *CYAN*haircut *GREY*[*ORANGE*description*GREY*] to give yourself a description. You can use *CYAN*parse *GREY*[*ORANGE*description*GREY*] to preview your haircut.");
-	Barber.parent = "Merchant's Lane";
+	Barber.parent = "Merchant Lane";
 	Barber.people = { "Nestra" };
 
 	Location Curio("Curio Shop", "The *BLUE*Curio Shop*GREY* is a maze of narrow hallways and tiny rooms, formed by hanging carpets and shelves that rise from the floor to the low ceiling. Every imaginable sort of thing can be found cluttered onto a shelf somewhere in the shop, from ancient artifacts to tarnished copper toys. *YELLOW*Minsiki*GREY* scours every merchant ship that pulls into the harbor, looking for more *PINK*strange wares*GREY*.");
@@ -43,7 +43,7 @@ void initLocations() {
 	Smithy.people = { "Kobos" };
 
 	// Locations
-	Location Merchants("Merchant's Lane", "A wide dusty road flanked by various wooden shops and market stalls. The air is filled with the clamor of townspeople going about their business. Dark pines loom in the west, far beyond the comforts of the town.");
+	Location Merchants("Merchant Lane", "A wide dusty road flanked by various wooden shops and market stalls. The air is filled with the clamor of townspeople going about their business.\n\nDark pines loom in the west, far beyond the comforts of the town.");
 	Merchants.buildings = { "Tavern", "Tailor", "Barber" };
 	Merchants.connections = {
 		Connection("south", "Town Square"),
@@ -51,14 +51,14 @@ void initLocations() {
 		Connection("west", "Wilted Woods")
 	};
 
-	Location Harbor("Harbor", "The harbor on the north side of town. The coast seems endless to the east and west, and a cool southbound wind blows in from the grey sea. A few small ships are out fishing, just shy of the horizon. A large ferry is docked at the end of the pier.");
+	Location Harbor("Harbor", "The harbor on the north side of town. The coast seems endless to the east and west, and a cool southbound wind blows in from the grey sea.\n\nA few small ships are out fishing, just shy of the horizon. A large ferry is docked at the end of the pier.");
 	Harbor.buildings = { "Curio Shop", "Rune Shop" };
 	Harbor.connections = {
-		Connection("south", "Merchant's Lane"),
+		Connection("south", "Merchant Lane"),
 		Connection("north", "Island Ferry")
 	};
 
-	Location Churchyard("Churchyard", "A stony, two-story church dominates this side of town. It's dead quiet here. Beyond the church is a graveyard. It seems like new graves are always being dug.");
+	Location Churchyard("Churchyard", "A stony, two-story church dominates this side of town. It's dead quiet here.\n\nBeyond the church is a graveyard. It seems like new graves are always being dug.");
 	Churchyard.buildings = { "Church", "Library" };
 	Churchyard.connections = {
 		Connection("west", "Town Square"),
@@ -66,45 +66,45 @@ void initLocations() {
 		Connection("east", "Haunted Crypts")
 	};
 
-	Location Square("Town Square", "A sprawling, largely empty plaza. There used to be festivals here, but these days they're little more than a distant memory. A few tiny insects flit about the open air, and the smell of mud rises from the southern swamp.");
+	Location Square("Town Square", "A sprawling, largely empty plaza. There used to be festivals here, but these days they're little more than a distant memory.\n\nA few tiny insects flit about the open air, and the smell of mud rises from the southern swamp.");
 	Square.buildings = { "Apothecary", "Smithy", "Bank" };
 	Square.connections = {
-		Connection("north", "Merchant's Lane"),
+		Connection("north", "Merchant Lane"),
 		Connection("east", "Churchyard"),
 		Connection("south", "Acrid Swamp")
 	};
 
-	Location Graveyard("Graveyard", "The graveyard is a vast field, long fallen into disrepair. The graves of ancient warriors are now little more than chunks of weathered stone. Lately, burying the dead alone has been more than the town can manage.");
+	Location Graveyard("Graveyard", "A vast field, covered in withered weeds and shabby wooden markers, long since fallen into disrepair. \n\nThe graves of ancient warriors are now little more than chunks of weathered stone, and the dirt here is always churning.");
 	Graveyard.connections = {
 		Connection("south", "Churchyard"),
 	};
 	Graveyard.people = { "Janice" };
 
-	Location Ferry("Island Ferry", "The ferry is a flat wooden ship creaking as it rocks gently with the waves. On the northern horizon, veiled in atmospheric blue, one can just barely see a forested island.");
+	Location Ferry("Island Ferry", "A flat wooden ship creaking as it rocks gently with the waves.\n\nOn the northern horizon, veiled in atmospheric blue, one can just barely see a forested island.");
 	Ferry.connections = {
 		Connection("north", "Stony Island"),
 		Connection("south", "Harbor"),
 	};
 
-	Location Crypts("Haunted Crypts", "Beyond the barrows and beneath the earth. . . a sprawling labrynth of ancient stone tunnels. For both living and dead, no peace is to be found in this accursed place.");
+	Location Crypts("Haunted Crypts", "Beyond the barrows and beneath the earth. . . a sprawling labrynth of ancient stone tunnels.\n\nFor both living and dead, no peace is to be found in this accursed place.");
 	Crypts.dungeon = true;
 	Crypts.connections = {
 		Connection("west", "Churchyard")
 	};
 
-	Location Woods("Wilted Woods", "An old network of roads winds through this forest, overgrown and travelled only by the most desperate. No birds dare sing here, there is naught but the creaking of the dead trees.");
+	Location Woods("Wilted Woods", "An old network of roads winds through this forest, overgrown and travelled only by the most desperate.\n\nNo birds dare sing here, there is naught but the creaking of the dead trees.");
 	Woods.dungeon = true;
 	Woods.connections = {
-		Connection("east", "Merchant's Lane")
+		Connection("east", "Merchant Lane")
 	};
 
-	Location Swamp("Acrid Swamp", "Muddy water rises to your knees, pond scum spread across its surface hiding that which lurks below. A thick damp mist hangs in the air, obscuring the trunks and vines at the edge of your perception into frightful figures.");
+	Location Swamp("Acrid Swamp", "Muddy water rises to your knees, pond scum spread across its surface hiding that which lurks below.\n\nA thick damp mist hangs in the air, obscuring the trunks and vines at the edge of your perception into frightful figures.");
 	Swamp.dungeon = true;
 	Swamp.connections = {
 		Connection("north", "Town Square")
 	};
 
-	Location Island("Stony Island", "The island has been abandoned for some time now, though some mossy cabins still stand in the forest. No fisherman would dare sail over the vibrant reef of the north shore, for terrible creatures dwell there. . .");
+	Location Island("Stony Island", "The island has been abandoned for some time now, though some mossy cabins still stand in the forest.\n\nNo fisherman would dare sail over the vibrant reef of the north shore, for terrible creatures dwell there. . .");
 	Island.dungeon = true;
 	Island.connections = {
 		Connection("south", "Island Ferry")

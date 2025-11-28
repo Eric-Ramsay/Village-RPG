@@ -163,7 +163,7 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 		return "*RED*Couldn't find enemy '*GREY*" + args + "*RED*'";
 	}
 
-	setStat(C, "AP", C.AP - item.AP);
+	C.AP -= item.AP;
 	C.INVENTORY[wepId].attacks--;
 	sendItem(C.ID, C.INVENTORY[wepId]);
 
@@ -519,7 +519,7 @@ void command(std::string input, int playerIndex) {
 	}
 	else if (keyword == "end") {
 		if (BATTLES.count(CHARACTERS[id].LOCATION) > 0) {
-			setStat(CHARACTERS[id], "ENDED", true);
+			CHARACTERS[id].ENDED = true;
 			handleCombat(CHARACTERS[id].LOCATION);
 		}
 		else {
@@ -534,14 +534,15 @@ void command(std::string input, int playerIndex) {
 			int x = readInt(words[0]);
 			int y = readInt(words[0]);
 			if (x >= 0 && y >= 0 && x < 12 && y < 12) {
+				std::string changes = str(id);
 				std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[id], BATTLES[CHARACTERS[id].LOCATION]);
 				if (movementCosts[y][x] <= CHARACTERS[id].AP) {
 					if (BATTLES[CHARACTERS[id].LOCATION].round != 0) {
-						setStat(CHARACTERS[id], "AP", CHARACTERS[id].AP - movementCosts[y][x]);
+						CHARACTERS[id].AP -= movementCosts[y][x];
+						changes += addLine("AP", CHARACTERS[id].AP);
 					}
 					CHARACTERS[id].X = x;
 					CHARACTERS[id].Y = y;
-					std::string changes = str(id);
 					changes += addLine("X", x);
 					changes += addLine("Y", y);
 					sendData("STATS", changes);

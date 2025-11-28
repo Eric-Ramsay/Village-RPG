@@ -49,7 +49,7 @@ void handleClick(Tab& tab, int mX, int mY) {
 	}
 }
 
-void DrawButton(std::string text, int x, int y, std::string color = "*ORANGE*") {
+Box DrawButton(std::string text, int x, int y, std::string color = "*ORANGE*") {
 	int w = measureText(text) + 8;
 	int h = 15;
 	fillRect(x, y, w, h, getColor(color));
@@ -64,6 +64,7 @@ void DrawButton(std::string text, int x, int y, std::string color = "*ORANGE*") 
 		}
 	}
 	Print(textColor + text, x + 4, y + 4);
+	return Box(x, y, w, h);
 }
 
 void DrawTabs(Tab& tab, int x1, int y1) {
@@ -273,8 +274,12 @@ void DrawBattle() {
 
 	DrawTabs(combatMenu, 323, y + 10);
 
-	std::vector<std::vector<int>> movementCosts = moveCosts(getCharacter(ID), battle);
 	std::vector<std::vector<std::string>> tiles(12, std::vector<std::string>(12, "blank_tile"));
+	static std::vector<std::vector<int>> movementCosts;
+	if (updateMovement) {
+		updateMovement = false;
+		movementCosts = moveCosts(getCharacter(ID), BATTLE);
+	}
 
 	if (battle.round > 0) {
 		std::vector<std::string> texts = {
@@ -436,6 +441,8 @@ void DrawBattle() {
 }
 
 void DrawRoom() {
+	int x = 5;
+	int y = 5;
 	std::string msg = "";
 	Location room = getLocation(getCharacter(ID).LOCATION);
 	if (room.parent != "") {
@@ -447,17 +454,6 @@ void DrawRoom() {
 
 	msg += room.description + "\n\n";
 
-	if (room.buildings.size() > 0) {
-		msg += "*BLUE*Buildings\n";
-		for (std::string building : room.buildings) {
-			msg += "*YELLOW*" + building + "\n";
-		}
-		msg += "\n";
-	}
-
-	for (Connection con : room.connections) {
-		msg += "*GREEN*" + con.direction + "*GREY* - *BLUE*" + con.location + "\n";
-	}
 	std::vector<std::string> names = {};
 	for (std::string npc : room.people) {
 		std::string color = "*GREEN*";
@@ -495,7 +491,65 @@ void DrawRoom() {
 		}
 	}
 	
-	Print(msg, 5, 5, 420);
+	Box descBox = Print(msg, 5, 5, 420);
+
+	y += descBox.h + 10;
+	
+	msg = "";
+
+	if (room.buildings.size() > 0) {
+		y = 110;
+		Print("*BLUE*Buildings", x, y);
+		msg += "*BLUE*Buildings\n";
+		for (int i = 0; i < room.buildings.size(); i++) {
+			Box box = DrawButton(room.buildings[i], x, y + 10, "YELLOW");
+			if (mRange(box)) {
+				if (UI.mouseReleased) {
+					sendData("COMMAND", "GO " + room.buildings[i]);
+				}
+			}
+			x += box.w + 5;
+		}
+	}
+
+	x = 5;
+	y = 160;
+	std::vector <std::string> directions = {
+		"north",
+		"west",
+		"east",
+		"south"
+	};
+	for (int i = 0; i < 4; i++) {
+		for (Connection con : room.connections) {
+			if (con.direction == directions[i]) {
+				std::string color = "*BLUE*";
+				if (LOCATIONS[low(con.location)].dungeon) {
+					color = "*RED*";
+				}
+				Box box = DrawButton(con.location, x, y + 10, color);
+				if (mRange(box)) {
+					if (UI.mouseReleased) {
+						sendData("COMMAND", "GO " + con.location);
+					}
+				}
+				Print("*GREEN*" + con.direction, x, y);
+				x += box.w + 5;
+			}
+		}
+	}
+	
+	if (room.dungeon) {
+		y = 205;
+		x = 5;
+		Box box = DrawButton("DELVE", x, y, "RED");
+		if (mRange(box)) {
+			if (UI.mouseReleased) {
+				sendData("COMMAND", "DELVE");
+			}
+		}
+	}
+
 }
 
 void DrawUI() {

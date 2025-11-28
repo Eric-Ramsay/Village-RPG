@@ -95,6 +95,14 @@ std::vector<int> battleIndices(Battle battle) {
 }
 
 void updateBattle(Battle battle) {
+	std::string bundle = "";
+	for (int i = 0; i < 2; i++) {
+		for (std::string id : battle.teams[i]) {
+			bundle += str("CHARACTER") + serialize(CHARACTERS[id]) + '\t';
+			save(CHARACTERS[id]);
+		}
+	}
+	sendData("BUNDLE", bundle);
 	save(battle);
 	sendBattle(battle, battleIndices(battle));
 }
