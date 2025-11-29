@@ -196,6 +196,7 @@ Box Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1
 
 	for (int i = 0; i < lines.size(); i++) {
 		int drawX = dX;
+		int drawY = dY + 11 * scale * i;
 		if (align == CENTER || align == RIGHT) {
 			int len = measureText(lines[i]);
 			if (align == CENTER) {
@@ -208,8 +209,9 @@ Box Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1
 		if (drawX < box.x) {
 			box.x = drawX;
 		}
+		std::string word = "";
+		Box wordBox = Box(drawX, drawY - 1, 0, 9);
 		for (char c : lines[i]) {
-			int drawY = dY + 11 * scale * i;
 			if (printing) {
 				if (c == '*') {
 					printing = false;
@@ -228,9 +230,27 @@ Box Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1
 						Draw(sX, sY, sW, 9, drawX, drawY - 1, scale, getColor(color));
 					}
 					drawX += (sW + 1) * scale;
+					if (c != ' ') {
+						wordBox.w += (sW + 1) * scale;
+						word += std::tolower(c);
+						if (PEOPLE.count(word) > 0) {
+							if (mRange(wordBox)) {
+								UI.tooltip = word;
+								if (UI.doubleClicked) {
+									sendData("COMMAND", "trade " + word);
+								}
+							}
+						}
+					}
+					else {
+						word = "";
+						wordBox = Box(drawX, drawY, 0, 9);
+					}
 				}
 			}
 			else {
+				word = "";
+				wordBox = Box(drawX, drawY, 0, 9);
 				if (c == '*') {
 					printing = true;
 					color = low(color);

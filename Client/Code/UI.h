@@ -317,12 +317,21 @@ void DrawBattle() {
 		int w = 16 * 12;
 		std::string text = "Start the Battle!";
 		int len = measureText(text);
-		int x1 = w / 2 - len / 2;
+		int x1 = w / 4 - len / 2;
 		int y1 = 212;
-		DrawButton(text, x1, y1, "*PINK*");
-		if (range(UI.mX, UI.mY, x1 - 4, y1 - 4, len + 8, 15)) {
+		Box box = DrawButton(text, x1, y1, "*PINK*");
+		if (mRange(box)) {
 			if (UI.mouseReleased) {
 				sendData("COMMAND", "start");
+			}
+		}
+		text = "Go Back";
+		len = measureText(text);
+		x1 = 3 * (w / 4) - len / 4;
+		box = DrawButton(text, x1, y1, "*PINK*");
+		if (mRange(box)) {
+			if (UI.mouseReleased) {
+				sendData("COMMAND", "leave");
 			}
 		}
 	}
@@ -498,7 +507,7 @@ void DrawRoom() {
 	msg = "";
 
 	if (room.buildings.size() > 0) {
-		y = 110;
+		y = 122;
 		Print("*BLUE*Buildings", x, y);
 		msg += "*BLUE*Buildings\n";
 		for (int i = 0; i < room.buildings.size(); i++) {
@@ -538,18 +547,33 @@ void DrawRoom() {
 			}
 		}
 	}
-	
-	if (room.dungeon) {
-		y = 205;
+	if (low(room.id) == "tavern") {
+		y = 170;
 		x = 5;
-		Box box = DrawButton("DELVE", x, y, "RED");
+		Box box = DrawButton("Rest - *YELLOW*5 Gold", x, y, "PINK");
 		if (mRange(box)) {
 			if (UI.mouseReleased) {
-				sendData("COMMAND", "DELVE");
+				sendData("COMMAND", "rest");
 			}
 		}
 	}
-
+	
+	if (room.dungeon || room.parent != "") {
+		y = 205;
+		x = 5;
+		std::string command = "DELVE";
+		std::string color = "RED";
+		if (room.parent != "") {
+			command = "LEAVE";
+			color = "ORANGE";
+		}
+		Box box = DrawButton(command, x, y, color);
+		if (mRange(box)) {
+			if (UI.mouseReleased) {
+				sendData("COMMAND", command);
+			}
+		}
+	}
 }
 
 void DrawUI() {

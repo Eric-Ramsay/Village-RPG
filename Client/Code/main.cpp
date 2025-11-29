@@ -31,8 +31,8 @@ namespace Gdiplus {
 #include "utilities.h"
 #include "audio.h"
 #include "draw.h"
-#include "text.h"
 #include "server.h"
+#include "text.h"
 
 #include "..\..\Shared\init.h"
 #include "UI.h"
@@ -82,6 +82,20 @@ void initToolTips() {
 	TOOLTIPS["MAG"] = Tooltip("Magic", "*BLUE*+2*GREY* max learned spells\n*BLUE*+1*GREY* spell casts per turn");
 	TOOLTIPS["WEP"] = Tooltip("Weapon Handling", "*RED*+1 *GREY*Max Attack Damage\n*RED*+5%*GREY* total attack damage");
 	TOOLTIPS["AVD"] = Tooltip("Avoidance", "*GREEN*+5% *GREY*Dodge Chance\n*GREEN*+5% *GREY*Flee Chance\n*YELLOW*+1 AP*GREY* per turn\n\nAvoidance is *ORANGE*capped*GREY* at *RED*10*GREY* points");
+	TOOLTIPS["BUTTON_END"] = Tooltip("Ending your Turn", "Once you've done everything you want to do, you should end your turn.\n\nOnce everyone on your team has ended their turn, the enemies will take a turn.");
+	TOOLTIPS["BUTTON_BRACE"] = Tooltip("Bracing", "It costs 6 Stamina to Brace. Bracing gives you a 50% chance to dodge the first damage that you would take next turn.");
+	TOOLTIPS["BUTTON_GUARD"] = Tooltip("Guarding", "It costs 6 AP to Guard.");
+	TOOLTIPS["BUTTON_FLEE"] = Tooltip("Fleeing", "It costs 3 AP to attempt to Flee. If you fail, you can't attack/cast for the remainder of the turn.");
+
+	for (auto person : PEOPLE) {
+		std::string header = person.second.NAME;
+		std::string body = person.second.DESCRIPTION;
+		if (person.second.MERCHANT) {
+			header += " *BLACK*|*YELLOW* Merchant";
+			body += "\n\n*BLACK*Double-click to trade with " + person.second.NAME;
+		}
+		TOOLTIPS[person.first] = Tooltip(header, body);
+	}
 }
 
 void initColors() {
