@@ -165,6 +165,7 @@
     <ClInclude Include="Code\structures.h" />
     <ClInclude Include="Code\text.h" />
     <ClInclude Include="Code\UI.h" />
+    <ClInclude Include="Code\UI_Elements.h" />
     <ClInclude Include="Code\utilities.h" />
   </ItemGroup>
   <ItemGroup>

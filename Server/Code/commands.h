@@ -217,6 +217,26 @@ std::string commandRemove(int playerIndex, Character& C, std::vector<std::string
 	return "*RED*Unable to equip '" + args + "'";
 }
 
+std::string commandSell(int playerIndex, Character& C, std::vector<std::string> words) {
+	std::string args = join(words);
+	std::vector<std::string> ids = findItem(args, C.INVENTORY);
+	for (std::string id : ids) {
+		std::string changes = str(C.ID);
+		Item item = C.INVENTORY[id];
+		if (item.equipped) {
+			return "*RED*Unequip this item first";
+		}
+		int gold = value(item)/2;
+		C.GOLD += gold;
+		C.INVENTORY.erase(id);
+		changes += addLine("GOLD", C.GOLD);
+		changes += addLine("REMOVE_ITEM", item.index);
+		sendData("STATS", changes);
+		return "You sell the *TEAL*" + pretty(getItem(item.id).id) + "*GREY* for *YELLOW*" + gold + " gold";
+	}
+	return "*RED*Unable to sell '" + args + "'";
+}
+
 std::string commandEquip(int playerIndex, Character& C, std::vector<std::string> words) {
 	std::string args = join(words);
 	std::vector<std::string> ids = findItem(args, C.INVENTORY);
@@ -317,7 +337,7 @@ std::string commandBuy(int playerIndex, Character& C, std::vector<std::string> w
 		C.GOLD -= item.cost;
 		sendItem(C.ID, newItem);
 		sendStat(C.ID, "GOLD", C.GOLD);
-		return "*GREEN*You buy the *RED*" + pretty(args) + "*GREEN* for *YELLOW*" + item.cost + " gold*GREEN*. You have *YELLOW*" + C.GOLD + " gold*GREEN* left.\n";
+		return "*GREEN*You buy the *RED*" + pretty(args) + "*GREEN* for *YELLOW*" + item.cost + " gold";
 	}
 	return "*RED*You don't have room in your inventory to buy that!\n";
 }
@@ -516,6 +536,9 @@ void command(std::string input, int playerIndex) {
 	}
 	else if (keyword == "buy") {
 		msg = commandBuy(playerIndex, CHARACTERS[id], words);
+	}
+	else if (keyword == "sell") {
+		msg = commandSell(playerIndex, CHARACTERS[id], words);
 	}
 	else if (keyword == "end") {
 		if (BATTLES.count(CHARACTERS[id].LOCATION) > 0) {

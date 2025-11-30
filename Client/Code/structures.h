@@ -95,6 +95,7 @@ struct UIState {
 
 	Item viewedItem;
 	Character viewedCharacter;
+	std::string viewedPlayer;
 	std::string viewedEffect;
 
 	LOGIN signInState = CHOOSE;
@@ -110,6 +111,26 @@ struct Tooltip {
 	}
 };
 
+struct Scrollbar {
+	int orbPos = 0;
+	int index = 0;
+	int numThings = 1;
+	int visibleAtOnce = 1;
+	int dX = 0;
+	int dY = 0;
+	int height = 0;
+	bool dragging = false;
+	bool visible = true;
+	bool inverse = false;
+
+	Scrollbar(int x, int y, int h, bool inv = false) {
+		dX = x;
+		dY = y;
+		height = h;
+		inverse = inv;
+	}
+};
+
 
 struct Tab {
 	int x;
@@ -117,14 +138,13 @@ struct Tab {
 	int index = 0;
 	std::vector<std::string> tabs;
 	std::vector<int> tabSizes = {};
-	std::string tabString = "";
-	std::string breakColor = "*PINK*";
-	std::string onColor = "*GREY*";
+	int totalSize = 0;
+	std::string breakColor = "*ORANGE*";
+	std::string onColor = "*WHITE*";
 	std::string offColor = "*BLACK*";
 	std::string indexColor = "*PURPLE*";
-	bool visible = false;
 
-	Tab(std::vector<std::string> t = {}, std::string selColor = "*WHITE*", std::string bColor = "*PINK*", std::string deselColor = "*BLACK*") {
+	Tab(std::vector<std::string> t = {}, std::string selColor = "*PALE*", std::string bColor = "*ORANGE*", std::string deselColor = "*BLACK*") {
 		tabs = t;
 		onColor = selColor;
 		offColor = deselColor;

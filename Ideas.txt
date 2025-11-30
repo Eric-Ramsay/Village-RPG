@@ -34,3 +34,23 @@ You can cast spells without using a staff.
 Spells AP costs are doubled, but replaced by Stamina.
 
 Start with +2 Casts and +4 Spell Slots (base is 1 & 1)
+
+
+
+
+
+THINGS TO ADD FOR GAME TO BE READY TO PLAY
+------------------------------------------
+- TRADING UI
+- NEW ENEMIES
+- TILE HAZARD SYSTEM
+- TERRAIN GENERATION ON MAPS
+- NEW ENEMIES
+- ITEMS IN SHOPS
+- RUNES
+- TRAITS
+- PLAYERS IN SAME LOCATION UI
+- VIEWING PLAYERS UI
+- GRAVEYARD
+- DESCRIPTIONS IN UI
+- SPELL CASTING

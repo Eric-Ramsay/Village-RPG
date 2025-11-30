@@ -132,6 +132,12 @@ int w_attacks(Character C, Item item) {
 	return baseItem.attacks;
 }
 
+int value(Item item) {
+	UI_Item baseItem = getItem(item.id);
+
+	return baseItem.cost;
+}
+
 int maxRunes(Character C, Item item) {
 	int max = 0;
 	UI_Item baseItem = getItem(item.id);
@@ -338,7 +344,7 @@ void parseChange(Character& character, std::string type, std::string data) {
 		}
 	}
 	else if (type == "REMOVE_ITEM") {
-		character.INVENTORY.erase(data);
+		character.INVENTORY.erase(readStr(data));
 	}
 	else if (type == "ITEM") {
 		Item item = parseItem(data);

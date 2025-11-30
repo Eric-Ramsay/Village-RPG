@@ -38,7 +38,8 @@ std::unordered_map<std::string, Character> CHARACTERS = {};
 
 std::string USERNAME = "eric";
 std::string PASSWORD = "123";
-
+//std::string USERNAME = "";
+//std::string PASSWORD = "";
 
 bool blur = false;
 bool scanLines = false;
@@ -48,12 +49,19 @@ std::vector<std::vector<Drop>> zoneLoot = { {}, {}, {}, {} };
 std::vector<UI_Item> genericLoot = {};
 
 std::vector<Tab*> tabList = {};
-Tab playerMenu({ "INVENTORY", "EFFECTS", "MAGIC" });
-Tab combatMenu({ "BATTLE", "LOOT" }, "*YELLOW*");
-Tab viewMenu({ "DESCRIPTION", "RUNES" }, "*BLUE*");
+Tab playerMenu({ "INV", "EFFECTS", "MAGIC", "DESC", "TRAITS"});
+Tab combatMenu({ "BATTLE", "LOOT" });
+Tab viewMenu({ "DESCRIPTION", "RUNES" });
 
 std::unordered_map<std::string, Tooltip> TOOLTIPS = {};
 
 std::unordered_map<std::string, sf::Color> COLORS = {};
 
 bool updateMovement = true;
+
+
+std::vector<Scrollbar*> scrollbars = {};
+Scrollbar tradeBar(195, 110, 127);
+Scrollbar logBar(244, 347, 97, true);
+
+int numMessages = 0;

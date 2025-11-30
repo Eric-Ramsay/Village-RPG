@@ -235,9 +235,11 @@ Box Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1
 						word += std::tolower(c);
 						if (PEOPLE.count(word) > 0) {
 							if (mRange(wordBox)) {
-								UI.tooltip = word;
-								if (UI.doubleClicked) {
-									sendData("COMMAND", "trade " + word);
+								if (CHARACTERS.count(ID) > 0 && low(CHARACTERS[ID].TRADING) != word) {
+									UI.tooltip = word;
+									if (UI.doubleClicked) {
+										sendData("COMMAND", "trade " + word);
+									}
 								}
 							}
 						}

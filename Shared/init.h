@@ -165,7 +165,7 @@ void initPeople() {
 	NPC Gout("Gout", true, "*GREEN*Gout*GREY* is an older man, short and grey but broad all the same. He hobbles across the pier and his muscles flex beneath his wrinkled skin as he casts his fishing line out into the sea.\n\nHis is a soldier's body, its scars etched immutably as if in marble. It has not forgotten the many campaigns and battles, and though *GREEN*Gout*GREY* never speaks of his past, his eyes would say he has not forgotten either.");
 	NPC Tobin("Tobin", true, "*GREEN*Father Tobin*GREY* is a thin man, taller than most and pale.\n\nFrom time to time one can see sadness in his eyes, as he looks across the graves he tends, but it is only ever there for a moment and then he smiles. In his humility he has found unwavering joy.");
 	NPC Kobos("Kobos", true, "*GREEN*Kobos*GREY* has been swinging hammer for forty years now, nearly as long as he's been alive.\n\nWhen he works his craft the singing of his anvil can be heard as far away as the harbor. Princes have offered to buy out his services, but he has no interest in their gold, only in his iron.");
-	NPC Clyde("Clyde", true, "*GREEN*Clyde*GREY* is a *TEAL*huntsman*GREY*. He spends more time far afield than anyone else in the town.\n\nWhen some people hear his frightful tails they roll their eyes.\n\nSometimes he sounds like a *ORANGE*coward*GREY*. He pleads with anyone who will listen to avoid the woods at night.");
+	NPC Clyde("Clyde", true, "*GREEN*Clyde*GREY* is a *TEAL*huntsman*GREY*. He spends more time far afield than anyone else in the town. When some people hear his frightful tails they roll their eyes.\n\nHe pleads with anyone who will listen to avoid the woods at night.");
 	NPC Terat("Terat", true, "*GREEN*Terat*GREY* is the estranged brother of *GREEN*Sarkana*GREY*. He's quite timid, and perhaps a bit anxious.\n\nHe can be rather friendly and generous, but for the most part focuses on his work.\n\nHe always seems to be engraving new golden runes into their cold steel plates.");
 	NPC Elias("Elias", true, "*GREEN*Elias*GREY* is a young, slender man with dusty brown hair and bespectacled grey eyes.\n\nHe spends most of his time reading by lamplight, or tending to the many old tomes in his care. He tends to only leave the library at night, rendering him somewhat of a mystery among the less scholarly townsfolk.");
 
@@ -297,6 +297,24 @@ void initPeople() {
 	// Items
 	Clyde.ITEMS = {
 		"dagger",
+		"longbow",
+		"dagger",
+		"longbow",
+		"dagger",
+		"longbow",
+		"dagger",
+		"longbow",
+		"dagger",
+		"longbow",
+		"dagger",
+		"longbow",
+		"dagger",
+		"dagger",
+		"longbow",
+		"dagger",
+		"longbow",
+		"dagger",
+		"longbow",
 		"longbow"
 	};
 

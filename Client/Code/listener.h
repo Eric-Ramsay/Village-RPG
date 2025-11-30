@@ -2,7 +2,7 @@
 
 void process(std::string type, std::string data) {
 	if (type == "TEXT") {
-		std::vector < std::string> lines = splitLines(data);
+		std::vector < std::string> lines = splitLines(data, 340);
 		for (std::string line : lines) {
 			logs.push_back(line);
 		}
@@ -108,7 +108,10 @@ void process(std::string type, std::string data) {
 			parseChange(BATTLE, type, str);
 		}
 		combatMenu.tabs[1] = "LOOT (" + to_str(BATTLE.loot.size()) + ")";
-		setTabString(combatMenu);
+		measureTab(&combatMenu);
+	}
+	if (!logBar.dragging) {
+		updateOrbPos(&logBar, logBar.index);
 	}
 }
 
