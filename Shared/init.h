@@ -11,7 +11,7 @@ void initLocations() {
 	Tailor.parent = "Merchant Lane";
 	Tailor.people = { "Florence" };
 
-	Location Barber("Barber", "The *BLUE*Barbershop*GREY* is a single, plainly furnished room at the front of *GREEN*Nestra*GREY*'s estate, in what used to be an antechamber. The shop's greatest feature is its window to the estate's atrium garden with its exquisite *WHITE*fountain*GREY*, *WHITE*statues*GREY*, and *WHITE*pillars*GREY*.\n\nHaircuts are *YELLOW*15 Gold*GREY*, and allow you to give your character a description.");
+	Location Barber("Barber", "The *BLUE*Barber*GREY* is a single, plainly furnished room at the front of *GREEN*Nestra*GREY*'s estate, in what used to be an antechamber. The shop's greatest feature is its window to the estate's atrium garden with its exquisite *WHITE*fountain*GREY*, *WHITE*statues*GREY*, and *WHITE*pillars*GREY*.\n\nHaircuts are *YELLOW*15 Gold*GREY*, and allow you to give your character a description.");
 	Barber.parent = "Merchant Lane";
 	Barber.people = { "Nestra" };
 
@@ -172,7 +172,7 @@ void initPeople() {
 	NPC Qarana("Qarana", true, "Some say *GREEN*Qarana*GREY* was a swamp witch once, who grew bored of her solitary lifestyle. When she hears such rumors, Qarana only smiles.\n\nShe has a thousand stories to tell of her travels, though the stories are never quite the same between tellings.");
 	NPC Asha("Asha", false, "*GREEN*Asha*GREY* is young, with dark hair and dark eyes. She lives at the tavern and never works, she only spends her days drinking, often alone.\n\nIt's whispered that she was a promising mage once, and an aristocrat, but no one knows much about her.");
 	NPC Penelope("Penelope", true, "*GREEN*Penelope*GREY* has been running the tavern for years now. Business is slow these days, with travel being as dangerous as it is.\n\nShe insists that she's doing well, but behind her warm eyes is an ever-present weariness.");
-	NPC Nestra("Nestra", false, "*GREEN*Nestra*GREY* married an old merchant who spends all his time at sea. She took some of the money he sends back to her and opened her *BLUE*Barbershop*GREY*.\n\nShe's not that good at cutting hair, but she tries her best, and she is getting better.");
+	NPC Nestra("Nestra", false, "*GREEN*Nestra*GREY* married an old merchant who spends all his time at sea. She took some of the money he sends back to her and opened her *BLUE*Barber Shop*GREY*.\n\nShe's not that good at cutting hair, but she tries her best, and she is getting better.");
 	NPC Janice("Janice", false, "*GREEN*Janice*GREY* has lived in the town for nearly all of her long life, save for a few foreign adventures that she still remembers fondly.\n\nShe seems like a simple old woman, preferring to keep quiet on most matters, but from time to time it becomes apparent that she has seen more than most people can even imagine.");
 	NPC Florence("Florence", true, "*GREEN*Florence*GREY* is grey-haired, yet her stern face, criss-crossed with scars, maintains a youthful glow.\n\nShe insists she's but a simple tailor, but she never goes out without a dagger in her belt, and she seems to know how to cut more than just cloth.");
 	NPC Sarkana("Sarkana", true, "*GREEN*Sarkana*GREY* is the estranged sister of Terat. When the day is done she packs away her runes and travels far to the east.\n\nShe has always been a bit spiteful, and prefers not to talk to anyone, except to speak ill of her brother.");

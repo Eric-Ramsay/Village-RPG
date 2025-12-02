@@ -1,8 +1,13 @@
 #pragma once
 
-Box DrawButton(std::string text, int x, int y, std::string color = "*ORANGE*", std::string tColor = "") {
+Box DrawButton(std::string text, int x, int y, std::string color = "*ORANGE*", std::string tColor = "", bool center = false) {
 	int w = measureText(text) + 8;
 	int h = 15;
+
+	if (center) {
+		x -= w / 2;
+	}
+
 	fillRect(x, y, w, h, getColor(color));
 	fillRect(x + 1, y + 1, w - 2, h - 2, sf::Color(10, 20, 30));
 	std::string textColor = "*BLACK*";
@@ -19,6 +24,10 @@ Box DrawButton(std::string text, int x, int y, std::string color = "*ORANGE*", s
 	}
 	Print(textColor + text, x + 4, y + 4);
 	return Box(x, y, w, h);
+}
+
+Box CenterButton(std::string text, int x, int y, std::string color = "*ORANGE*", std::string tColor = "") {
+	return DrawButton(text, x, y, color, tColor, true);
 }
 
 void DrawScrollbar(Scrollbar& bar) {

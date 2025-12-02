@@ -237,6 +237,23 @@ std::string commandSell(int playerIndex, Character& C, std::vector<std::string> 
 	return "*RED*Unable to sell '" + args + "'";
 }
 
+std::string commandHaircut(int playerIndex, Character& C, std::vector<std::string> words) {
+	std::string args = join(words);
+	if (C.GOLD < 15) {
+		return "*RED*You don't have enough money for a haircut!";
+	}
+	if (args == "") {
+		return "*RED*You must input text to receive a haircut.";
+	}
+	std::string changes = str(C.ID);
+	C.GOLD -= 15;
+	C.DESCRIPTION = args;
+	changes += addLine("GOLD", C.GOLD);
+	changes += addLine("DESCRIPTION", C.DESCRIPTION);
+	sendData("STATS", changes);
+	return "*GREEN*Your character's description has been updated!";
+}
+
 std::string commandEquip(int playerIndex, Character& C, std::vector<std::string> words) {
 	std::string args = join(words);
 	std::vector<std::string> ids = findItem(args, C.INVENTORY);
@@ -509,6 +526,11 @@ void command(std::string input, int playerIndex) {
 	}
 	else if (keyword == "delve") {
 		msg = commandDelve(playerIndex, CHARACTERS[id], words);
+	}
+	else if (keyword == "haircut") {
+		std::vector<std::string> origWords = split(input);
+		origWords.erase(origWords.begin());
+		msg = commandHaircut(playerIndex, CHARACTERS[id], origWords);
 	}
 	else if (keyword == "level") {
 		msg = commandLevel(playerIndex, CHARACTERS[id], words[0]);

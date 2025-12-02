@@ -8,8 +8,93 @@ std::string padNum(int num) {
 	return to_str(num);
 }
 
+void DrawHaircut() {
+	Character C = CHARACTERS[ID];
+	int x = 5;
+	int y = 10;
+	int w = 400;
+	int h = 240;
+	std::string instructions = "Use the text box and the color pickers below to enter a description for your character.";
+	if (C.GOLD < 15) {
+		instructions += "\n\n*RED*You don't have enough money for a haircut!";
+	}
+	Print(instructions, x, y, w);
+
+	std::vector<std::string> colors = {
+		"GREY",
+		"BLACK",
+		"RED",
+		"YELLOW",
+		"GREEN",
+		"BLUE",
+		"TEAL",
+		"PINK",
+		"PURPLE",
+		"ORANGE",
+		"BROWN"
+	};
+
+	for (int i = 0; i < colors.size(); i++) {
+		std::string color = "WHITE";
+		if (colors[i] == "GREY") {
+			color = "PINK";
+		}
+		if (UI.color == colors[i]) {
+			Draw(128, 48, 7, 7, x + 46, y + 71 + i * 10, 1, getColor("YELLOW"));
+		}
+		Box box = fillRect(x + 55, y + 70 + i * 10, 9, 9, getColor(color));
+		fillRect(x + 56, y + 71 + i * 10, 7, 7, getColor(colors[i]));
+		if (UI.mouseReleased && mRange(box)) {
+			UI.color = colors[i];
+			int index = UI.description.size() - 1;
+			if (index > -1 && UI.description[index].text == "") {
+				UI.description[index].color = "*" + UI.color + "*";
+			}
+			else {
+				UI.description.push_back(TextSegment("*" + UI.color + "*", ""));
+			}
+		}
+	}
+
+	CPrint("*GREEN*Example View", x + 70 + 189 / 2, y + 59);
+	fillRect(x + 70, y + 69, 189, 112, getColor("GREY"));
+	fillRect(x + 71, y + 70, 187, 110, sf::Color(10, 20, 30));
+	std::string text = "";
+	for (TextSegment seg : UI.description) {
+		text += seg.color;
+		text += seg.text;
+	}
+	Print(replace(text, "\r", "\n") + '_', x + 73, y + 72, 185);
+
+
+	Box box = CenterButton("Go Back", x + 65 + 189/4, y + 190);
+	if (mRange(box)) {
+		if (UI.mouseReleased) {
+			UI.hairCut = false;
+		}
+	}
+	box = CenterButton("Confirm - *YELLOW*15G", x + 65 + (189 * 3)/4, y + 190);
+	if (mRange(box)) {
+		if (UI.mouseReleased) {
+			if (C.GOLD < 15) {
+				logs.push_back("*RED*You don't have enough money!");
+			}
+			else if (text == "") {
+				logs.push_back("*RED*You must input a description first!");
+			}
+			else if (C.DESCRIPTION == text) {
+				logs.push_back("*RED*You can't choose the exact same description!");
+			}
+			else {
+				sendData("COMMAND", "haircut " + cleanText(text));
+				UI.description = {};
+			}
+		}
+	}
+}
+
 void DrawTrade() {
-	int x = 10;
+	int x = 5;
 	int y = 10;
 	if (CHARACTERS.count(ID) == 0) {
 		return;
@@ -584,6 +669,17 @@ void DrawRoom() {
 			}
 		}
 	}
+	if (low(room.id) == "barber") {
+		y = 170;
+		x = 5;
+		Box box = DrawButton("Haircut - *YELLOW*15 Gold", x, y, "PINK");
+		if (mRange(box)) {
+			if (UI.mouseReleased) {
+				UI.hairCut = true;
+				playerMenu.index = 3;
+			}
+		}
+	}
 	
 	if (room.dungeon || room.parent != "") {
 		y = 205;
@@ -608,7 +704,10 @@ void DrawUI() {
 		Print("No Character!", 50, 50);
 	}
 	else {
-		if (getCharacter(ID).LOCATION == BATTLE.id) {
+		if (UI.hairCut) {
+			DrawHaircut();
+		}
+		else if (getCharacter(ID).LOCATION == BATTLE.id) {
 			DrawBattle();
 		}
 		else if (getCharacter(ID).TRADING != "") {

@@ -48,8 +48,9 @@ void Draw(int sX, int sY, int w, int h, int dX, int dY, int scale = 1, sf::Color
 const int PIXEL_SPOT_X = 1;
 const int PIXEL_SPOT_Y = 1;
 
-void fillRect(int dX, int dY, int w, int h, sf::Color color) {
+Box fillRect(int dX, int dY, int w, int h, sf::Color color) {
 	Draw(PIXEL_SPOT_X, PIXEL_SPOT_Y, 1, 1, dX, dY, w, h, color);
+	return Box(dX, dY, w, h);
 }
 
 void DrawSquare(int dX, int dY, int w, int h) {

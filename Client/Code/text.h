@@ -171,13 +171,18 @@ std::vector<std::string> splitLines(std::string text, int maxLength = WIDTH, int
 			int len = measureText(words[i] + " ");
 			if (lineLength + len >= maxLength) {
 				lineLength = len;
-				merged.pop_back();
-				merged += "\n";
+				if (merged.size() > 0) {
+					merged.pop_back();
+					merged += "\n";
+				}
 			}
 			else {
 				lineLength += len;
 			}
-			merged += words[i] + " ";
+			merged += words[i];
+			if (i < words.size() - 1) {
+				merged += " ";
+			}
 		}
 		merged += "\n";
 	}
@@ -307,4 +312,31 @@ std::string Title(std::string text) {
 		line[0] = std::toupper(line[0]);
 	}
 	return join(lines);
+}
+
+std::string cleanText(std::string text) {
+	std::string lastColor = "GREY";
+	std::string nextColor = "";
+	bool readingColor = false;
+	std::string newText = "";
+	for (char c : text) {
+		if (c == '*') {
+			readingColor = !readingColor;
+			if (!readingColor) {
+				if (lastColor != nextColor) {
+					newText += "*" + nextColor + "*";
+				}
+				lastColor = nextColor;
+			}
+			nextColor = "";
+		}
+		else if (readingColor) {
+			nextColor += c;
+		}
+		else {
+			newText += c;
+		}
+	}
+	return newText;
+
 }

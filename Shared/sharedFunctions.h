@@ -261,6 +261,7 @@ void parseChange(Character& character, std::string type, std::string data) {
 	}
 	else if (type == "DESCRIPTION") {
 		character.DESCRIPTION = readStr(data);
+		character.DESCRIPTION = replace(character.DESCRIPTION, "\r", "\n");
 	}
 	else if (type == "TRADING") {
 		character.TRADING = readStr(data);

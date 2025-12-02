@@ -50,6 +50,15 @@ enum ALIGN {
 	RIGHT
 };
 
+struct TextSegment {
+	std::string color = "";
+	std::string text = "";
+	TextSegment(std::string c = "", std::string t = "") {
+		color = c;
+		text = t;
+	}
+};
+
 struct UIState {
 	bool vSync = false;
 
@@ -90,6 +99,10 @@ struct UIState {
 
 	int view = 0;
 	bool viewLocked = false;
+
+	bool hairCut = false;
+	std::vector<TextSegment> description = {};
+	std::string color = "GREY";
 
 	std::string tooltip = "";
 

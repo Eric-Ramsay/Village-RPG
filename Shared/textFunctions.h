@@ -33,7 +33,7 @@ std::vector<std::string> split(std::string str, char delim = ' ') {
 	std::vector<std::string> strings = { "" };
 	for (int i = 0; i < str.size(); i++) {
 		char c = str[i];
-		if (c == delim) {
+		if (c == delim || c == '_') {
 			if (i < str.size() - 1) {
 				strings.push_back("");
 			}
@@ -132,7 +132,7 @@ std::string caps(std::string a) {
 	return word;
 }
 
-void replace(std::string& str, std::string findText, std::string replaceText) {
+std::string replace(std::string str, std::string findText, std::string replaceText) {
 	std::string newStr = "";
 	int len = findText.length();
 	int strLen = str.length();
@@ -149,6 +149,7 @@ void replace(std::string& str, std::string findText, std::string replaceText) {
 		newStr += segment;
 	}
 	str = newStr;
+	return str;
 }
 
 int readInt(std::string& msg) {

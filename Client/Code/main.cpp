@@ -39,9 +39,41 @@ namespace Gdiplus {
 #include "UI.h"
 #include "listener.h"
 
+void backspaceDescription() {
+	int index = UI.description.size() - 1;
+	if (index == -1) {
+		return;
+	}
+	if (UI.description[index].text != "") {
+		UI.description[index].text.pop_back();
+	}
+	while (index > -1 && UI.description[index].text == "") {
+		UI.description.pop_back();
+		index = UI.description.size() - 1;
+	}
+}
+
+void typeDescription(char c) {
+	if (UI.description.size() == 0) {
+		UI.description.push_back(TextSegment("*" + UI.color + "*", ""));
+	}
+	std::string text = "";
+	for (TextSegment seg : UI.description) {
+		text += seg.color;
+		text += seg.text;
+	}
+	std::vector<std::string> lines = splitLines(text + c, 185, 1);
+	if (lines.size() <= 10) {
+		UI.description[UI.description.size() - 1].text += c;
+	}
+}
 
 int main()
 {
+	std::string testText = "*GREY**GREY*Test*GREY*You're bad*RED**BLUE*";
+
+	testText = cleanText(testText);
+
 	initColors();
 	initTabs();
 	initScrollbars();
@@ -155,8 +187,13 @@ int main()
 						c = (char)(event.key.code - sf::Keyboard::Space + ' ');
 					}
 					else if (event.key.code == sf::Keyboard::Backspace) {
-						if (input.length() > 0) {
-							input.pop_back();
+						if (UI.hairCut) {
+							backspaceDescription();
+						}
+						else {
+							if (input.size() > 0) {
+								input.pop_back();
+							}
 						}
 					}
 					else if (event.key.code == sf::Keyboard::LControl || event.key.code == sf::Keyboard::RControl) {
@@ -176,36 +213,46 @@ int main()
 						}
 					}
 					if (c != 0 && input.size() < 50) {
-						input += (char)c;
-					}
-					else if (event.key.code == sf::Keyboard::Enter) {
-						replace(input, "  ", " ");
-						logs.push_back("*BLACK*> " + input);
-						if (!logBar.dragging) {
-							updateOrbPos(&logBar, logBar.index);
-						}
-
-						if (input == "scan") {
-							scanLines = !scanLines;
-						}
-						else if (input == "blur") {
-							blur = !blur;
-						}
-						else if (input == "trade") {
-							if (PEOPLE.count(low(input)) > 0) {
-								PEOPLE[low(input)].index++;
-							}
-						}
-						else if (input == "quit") {
-							quit = true;
-						}
-						else if (UI.signInState == COMPLETED) {
-							sendData("COMMAND", input);
+						if (UI.hairCut) {
+							typeDescription((char)c);
 						}
 						else {
-							handleLoginInput(input);
+							input += (char)c;
 						}
-						input = "";
+					}
+					else if (event.key.code == sf::Keyboard::Enter) {
+						if (UI.hairCut) {
+							typeDescription('\r');
+						}
+						else {
+							input = replace(input, "  ", " ");
+							logs.push_back("*BLACK*> " + input);
+							if (!logBar.dragging) {
+								updateOrbPos(&logBar, logBar.index);
+							}
+
+							if (input == "scan") {
+								scanLines = !scanLines;
+							}
+							else if (input == "blur") {
+								blur = !blur;
+							}
+							else if (input == "trade") {
+								if (PEOPLE.count(low(input)) > 0) {
+									PEOPLE[low(input)].index++;
+								}
+							}
+							else if (input == "quit") {
+								quit = true;
+							}
+							else if (UI.signInState == COMPLETED) {
+								sendData("COMMAND", input);
+							}
+							else {
+								handleLoginInput(input);
+							}
+							input = "";
+						}
 					}
 				}
 			}
@@ -229,9 +276,14 @@ int main()
 					UI.timer = 0;
 				}
 				updateFPS = true;
-				if (input.length() > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
 					if (holdingBackspace > 5) {
-						input.pop_back();
+						if (UI.hairCut) {
+							backspaceDescription();
+						}
+						else if (input.size() > 0) {
+							input.pop_back();
+						}
 					}
 					else {
 						holdingBackspace++;
