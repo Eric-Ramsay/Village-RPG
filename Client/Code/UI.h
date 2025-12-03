@@ -234,38 +234,53 @@ void DrawViewUI() {
 
 void DrawCharacterUI(std::string id) {
 	int x = 450;
-	int y = 5;
+	int y = 3;
 	int w = 185;
 	int h = 208;
 	if (CHARACTERS.count(id) == 0) {
 		return;
 	}
+
 	Character C = getCharacter(id);
 	Print("*GREEN*" + pretty(C.NAME), x, y);
-	Print(DrawBar(C.HP, MaxHP(C), 22, "*RED*"), x, y + 10);
-	Print(DrawBar(C.STAMINA, MaxStamina(C), 22, "*GREEN*"), x, y + 20);
-	Print("*TEAL*\4 *GREY*" + to_str(C.ARMOR[0]), x, y + 30);
-	Print("*TEAL*\5 *GREY*" + to_str(C.ARMOR[1]), x + 30, y + 30);
-	Print("*GREEN*AP: " + to_str(C.AP), x + 100, y + 30);
-	Print("*PINK*Level " + to_str(C.LEVEL), x + w - 45, y);
-	Print("*YELLOW*" + to_str(C.XP) + "*GREY*/*GREEN*" + to_str(100 * C.LEVEL) + "*GREY* XP", x, 75);
-	Print("*PURPLE*SP: *PINK*" + to_str(C.SP), x + 100, 75);
-	std::vector<std::string> stats = {
-		"VIT", "END", "DEX", "MAG", "WEP", "AVD"
-	};
-	for (int i = 0; i < stats.size(); i++) {
-		int xPos = x;
-		int yPos = y + 40 + 10 * i;
-		if (i > 2) {
-			xPos += 80;
-			yPos -= 30;
+	Print("*YELLOW*Gold: " + to_str(C.GOLD), x + w - 45, y);
+
+	Print("*PINK*Level " + to_str(C.LEVEL), x, y + 13);
+	Print("*YELLOW*" + to_str(C.XP) + "*GREY*/*GREEN*" + to_str(100 * C.LEVEL) + "*GREY* XP", x + 54, y + 13);
+	Print("*PURPLE*SP: *PINK*" + to_str(C.SP), x + w - 35, y + 13);
+
+	std::vector<std::string> barStats = { "VIT", "DEF", "END", "DEX"};
+	std::vector<int> vals = { C.HP, C.ARMOR, C.STAMINA, C.AP };
+	std::vector<int> maxVals = { MaxHP(C), MaxArmor(C), MaxStamina(C), MaxAP(C) };
+	std::vector<std::string> colors = { "*RED*", "*NAVY*", "*GREEN*", "*YELLOW*"};
+	std::vector<std::string> symbols = { "*RED*\2", "*NAVY*\4", "*GREEN*\5", "*YELLOW*\3"};
+
+	for (int i = 0; i < barStats.size(); i++) {
+		Box box = Print(symbols[i] + " " + DrawBar(vals[i], maxVals[i], 19, colors[i]), x, y + 25 + 10 * i);
+		if (mRange(box)) {
+			UI.tooltip = barStats[i];
 		}
-		Box box = Print("*TEAL*" + stats[i] + ":*GREY* " + C.STATS[i], xPos, yPos);
+		if (C.SP > 0) {
+			box = Print("*PURPLE*\6", x + (w - 5), y + 25 + 10 * i);
+			if (mRange(box)) {
+				UI.tooltip = barStats[i];
+				if (UI.mouseReleased) {
+					sendData("COMMAND", "LEVEL " + barStats[i]);
+				}
+			}
+		}
+	}
+
+	std::vector<std::string> stats = { "WEP", "AVD" };
+	std::vector<std::string> statStr = { "*TEAL*WEP: " + to_str(C.STATS[WEP]), "*TEAL*AVD: " + to_str(C.STATS[AVD]) };
+
+	for (int i = 0; i < stats.size(); i++) {
+		Box box = Print(statStr[i], x + i * 63, y + 66);
 		if (mRange(box)) {
 			UI.tooltip = stats[i];
 		}
 		if (C.SP > 0) {
-			box = Print("*TEAL*\6", xPos + 38, yPos);
+			box = Print("*PURPLE*\6", x + 41 + (i * 63), y + 66);
 			if (mRange(box)) {
 				UI.tooltip = stats[i];
 				if (UI.mouseReleased) {
@@ -275,14 +290,17 @@ void DrawCharacterUI(std::string id) {
 		}
 	}
 
-	DrawTabs(playerMenu, x + w / 2, 86);
+	Print("*BLACK*|", x + 55, y + 66);
+
+	DrawTabs(playerMenu, x + w / 2, y + 77);
+
+	y = y + 96;
 
 	if (playerMenu.index == 0) {
-		Print("*YELLOW*" + to_str(C.GOLD) + " Gold", x, y + 99);
 		int itemCount = 0;
 		for (auto item : C.INVENTORY) {
 			int xPos = x;
-			int yPos = y + 109 + 10 * itemCount;
+			int yPos = y + 10 * itemCount;
 			itemCount++;
 			std::string color = "";
 			std::string command = "EQUIP";
@@ -319,22 +337,19 @@ void DrawCharacterUI(std::string id) {
 		}
 		int num = (10 + (5 * C.BACKPACK)) - itemCount;
 		for (int i = itemCount; i < itemCount + num; i++) {
-			Print("*PINK*" + padNum(i + 1) + "*GREY*) *BLACK*---", x, y + 109 + 10 * i);
+			Print("*PINK*" + padNum(i + 1) + "*GREY*) *BLACK*---", x, y + 10 * i);
 		}
 	}
 	else if (playerMenu.index == 1) {
-		y = y + 99;
 		CPrint("*PINK*Buffs", x + w / 2, y);
 		CPrint("*RED*Debuffs", x + w / 2, y + 55);
 
 	}
 	else if (playerMenu.index == 2) {
-		y = y + 99;
 		CPrint("*BLUE*Spell List", x + w / 2, y);
 
 	}
 	else if (playerMenu.index == 3) {
-		y = y + 99;
 		if (C.DESCRIPTION == "") {
 			if (C.ID == ID) {
 				CPrint("*BLACK*You can go to the Barber to give your character a description.", x + w / 2, y, w);
@@ -348,7 +363,6 @@ void DrawCharacterUI(std::string id) {
 		}
 	}
 	else {
-		y = y + 99;
 		CPrint("*BLUE*Traits", x + w / 2, y);
 	}
 }

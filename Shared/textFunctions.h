@@ -33,10 +33,14 @@ std::vector<std::string> split(std::string str, char delim = ' ') {
 	std::vector<std::string> strings = { "" };
 	for (int i = 0; i < str.size(); i++) {
 		char c = str[i];
-		if (c == delim || c == '_') {
+		if (c == delim) {
 			if (i < str.size() - 1) {
 				strings.push_back("");
 			}
+		}
+		else if (c == '_') {
+			strings.push_back("_");
+			strings.push_back("");
 		}
 		else {
 			strings[strings.size() - 1] += c;

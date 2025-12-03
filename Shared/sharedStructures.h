@@ -91,7 +91,13 @@ struct UI_Item {
 	std::string subclass;
 
 	// Armor Stats
-	std::vector<int> armor = {};
+	int def = 0;
+	int armor = 0;
+	int HP = 0;
+	int stamina = 0;
+	int mitigation = 0;
+
+
 	//WEAPON NAME, Name	Class, 	Description,  #Atks	Value 	Chance 	MinDmg 	MaxDmg 	Pen% 	AP 		Range	Rare?
 	UI_Item(std::string name, int value, std::string wepType, std::string desc, bool twoH, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
 		type = "weapon";
@@ -105,6 +111,19 @@ struct UI_Item {
 		AP = ap;
 		range = rng;
 		rarity = rare;
+	}
+
+	UI_Item(std::string name, std::string desc, int value, int arm, int defense = 0, int stam = 0, int miti = 0, int hp = 0, int ap = 0) {
+		type = "armor";
+		id = low(name);
+		description = desc;
+		cost = value;
+		armor = arm;
+		def = defense;
+		stamina = stam;
+		mitigation = miti;
+		HP = hp;
+		AP = ap;
 	}
 	UI_Item() {}
 };
@@ -149,7 +168,8 @@ enum STATS {
 	DEX,
 	MAG,
 	WEP,
-	AVD
+	AVD,
+	DEF
 };
 
 struct Drop {
@@ -168,7 +188,8 @@ struct Character {
 	std::string TRADING = "";
 
 	int HP = 30;
-	std::vector<int> ARMOR = { 0, 0 };
+	int ARMOR = 0;
+
 	int X = 0;
 	int Y = 0;
 	int LEVEL = 1;
@@ -194,7 +215,7 @@ struct Character {
 
 	bool ENDED = false;
 
-	std::vector<int> STATS = { 0, 0, 0, 0, 0, 0 };
+	std::vector<int> STATS = { 0, 0, 0, 0, 0, 0, 0 };
 
 	int ATTACKS = 0;
 	int CASTS = 0;
@@ -210,13 +231,12 @@ struct Character {
 
 	Character() {}
 
-	Character(std::string name, int hp, std::vector<int> armor, int difficulty, std::vector<int> zones, int moves, std::string type, std::string desc)
+	Character(std::string name, int hp, int def, int difficulty, std::vector<int> zones, int moves, std::string type, std::string desc)
 	{
 		NAME = name;
 		ID = name;
 		MaxHP = hp;
-		ARMOR[0] = armor[0];
-		ARMOR[1] = armor[1];
+		STATS[DEF] = def;
 		LEVEL = difficulty;
 		ZONES = zones;
 		MOVES = moves;

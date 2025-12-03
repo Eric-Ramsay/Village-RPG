@@ -1,30 +1,0 @@
-ID!!!eric eric 176465443786!!!
-USER!!!eric!!!
-HP!!!30!
-X!!!0!
-Y!!!3!
-ARMOR!!!0!0!
-MAXHP!!!30!
-TYPE!!!player!!!
-NAME!!!eric!!!
-LOCATION!!!Barber!!!
-STAMINA!!!20!
-DESCRIPTION!!!testtest!!!
-TRADING!!!!!!
-LEVEL!!!2!
-XP!!!170!
-SP!!!1!
-GOLD!!!11!
-AP!!!4!
-BACKPACK!!!0!
-ENDED!!!0!
-ATTACKS!!!0!
-CASTS!!!0!
-X_PREFERENCE!!!0!
-Y_PREFERENCE!!!0!
-LEFT!!!!!!
-RIGHT!!!!!!
-HITS!!!0!0!
-MISSES!!!0!0!
-STATS!!!0!0!0!0!0!0!
-INVENTORY!!!

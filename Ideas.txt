@@ -38,7 +38,6 @@ Start with +2 Casts and +4 Spell Slots (base is 1 & 1)
 
 
 
-
 THINGS NEEDED FOR GAME TO BE PLAYABLE (Hardest to Easiest)
 ----------------------------------------------------------------------
 - SPELL CASTING + SPELLS
@@ -48,8 +47,98 @@ THINGS NEEDED FOR GAME TO BE PLAYABLE (Hardest to Easiest)
 - TILE HAZARD SYSTEM
 - CHARACTER CREATION UI
 - TERRAIN GENERATION ON MAPS
-- BARBER
 - GRAVEYARD
 - ARMOR
 - ITEMS IN SHOPS
 
+
+
+Armor Stats:
+- Armor
+- Stamina Reduction
+- Flat Mitigation
+- % Mitigation
+
+T1 - 20G
+
+T2 - 50G
+
+T3 - 125G
+
+Heavy Armor - % Mitigation + Flat Mitigation
+-----------
+T1 - Iron Cuirass
+ - 10 Armor
+ - 3 Damage Reduction
+ - 10% Damage Reduction
+ - -10 Max Stamina
+ 
+T2 - Lamellar Armor
+ - 20 Armor
+ - 4 Damage Reduction
+ - 20% Damage Reduction
+ - -20 Max Stamina
+ 
+T3 - Plate Armor
+ - 25 Armor
+ - 50% Damage Reduction
+ - 3 Damage Reduction
+ - -30 Stamina
+
+T3 - Coat of Plates
+ - 50 Armor
+ - 5 Damage Reduction
+ - 30% Damage Reduction
+ - -30 Stamina
+
+
+Medium Armor - Flat Mitigation + Higher Armor 
+------------
+T1 - Padded Coat
+ - 15 Armor
+ - 2 Damage Reduction
+ - -10 Max Stamina
+
+T2 - Quilted Armor
+ - 30 Armor
+ - 4 Damage Reduction
+ - -15 Max Stamina
+
+T3 - Mail Hauberk
+ - 40 Armor
+ - 8 Damage Reduction
+ - -20 Max Stamina
+ 
+T3 - Heavy Gambeson
+ - 40 Armor
+ - +20 Max HP
+ - 4 Damage Reduction
+ - -20 Max Stamina
+
+
+Light Armor - Armor + Offensive Bonuses
+-----------
+T1 - Stylish Shirt
+ - 10 Armor
+ 
+T2 - Studded Cloak
+ - 20 Armor
+ - 2 Damage Reduction
+ - +3 AP
+ 
+T3 - Silk Armor
+ - 30 Armor
+ - 4 Damage Reduction
+ - +6 AP
+ 
+T3 - Cloak of the Caster
+ - 25 Armor
+ - +3 AP
+ - +1 Spell Damage
+ - +1 Casts
+
+T3 - Duelist's Doublet
+ - 25 Armor
+ - +3 AP
+ - 1H Attacks gain +2 Damage
+ - 2H Attacks gain +5 Damage

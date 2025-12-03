@@ -132,7 +132,7 @@ void initLocations() {
 void initEnemies() {
 	std::vector<Character> enemies = {};
 	//Character Enemy(std::string name, int hp, std::vector<int> armor, int difficulty, std::vector<int> zones, int AP, std::string type, std::string desc)
-	Character wolf("Crazed Wolf", 40, { 2, 0 }, 40, { 2 }, 3, "animal", "A mangy wolf, foaming at its mouth and snapping viciously.");
+	Character wolf("Crazed Wolf", 40, 2, 40, { 2 }, 3, "animal", "A mangy wolf, foaming at its mouth and snapping viciously.");
 	enemies.push_back(wolf);
 
 	for (Character enemy : enemies) {

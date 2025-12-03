@@ -45,6 +45,14 @@ int MaxHP(Character C) {
 	return C.MaxHP + 10 * C.STATS[VIT];
 }
 
+int MaxArmor(Character C) {
+	int armor = 0;
+	for (auto item : C.INVENTORY) {
+
+	}
+	return armor;
+}
+
 int MaxStamina(Character C) {
 	return 20 + C.STATS[END] * 10;
 }
@@ -303,7 +311,7 @@ void parseChange(Character& character, std::string type, std::string data) {
 		character.MISSES = readInts(data);
 	}
 	else if (type == "ARMOR") {
-		character.ARMOR = readInts(data);
+		character.ARMOR = readInt(data);
 	}
 	else if (type == "STATS") {
 		character.STATS = readInts(data);

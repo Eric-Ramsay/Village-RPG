@@ -287,7 +287,10 @@ void RPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale =
 
 std::string DrawBar(int val, int max, int size, std::string color, bool drawNum = true, std::string braceColor = "*GREY*") {
 	std::string str = braceColor + "[" + color;
-	int threshold = (size * val) / max;
+	int threshold = size;
+	if (max > 0) {
+		threshold = (size * val) / max;
+	}
 	for (int i = 0; i < size; i++) {
 		if (i < threshold) {
 			str += "\1";
