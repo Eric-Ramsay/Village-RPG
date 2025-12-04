@@ -1,0 +1,20 @@
+ID!!!Wilted Woods4664!!!
+ZONE!!!Wilted Woods!!!
+TURN!!!0!
+ROUND!!!1!
+DIFFICULTY!!!271!
+ONE!!!eric eric 176482774756!!!
+TWO!!!Slugbeast.Wilted Woods4664.4491!!!Giant Amoeba.Wilted Woods4664.9537!!!Goblin Swordsman.Wilted Woods4664.24!!!Goblin Swordsman.Wilted Woods4664.3150!!!Acidic Slime.Wilted Woods4664.354!!!Goblin Archer.Wilted Woods4664.3009!!!
+LOOT!!!
+ITEM!!!INDEX!!!dagger.9943!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!
+ITEM!!!INDEX!!!dagger.5680!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!
+ITEM!!!INDEX!!!longbow.2085!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!
+ITEM!!!INDEX!!!dagger.914!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!
+ITEM!!!INDEX!!!longbow.2623!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!
+ITEM!!!INDEX!!!longbow.1125!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!
+ITEM!!!INDEX!!!longbow.1858!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!
+ITEM!!!INDEX!!!dagger.4640!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!
+ITEM!!!INDEX!!!dagger.1708!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!
+ITEM!!!INDEX!!!longbow.780!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!
+ITEM!!!INDEX!!!dagger.5008!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!
+ITEM!!!INDEX!!!dagger.2667!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!

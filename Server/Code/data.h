@@ -49,6 +49,8 @@ std::string serialize(Character C) {
 	data += addLine("HP", C.HP);
 	data += addLine("X", C.X);
 	data += addLine("Y", C.Y);
+	data += addLine("SX", C.SX);
+	data += addLine("SY", C.SY);
 	data += addLine("ARMOR", C.ARMOR);
 	data += addLine("MAXHP", C.MaxHP);
 	data += addLine("TYPE", C.TYPE);

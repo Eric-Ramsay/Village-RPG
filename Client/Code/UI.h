@@ -379,6 +379,7 @@ void DrawBattle() {
 	DrawTabs(combatMenu, 323, y + 10);
 
 	std::vector<std::vector<std::string>> tiles(12, std::vector<std::string>(12, "blank_tile"));
+	std::vector<std::vector<bool>> allied(12, std::vector<bool>(12, false));
 	static std::vector<std::vector<int>> movementCosts;
 	if (updateMovement) {
 		updateMovement = false;
@@ -442,11 +443,12 @@ void DrawBattle() {
 
 	for (int i = 0; i < battle.teams[1].size(); i++) {
 		Character C = getCharacter(battle.teams[1][i]);
-		tiles[C.Y][C.X] = "*RED*" + to_str(i + 1);
+		tiles[C.Y][C.X] = C.ID;
 	}
 	for (int i = 0; i < battle.teams[0].size(); i++) {
 		Character C = getCharacter(battle.teams[0][i]);
-		tiles[C.Y][C.X] = "*GREEN*" + to_str(i + 1);
+		tiles[C.Y][C.X] = C.ID;
+		allied[C.Y][C.X] = true;
 	}
 
 	for (int i = 0; i < 12; i++) {
@@ -463,7 +465,17 @@ void DrawBattle() {
 				Draw(16, 80, 16, 16, (x + j * 16), y + 11 + (i * 16));
 			}
 			else {
-				CPrint(tiles[i][j], x + 11 + (j * 16), y + 15 + (i * 16));
+				if (CHARACTERS.count(tiles[i][j]) > 0) {
+					int sX = CHARACTERS[tiles[i][j]].SX;
+					int sY = CHARACTERS[tiles[i][j]].SY;
+					Draw(sX, sY, 16, 16, (x + j * 16), y + 11 + (i * 16));
+					if (allied[i][j]) {
+						Draw(96, 144, 16, 16, (x + j * 16), y + 11 + (i * 16));
+					}
+					else {
+						Draw(112, 144, 16, 16, (x + j * 16), y + 11 + (i * 16));
+					}
+				}
 			}
 			if (range(UI.mX, UI.mY, xPos, yPos, 16, 16)) {
 				if (UI.rightPressed) {

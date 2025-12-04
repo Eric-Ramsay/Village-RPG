@@ -1,16 +1,18 @@
-ID!!!eric2 eric2 176446767248!!!
-USER!!!eric2!!!
+ID!!!eric eric 176480674375!!!
+USER!!!eric!!!
 HP!!!30!
 X!!!0!
 Y!!!0!
-ARMOR!!!0!0!
+SX!!!96!
+SY!!!128!
+ARMOR!!!0!
 MAXHP!!!30!
 TYPE!!!player!!!
-NAME!!!eric2!!!
-LOCATION!!!Tavern!!!
+NAME!!!eric!!!
+LOCATION!!!Wilted Woods8007!!!
 STAMINA!!!20!
 DESCRIPTION!!!!!!
-TRADING!!!Clyde!!!
+TRADING!!!!!!
 LEVEL!!!1!
 XP!!!0!
 SP!!!0!
@@ -22,10 +24,10 @@ ATTACKS!!!0!
 CASTS!!!0!
 X_PREFERENCE!!!0!
 Y_PREFERENCE!!!0!
-LEFT!!!dagger.4488!!!
+LEFT!!!dagger.2573!!!
 RIGHT!!!!!!
 HITS!!!0!0!
 MISSES!!!0!0!
-STATS!!!0!0!0!0!0!0!
+STATS!!!0!0!0!0!0!0!0!
 INVENTORY!!!
-ITEM!!!INDEX!!!dagger.4488!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!
+ITEM!!!INDEX!!!dagger.2573!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!

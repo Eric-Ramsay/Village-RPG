@@ -132,11 +132,18 @@ void initLocations() {
 void initEnemies() {
 	std::vector<Character> enemies = {};
 	//Character Enemy(std::string name, int hp, std::vector<int> armor, int difficulty, std::vector<int> zones, int AP, std::string type, std::string desc)
-	Character wolf("Crazed Wolf", 40, 2, 40, { 2 }, 3, "animal", "A mangy wolf, foaming at its mouth and snapping viciously.");
-	enemies.push_back(wolf);
+	enemies.push_back(Character("Crazed Wolf", 40, 2, 40, { 2 }, 3, "animal", "A mangy wolf, foaming at its mouth and snapping viciously."));
+	enemies.push_back(Character("Giant Amoeba",  40, 2, 40, { 2 }, 3, "animal", ""));
+	enemies.push_back(Character("Slugbeast",  40, 2, 40, { 2 }, 3, "animal", ""));
+	enemies.push_back(Character("Goblin Archer",  40, 2, 40, { 2 }, 3, "animal", ""));
+	enemies.push_back(Character("Goblin Swordsman",  40, 2, 40, { 2 }, 3, "animal", ""));
+	enemies.push_back(Character("Goblin Spearman",  40, 2, 40, { 2 }, 3, "animal", ""));
+	enemies.push_back(Character("Acidic Slime",  40, 2, 40, { 2 }, 3, "animal", ""));
 
-	for (Character enemy : enemies) {
-		ENEMIES[low(enemy.ID)] = enemy;
+	for (int i = 0; i < enemies.size(); i++) {
+		enemies[i].SX = 16 + 16 * (i % 26);
+		enemies[i].SY = 176 + 16 * (i / 26);
+		ENEMIES[low(enemies[i].ID)] = enemies[i];
 	}
 }
 

@@ -322,6 +322,12 @@ void parseChange(Character& character, std::string type, std::string data) {
 	else if (type == "Y") {
 		character.Y = readInt(data);
 	}
+	else if (type == "SX") {
+		character.SX = readInt(data);
+	}
+	else if (type == "SY") {
+		character.SY = readInt(data);
+	}
 	else if (type == "X_PREFERENCE") {
 		character.X_PREFERENCE = readInt(data);
 	}
@@ -531,7 +537,7 @@ std::string name(Character* C) {
 
 Character getCharacter(std::string id) {
 	if (CHARACTERS.count(id) > 0) {
-		return CHARACTERS[id];
+		return CHARACTERS.at(id);
 	}
 	std::cout << "Character not found" << std::endl;
 	return Character();

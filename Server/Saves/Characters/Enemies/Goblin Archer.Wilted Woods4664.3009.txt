@@ -1,0 +1,12 @@
+ID!!!Goblin Archer.Wilted Woods4664.3009!!!
+USER!!!!!!
+HP!!!30!
+X!!!10!
+Y!!!1!
+SX!!!64!
+SY!!!176!
+ARMOR!!!0!
+MAXHP!!!40!
+TYPE!!!animal!!!
+NAME!!!Goblin Archer!!!
+LOCATION!!!Wilted Woods4664!!!

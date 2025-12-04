@@ -194,6 +194,9 @@ struct Character {
 	int Y = 0;
 	int LEVEL = 1;
 
+	int SX = 0;
+	int SY = 176;
+
 	std::vector<Effect> effects = {};
 	std::string COLOR = "";
 	std::unordered_map<std::string, Item> INVENTORY = {};
