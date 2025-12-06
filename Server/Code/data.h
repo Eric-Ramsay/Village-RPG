@@ -46,6 +46,7 @@ std::string serialize(Character C) {
 	std::string data = "";
 	data += addLine("ID", C.ID);
 	data += addLine("USER", C.USER);
+	data += addLine("LOOK", C.LOOK);
 	data += addLine("HP", C.HP);
 	data += addLine("X", C.X);
 	data += addLine("Y", C.Y);

@@ -368,6 +368,199 @@ void DrawCharacterUI(std::string id) {
 }
 
 
+enum CHAR_SELECTOR {
+	SKIN,
+	HAIR,
+	SHIRT,
+	SLEEVES,
+	ACCENT_1,
+	PANTS,
+	ACCENT_2,
+	BELT,
+	SHOES
+};
+
+void DrawCharacter(int x, int y, std::vector<int> styles, std::vector<int> colors, int scale = 1) {
+	std::vector<std::vector<std::string>> colorOptions = {
+	{ "sand", "orange", "yellow", "amber", "brown", "wood", "pale", "silver", "mint", "green", "raindrop" },
+	{ "sand", "orange", "brown", "wood", "yellow", "amber", "red", "pale", "silver", "steel" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" }
+	};
+
+	for (int i = 0; i < styles.size(); i++) {
+		Draw(16 * i, 224 + styles[i] * 16, 16, 16, x, y, scale, getColor(colorOptions[i][colors[i]]));
+	}
+}
+
+void DrawCharacter(int x, int y, std::string look, int scale = 1) {
+	if (look.size() != 18) {
+		return;
+	}
+	std::vector<int> styles = {};
+	std::vector<int> colors = {};
+	for (int i = 0; i < look.size(); i += 2) {
+		styles.push_back((int)(look[i] - 'a'));
+		colors.push_back((int)(look[i + 1] - 'a'));
+	}
+	DrawCharacter(x, y, styles, colors, scale);
+}
+
+void DrawCharCreation() {
+	int x = 5;
+	int y = 5;
+
+	std::vector<int> maxStyles = {
+		1, // Skin
+		8, // Hair
+		2, // Shirt
+		4, // Sleeves
+		6, // Accent_1
+		5, // Pants
+		3, // Accent_2
+		2, // Belt
+		1, // Shoes
+	};
+
+	std::vector<std::vector<std::string>> colors = {
+		{ "sand", "orange", "yellow", "amber", "brown", "wood", "pale", "silver", "mint", "green", "raindrop" },
+		{ "sand", "orange", "brown", "wood", "yellow", "amber", "red", "pale", "silver", "steel" },
+		{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+		{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+		{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+		{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+		{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+		{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+		{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" }
+	};
+
+	Box box = DrawButton("Randomize", x + 75, y);
+	if (UI.mouseReleased) {
+		if (mRange(box)) {
+			UI.randomize = true;
+		}
+	}
+
+	box = DrawButton("Confirm", x + 75, y + 40);
+	if (UI.mouseReleased) {
+		if (mRange(box)) {
+			std::string code = "";
+			for (int i = 0; i < UI.colors.size(); i++) {
+				code += (char)(UI.styles[i] + 'a');
+				code += (char)(UI.colors[i] + 'a');
+			}
+			sendData("COMMAND", "Character " + UI.charName + "=" + code);
+		}
+	}
+
+	fillRect(x + 296, y + 46, 150, 15, getColor("GREY"));
+	fillRect(x + 297, y + 47, 148, 13, sf::Color(10, 20, 30));
+	Print(UI.charName + '_', x + 300, y + 50, 145);
+
+	if (UI.randomize) {
+		UI.randomize = false;
+		for (int i = 0; i < UI.colors.size(); i++) {
+			UI.colors[i] = rand() % colors[i].size();
+		}
+		for (int i = 0; i < UI.styles.size(); i++) {
+			UI.styles[i] = rand() % maxStyles[i];
+		}
+		if (UI.styles[PANTS] != 4) {
+			UI.styles[ACCENT_2] %= 2;
+		}
+		if (colors[SKIN][UI.colors[SKIN]] == colors[HAIR][UI.colors[HAIR]]) {
+			UI.colors[HAIR]++;
+			UI.colors[HAIR] %= colors[HAIR].size();
+		}
+	}
+
+	DrawCharacter(x, y, UI.styles, UI.colors, 4);
+	std::string code = "";
+	for (int i = 0; i < UI.colors.size(); i++) {
+		code += (char)(UI.styles[i] + 'a');
+		code += (char)(UI.colors[i] + 'a');
+	}
+	DrawCharacter(x + 150, y, code, 1);
+
+	std::vector<std::string> styleTexts = { "Hair", "Shirt", "Sleeves", "Shirt Accent", "Pants", "Pants Accent", "Belt"};
+	std::vector<std::string> colorTexts = { "Skin", "Hair", "Shirt", "Sleeves", "Shirt Accent", "Pants", "Pants Accent", "Belt", "Shoes"};
+	
+	x = 50;
+	y = 70;
+	CPrint("*GREEN*Styles", x, y);
+	y += 10;
+	for (int i = 0; i < styleTexts.size(); i++) {
+		CPrint(styleTexts[i], x, y + 20 * i);
+		CPrint(to_str(1 + UI.styles[i + HAIR]), x, y + 10 + 20 * i);
+		Box left = Draw(137, 48, 4, 7, x - 20, y + 10 + 20 * i);
+		Box right = Draw(131, 48, 4, 7, x + 16, y + 10 + 20 * i);
+		if (UI.mouseReleased) {
+			int num = UI.styles[i + HAIR];
+			int max = maxStyles[i + HAIR];
+			if (mRange(left)) {
+				num--;
+				if (num < 0) {
+					num += max;
+				}
+			}
+			if (mRange(right)) {
+				num = (1 + num) % max;
+			}
+			UI.styles[i + HAIR] = num;
+			if (UI.styles[PANTS] != 4) {
+				UI.styles[ACCENT_2] %= 2;
+			}
+		}
+	}
+
+	x = 250;
+	y = 70;
+	CPrint("*GREEN*Colors", x, y);
+	y += 10;
+	for (int i = 0; i < colorTexts.size(); i++) {
+		std::string color = "";
+		if (UI.styles[i] == 0) {
+			if (i == SLEEVES || i == HAIR || i == BELT || i == ACCENT_1 || i == ACCENT_2) {
+				color = "*RED*";
+			}
+		}
+		CPrint(color + colorTexts[i], x, y + 20 * i);
+		CPrint(to_str(1 + UI.colors[i]), x, y + 10 + 20 * i);
+		Box left = Draw(137, 48, 4, 7, x - 20, y + 10 + 20 * i);
+		Box right = Draw(131, 48, 4, 7, x + 16, y + 10 + 20 * i);
+		if (UI.mouseReleased) {
+			int num = UI.colors[i];
+			int max = colors[i].size();
+			if (mRange(left)) {
+				num--;
+				if (num < 0) {
+					num += max;
+				}
+				if (i == HAIR && colors[UI.colors[SKIN]] == colors[num]) {
+					num--;
+					if (num < 0) {
+						num += max;
+					}
+				}
+			}
+			if (mRange(right)) {
+				num = (1 + num) % max;
+			}
+			UI.colors[i] = num;
+			if (colors[SKIN][UI.colors[SKIN]] == colors[HAIR][UI.colors[HAIR]]) {
+				UI.colors[HAIR]++;
+				UI.colors[HAIR] %= colors[HAIR].size();
+			}
+		}
+	}
+
+}
+
 
 void DrawBattle() {
 	Battle battle = BATTLE;
@@ -456,24 +649,30 @@ void DrawBattle() {
 			int xPos = (x + j * 16);
 			int yPos = y + 11 + (i * 16);
 			if (battle.round > 0 && movementCosts[i][j] <= getCharacter(ID).AP) {
-				Draw(32, 80, 16, 16, (x + j * 16), y + 11 + (i * 16), 1, sf::Color(135, 155, 0));
+				Draw(32, 80, 16, 16, xPos, yPos, 1, sf::Color(135, 155, 0));
 			}
 			if (tiles[i][j] == "blank_tile") {
-				Draw(0, 80, 16, 16, (x + j * 16), y + 11 + (i * 16));
+				Draw(0, 80, 16, 16, xPos, yPos);
 			}
 			else if (tiles[i][j] == "water_tile") {
-				Draw(16, 80, 16, 16, (x + j * 16), y + 11 + (i * 16));
+				Draw(16, 80, 16, 16, xPos, yPos);
 			}
 			else {
 				if (CHARACTERS.count(tiles[i][j]) > 0) {
-					int sX = CHARACTERS[tiles[i][j]].SX;
-					int sY = CHARACTERS[tiles[i][j]].SY;
-					Draw(sX, sY, 16, 16, (x + j * 16), y + 11 + (i * 16));
-					if (allied[i][j]) {
-						Draw(96, 144, 16, 16, (x + j * 16), y + 11 + (i * 16));
+					Character C = CHARACTERS[tiles[i][j]];
+					if (C.LOOK != "") {
+						DrawCharacter(xPos, yPos, C.LOOK);
 					}
 					else {
-						Draw(112, 144, 16, 16, (x + j * 16), y + 11 + (i * 16));
+						int sX = C.SX;
+						int sY = C.SY;
+						Draw(sX, sY, 16, 16, xPos, yPos);
+					}
+					if (allied[i][j]) {
+						Draw(96, 144, 16, 16, xPos, yPos);
+					}
+					else {
+						Draw(112, 144, 16, 16, xPos, yPos);
 					}
 				}
 			}
@@ -725,27 +924,6 @@ void DrawRoom() {
 	}
 }
 
-void DrawUI() {
-	if (CHARACTERS.count(ID) == 0) {
-		Print("No Character!", 50, 50);
-	}
-	else {
-		if (UI.hairCut) {
-			DrawHaircut();
-		}
-		else if (getCharacter(ID).LOCATION == BATTLE.id) {
-			DrawBattle();
-		}
-		else if (getCharacter(ID).TRADING != "") {
-			DrawTrade();
-		}
-		else {
-			DrawRoom();
-		}
-		DrawCharacterUI(UI.viewedPlayer);
-		DrawViewUI();
-	}
-}
 
 void DrawLogs() {
 	int y = 244;
@@ -766,11 +944,34 @@ void DrawLogs() {
 			Print(logs[logs.size() - (i + logBar.index)], 10, HEIGHT - (11 + i * 15), 340);
 		}
 	}
-	
+
 	if (logBar.index == 0) {
 		Print("> " + input + "_", 10, HEIGHT - 11, 350);
 	}
 	else {
 		Print("*BLACK*Viewing old logs, scroll down to see latest. . .", 10, HEIGHT - 11, 340);
+	}
+}
+
+void DrawUI() {
+	if (CHARACTERS.count(ID) == 0) {
+		DrawCharCreation();
+	}
+	else {
+		if (UI.hairCut) {
+			DrawHaircut();
+		}
+		else if (getCharacter(ID).LOCATION == BATTLE.id) {
+			DrawBattle();
+		}
+		else if (getCharacter(ID).TRADING != "") {
+			DrawTrade();
+		}
+		else {
+			DrawRoom();
+		}
+		DrawCharacterUI(UI.viewedPlayer);
+		DrawViewUI();
+		DrawLogs();
 	}
 }

@@ -21,7 +21,7 @@ void SetVertex(int index, int sX, int sY, int dX, int dY, sf::Color color) {
 	vertex->texCoords.y = sY;
 }
 
-void Draw(int sX, int sY, int w, int h, int dX, int dY, int scaleX, int scaleY, sf::Color color = sf::Color(255, 255, 255), bool flip = false) {
+Box Draw(int sX, int sY, int w, int h, int dX, int dY, int scaleX, int scaleY, sf::Color color = sf::Color(255, 255, 255), bool flip = false) {
 	if ((numVertices + 4) < vertSize) {
 		if (flip) {
 			SetVertex(numVertices++, sX, sY, dX + w * scaleX, dY, color);
@@ -39,10 +39,11 @@ void Draw(int sX, int sY, int w, int h, int dX, int dY, int scaleX, int scaleY, 
 	else {
 		numVertices += 4;
 	}
+	return Box(dX, dY, w * scaleX, h * scaleY);
 }
 
-void Draw(int sX, int sY, int w, int h, int dX, int dY, int scale = 1, sf::Color color = sf::Color(255, 255, 255), bool flip = false) {
-	Draw(sX, sY, w, h, dX, dY, scale, scale, color, flip);
+Box Draw(int sX, int sY, int w, int h, int dX, int dY, int scale = 1, sf::Color color = sf::Color(255, 255, 255), bool flip = false) {
+	return Draw(sX, sY, w, h, dX, dY, scale, scale, color, flip);
 }
 
 const int PIXEL_SPOT_X = 1;

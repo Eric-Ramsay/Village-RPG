@@ -190,6 +190,11 @@ int main()
 						if (UI.hairCut) {
 							backspaceDescription();
 						}
+						else if (CHARACTERS.count(ID) == 0) {
+							if (UI.charName.size() > 0) {
+								UI.charName.pop_back();
+							}
+						}
 						else {
 							if (input.size() > 0) {
 								input.pop_back();
@@ -215,6 +220,11 @@ int main()
 					if (c != 0 && input.size() < 50) {
 						if (UI.hairCut) {
 							typeDescription((char)c);
+						}
+						else if (CHARACTERS.count(ID) == 0) {
+							if (UI.charName.size() < 20) {
+								UI.charName += (char)c;
+							}
 						}
 						else {
 							input += (char)c;
@@ -281,6 +291,11 @@ int main()
 						if (UI.hairCut) {
 							backspaceDescription();
 						}
+						else if (CHARACTERS.count(ID) == 0) {
+							if (UI.charName.size() > 0) {
+								UI.charName.pop_back();
+							}
+						}
 						else if (input.size() > 0) {
 							input.pop_back();
 						}
@@ -307,7 +322,9 @@ int main()
 				UI.viewedPlayer = ID;
 				DrawUI();
 			}
-			DrawLogs();
+			else {
+				DrawLogs();
+			}
 
 			if (numVertices > vertSize) {
 				vertSize = numVertices + 1000;

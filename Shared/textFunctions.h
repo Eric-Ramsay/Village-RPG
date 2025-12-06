@@ -38,10 +38,6 @@ std::vector<std::string> split(std::string str, char delim = ' ') {
 				strings.push_back("");
 			}
 		}
-		else if (c == '_') {
-			strings.push_back("_");
-			strings.push_back("");
-		}
 		else {
 			strings[strings.size() - 1] += c;
 		}

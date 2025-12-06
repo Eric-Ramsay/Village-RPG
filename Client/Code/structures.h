@@ -111,6 +111,12 @@ struct UIState {
 	std::string viewedPlayer;
 	std::string viewedEffect;
 
+	std::vector<int> styles = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	std::vector<int> colors = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	std::string charName = "";
+	bool randomize = true;
+
+
 	LOGIN signInState = CHOOSE;
 };
 

@@ -359,10 +359,16 @@ std::string commandBuy(int playerIndex, Character& C, std::vector<std::string> w
 	return "*RED*You don't have room in your inventory to buy that!\n";
 }
 
-std::string createCharacter(int playerIndex, std::string name) {
+std::string createCharacter(int playerIndex, std::string n, std::string look) {
 	std::time_t t = std::time(0);
 	Character newCharacter;
-	std::string id = players[playerIndex].USERNAME + " " + name + " " + to_str(t) + to_str(rand() % 99);
+	std::string id = players[playerIndex].USERNAME + " " + n + " " + to_str(t) + to_str(rand() % 99);
+
+	std::vector<std::string> nameArgs = split(n);
+	for (int i = 0; i < nameArgs.size(); i++) {
+		nameArgs[i] = pretty(nameArgs[i]);
+	}
+	std::string name = join(nameArgs);
 
 	newCharacter.GOLD = 30;
 	newCharacter.AP = 6;
@@ -370,6 +376,7 @@ std::string createCharacter(int playerIndex, std::string name) {
 	newCharacter.HP = 30;
 	newCharacter.ID = id;
 	newCharacter.NAME = name;
+	newCharacter.LOOK = look;
 	newCharacter.USER = players[playerIndex].USERNAME;
 
 	Item dagger("dagger");
@@ -509,8 +516,12 @@ void command(std::string input, int playerIndex) {
 				msg = "*RED*Please enter a character name!";
 			}
 			else {
-				id = createCharacter(playerIndex, words[0]);
-				players[playerIndex].ID = id;
+				std::string args = join(words);
+				words = split(args, '=');
+				if (words.size() == 2) {
+					id = createCharacter(playerIndex, words[0], words[1]);
+					players[playerIndex].ID = id;
+				}
 			}
 		}
 	}

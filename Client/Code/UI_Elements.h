@@ -145,6 +145,21 @@ void initToolTips() {
 }
 
 void initColors() {
+	COLORS["amber"] = sf::Color(140, 105, 0);
+	COLORS["ruby"] = sf::Color(170, 35, 35);
+	COLORS["steel"] = sf::Color(110, 90, 130);
+	COLORS["wood"] = sf::Color(120, 65, 35);
+	COLORS["mint"] = sf::Color(135, 190, 140);
+	COLORS["sand"] = sf::Color(190, 115, 70);
+	COLORS["silver"] = sf::Color(165, 155, 185);
+	COLORS["coffee"] = sf::Color(80, 60, 10);
+	COLORS["pale"] = sf::Color(200, 200, 195);
+	COLORS["navy"] = sf::Color(40, 60, 115);
+	COLORS["pine"] = sf::Color(40, 110, 75);
+	COLORS["indigo"] = sf::Color(25, 70, 75);
+	COLORS["raindrop"] = sf::Color(70, 130, 125);
+	COLORS["goblin"] = sf::Color(100, 150, 50);
+
 	COLORS["yellow"] = sf::Color(180, 140, 0);
 	COLORS["red"] = sf::Color(220, 50, 45);
 	COLORS["green"] = sf::Color(135, 155, 0);
@@ -158,8 +173,7 @@ void initColors() {
 	COLORS["black"] = sf::Color(125, 125, 125);
 	COLORS["grey"] = sf::Color(240, 240, 235);
 	COLORS["white"] = sf::Color(255, 255, 255);
-	COLORS["pale"] = sf::Color(200, 200, 195);
-	COLORS["navy"] = sf::Color(40, 60, 115);
+	
 
 	for (auto color : COLORS) {
 		COLORS[caps(color.first)] = color.second;

@@ -271,6 +271,9 @@ void parseChange(Character& character, std::string type, std::string data) {
 		character.DESCRIPTION = readStr(data);
 		character.DESCRIPTION = replace(character.DESCRIPTION, "\r", "\n");
 	}
+	else if (type == "LOOK") {
+		character.LOOK = readStr(data);
+	}
 	else if (type == "TRADING") {
 		character.TRADING = readStr(data);
 	}
