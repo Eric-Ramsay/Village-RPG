@@ -274,6 +274,9 @@ void parseChange(Character& character, std::string type, std::string data) {
 	else if (type == "LOOK") {
 		character.LOOK = readStr(data);
 	}
+	else if (type == "DEATH") {
+		character.DEATH = readStr(data);
+	}
 	else if (type == "TRADING") {
 		character.TRADING = readStr(data);
 	}
@@ -454,6 +457,38 @@ std::vector<int> sort(std::vector<int>& nums) {
 	return merge(sort(first), sort(second));
 }
 
+std::vector<Character> merge(std::vector<Character> arr1, std::vector<Character> arr2) {
+	int i = 0; int j = 0;
+	int len1 = arr1.size();
+	int len2 = arr2.size();
+	std::vector<Character> sorted(len1 + len2);
+	int k = 0;
+	while (i < len1 || j < len2) {
+		if (i == len1) {
+			sorted[k++] = arr2[j++];
+		}
+		else if (j == len2) {
+			sorted[k++] = arr1[i++];
+		}
+		else if (arr1[i].LEVEL > arr2[j].LEVEL) {
+			sorted[k++] = arr1[i++];
+		}
+		else {
+			sorted[k++] = arr2[j++];
+		}
+	}
+	return sorted;
+}
+
+std::vector<Character> sortChars(std::vector<Character>& chars) {
+	if (chars.size() == 1) {
+		return chars;
+	}
+	std::vector<Character> first(chars.begin(), chars.begin() + chars.size() / 2);
+	std::vector<Character> second(chars.begin() + chars.size() / 2, chars.end());
+	return merge(sortChars(first), sortChars(second));
+}
+
 template <typename T> bool contains(std::vector<T> elements, T element) {
 	for (T elem : elements) {
 		if (elem == element) {
@@ -521,21 +556,21 @@ std::vector<std::string> findItem(std::string args, std::unordered_map<std::stri
 	return ids;
 }
 
-std::string name(Character C) {
+std::string name(Character C, bool addThe = true) {
 	std::string msg = "";
 	std::vector<std::string> words = split(C.NAME);
 	for (int i = 0; i < words.size(); i++) {
 		words[i] = pretty(words[i]);
 	}
 	msg = join(words);
-	if (C.TYPE != "player") {
+	if (addThe && C.TYPE != "player") {
 		msg = "the " + msg;
 	}
 	return msg;
 }
 
-std::string name(Character* C) {
-	return name(*C);
+std::string name(Character* C, bool addThe = true) {
+	return name(*C, addThe);
 }
 
 Character getCharacter(std::string id) {

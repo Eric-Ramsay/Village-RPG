@@ -70,7 +70,7 @@ std::string commandDelve(int playerIndex, Character& C, std::vector<std::string>
 		}
 	}
 	if (id == "") {
-		id = C.LOCATION + to_str(rand() % 9999);
+		id = C.LOCATION + "." + to_str(rand() % 9999);
 		BATTLES[id] = Battle(id, C.LOCATION);
 	}
 	setStat(C, "LOCATION", id);
@@ -626,6 +626,7 @@ void command(std::string input, int playerIndex) {
 	else if (keyword == "suicide") {
 		msg = "*RED*You've lost the will to go on. . .";
 		std::string loc = CHARACTERS[id].LOCATION;
+		CHARACTERS[id].DEATH = "Suicide";
 		removeCharacter(CHARACTERS[id]);
 		if (BATTLES.count(loc) > 0) {
 			validateBattle(loc);

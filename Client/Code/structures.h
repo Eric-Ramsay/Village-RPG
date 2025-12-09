@@ -92,6 +92,8 @@ struct UIState {
 	bool mousePressed = false;
 	bool rightPressed = false;
 	bool doubleClicked = false;
+	bool scrollDown = false;
+	bool scrollUp = true;
 
 	bool UIClick = false;
 
@@ -99,15 +101,20 @@ struct UIState {
 
 	int view = 0;
 	bool viewLocked = false;
+	bool topLocked = false;
 
 	bool hairCut = false;
+	bool viewingGraves = false;
+	std::string graveSearch = "";
+
+
 	std::vector<TextSegment> description = {};
 	std::string color = "GREY";
 
 	std::string tooltip = "";
 
 	Item viewedItem;
-	Character viewedCharacter;
+	std::string viewedEnemy;
 	std::string viewedPlayer;
 	std::string viewedEffect;
 
@@ -115,6 +122,7 @@ struct UIState {
 	std::vector<int> colors = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	std::string charName = "";
 	bool randomize = true;
+	bool creatingCharacter = false;
 
 
 	LOGIN signInState = CHOOSE;

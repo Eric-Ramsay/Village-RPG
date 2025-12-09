@@ -17,6 +17,7 @@ fd_set master;
 
 std::unordered_map<std::string, Account> ACCOUNTS = {};
 std::unordered_map<std::string, Character> CHARACTERS = {};
+std::unordered_map<std::string, Character> GRAVES = {};
 std::unordered_map<std::string, Battle> BATTLES = {};
 
 std::unordered_map<std::string, UI_Item> ITEMS = {};

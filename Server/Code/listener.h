@@ -39,17 +39,21 @@ void ProcessMessages() {
 							if (ACCOUNTS[players[i].USERNAME].PASSWORD == data) {
 								sendData("ACCEPT_PASSWORD", "", { i });
 								players[i].connected = true;
+								std::string bundle = "";
 								for (auto character : CHARACTERS) {
 									if (character.second.USER == players[i].USERNAME) {
 										players[i].ID = character.first;
 										std::string location = character.second.LOCATION;
 										if (BATTLES.count(location) > 0) {
-											std::string data = serialize(BATTLES[location]);
-											sendData("BATTLE", data, { i });
+											bundle += str("BATTLE") + serialize(BATTLES[location]) + '\t';
 										}
 									}
-									sendCharacter(character.second, { i });
+									bundle += str("CHARACTER") + serialize(character.second) + '\t';
 								}
+								for (auto character : GRAVES) {
+									bundle += str("GRAVE") + serialize(character.second) + '\t';
+								}
+								sendData("BUNDLE", bundle);
 							}
 							else {
 								sendData("REJECT_PASSWORD", "", { i });

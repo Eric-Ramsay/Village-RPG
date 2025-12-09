@@ -8,8 +8,11 @@ void process(std::string type, std::string data) {
 		}
 	}
 	if (type == "READY") {
+		CHARACTERS = {};
+		GRAVES = {};
+		GRAVEYARD = {};
 		logs.push_back("*TEAL*Connected!");
-		if (USERNAME != "" && PASSWORD != "") {
+		if (rememberAccount && USERNAME != "" && PASSWORD != "") {
 			sendData("LOGIN_USERNAME", USERNAME);
 			sendData("LOGIN_PASSWORD", PASSWORD);
 		}
@@ -63,6 +66,20 @@ void process(std::string type, std::string data) {
 			std::cout << "Weird Character Received" << std::endl;
 		}
 		CHARACTERS[C.ID] = C;
+	}
+	if (type == "GRAVE") {
+		Character C;
+		std::vector<std::string> strings = split(data, '\n');
+		for (std::string str : strings) {
+			std::string stat = readStr(str);
+			parseChange(C, stat, str);
+		}
+		if (C.ID == "" || C.NAME == "") {
+			std::cout << "Weird Grave Received" << std::endl;
+		}
+		GRAVEYARD[C.ID] = C;
+		GRAVES.push_back(C);
+		GRAVES = sortChars(GRAVES);
 	}
 	if (type == "REMOVE_CHARACTER") {
 		CHARACTERS.erase(data);

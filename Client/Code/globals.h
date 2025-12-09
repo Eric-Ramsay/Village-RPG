@@ -35,11 +35,13 @@ std::vector<std::string> logs = {"*BLACK*Connecting . . ."};
 
 std::string ID = "";
 std::unordered_map<std::string, Character> CHARACTERS = {};
+std::unordered_map<std::string, Character> GRAVEYARD = {};
+std::vector<Character> GRAVES = {};
+std::vector<Character> sortedGraves = {};
 
 std::string USERNAME = "eric";
 std::string PASSWORD = "123";
-//std::string USERNAME = "";
-//std::string PASSWORD = "";
+bool rememberAccount = true;
 
 bool blur = false;
 bool scanLines = false;
@@ -63,5 +65,6 @@ bool updateMovement = true;
 std::vector<Scrollbar*> scrollbars = {};
 Scrollbar tradeBar(195, 110, 127);
 Scrollbar logBar(244, 347, 97, true);
+Scrollbar graveBar(0, 0, 0);
 
 int numMessages = 0;

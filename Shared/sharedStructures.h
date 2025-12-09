@@ -185,6 +185,7 @@ struct Character {
 	std::string TYPE = "player";
 	std::string DESCRIPTION = "";
 	std::string LOOK = "";
+	std::string DEATH = "";
 	std::string NAME = "";
 	std::string TRADING = "";
 

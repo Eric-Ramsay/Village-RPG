@@ -29,6 +29,10 @@ bool endsWith(std::string stringOne, std::string stringTwo) {
 	return true;
 }
 
+bool includes(std::string stringOne, std::string stringTwo) {
+	return stringOne.find(stringTwo) != std::string::npos;
+}
+
 std::vector<std::string> split(std::string str, char delim = ' ') {
 	std::vector<std::string> strings = { "" };
 	for (int i = 0; i < str.size(); i++) {

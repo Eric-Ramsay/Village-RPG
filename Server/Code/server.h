@@ -116,14 +116,20 @@ void removeLoot(Battle& battle, std::string index) {
 }
 
 void removeCharacter(Character character) {
-	sendData("REMOVE_CHARACTER", character.ID);
+	std::string bundle = "";
+	bundle += str("REMOVE_CHARACTER") + character.ID + '\t';
 	if (character.TYPE == "player") {
-		graveSave(character);
+		std::string text = serialize(character);
+		bundle += str("GRAVE") + text + '\t';
+		saveToFile("Characters/Graveyard/" + character.ID, text);
 		std::remove(("./Saves/Characters/" + character.ID + ".txt").c_str());
 	}
 	else {
 		std::remove(("./Saves/Characters/Enemies/" + character.ID + ".txt").c_str());
 	}
+
+	sendData("BUNDLE", bundle);
+
 	for (int i = 0; i < players.size(); i++) {
 		if (players[i].ID == character.ID) {
 			players[i].ID = "";

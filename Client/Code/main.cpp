@@ -129,6 +129,8 @@ int main()
 		UI.rightPressed = false;
 		UI.rightReleased = false;
 		UI.doubleClicked = false;
+		UI.scrollDown = false;
+		UI.scrollUp = false;
 		while (window.pollEvent(event)) {
 			UI.mX = sf::Mouse::getPosition().x / xScale;
 			UI.mY = sf::Mouse::getPosition().y / yScale;
@@ -170,6 +172,14 @@ int main()
 						UI.rightHeld = false;
 					}
 				}
+				else if (event.type == sf::Event::MouseWheelScrolled) {
+					if (event.mouseWheelScroll.delta > 0) {
+						UI.scrollUp = true;
+					}
+					else {
+						UI.scrollDown = true;
+					}
+				}
 				else if (event.type == sf::Event::KeyPressed) {
 					int c = 0;
 					int keyCode = (int)event.key.code;
@@ -190,7 +200,13 @@ int main()
 						if (UI.hairCut) {
 							backspaceDescription();
 						}
-						else if (CHARACTERS.count(ID) == 0) {
+						else if (UI.viewingGraves) {
+							if (UI.graveSearch.size() > 0) {
+								UI.graveSearch.pop_back();
+								updateOrbPos(&graveBar, 0);
+							}
+						}
+						else if (UI.creatingCharacter) {
 							if (UI.charName.size() > 0) {
 								UI.charName.pop_back();
 							}
@@ -202,7 +218,12 @@ int main()
 						}
 					}
 					else if (event.key.code == sf::Keyboard::LControl || event.key.code == sf::Keyboard::RControl) {
-						if (UI.view > 0) {
+						if (UI.view == 0) {
+							if (UI.topLocked || (UI.viewedPlayer != "" && UI.viewedPlayer != ID)) {
+								UI.topLocked = !UI.topLocked;
+							}
+						}
+						else {
 							UI.viewLocked = !UI.viewLocked;
 						}
 					}
@@ -217,16 +238,22 @@ int main()
 							stateMessage(UI.signInState);
 						}
 					}
-					if (c != 0 && input.size() < 50) {
+					if (c != 0) {
 						if (UI.hairCut) {
 							typeDescription((char)c);
 						}
-						else if (CHARACTERS.count(ID) == 0) {
+						else if (UI.creatingCharacter) {
 							if (UI.charName.size() < 20) {
 								UI.charName += (char)c;
 							}
 						}
-						else {
+						else if (UI.viewingGraves) {
+							if (UI.graveSearch.size() < 20) {
+								UI.graveSearch += (char)c;
+								updateOrbPos(&graveBar, 0);
+							}
+						}
+						else if (input.size() < 50) {
 							input += (char)c;
 						}
 					}
@@ -291,7 +318,13 @@ int main()
 						if (UI.hairCut) {
 							backspaceDescription();
 						}
-						else if (CHARACTERS.count(ID) == 0) {
+						else if (UI.viewingGraves) {
+							if (UI.graveSearch.size() > 0) {
+								UI.graveSearch.pop_back();
+								updateOrbPos(&graveBar, 0);
+							}
+						}
+						else if (UI.creatingCharacter) {
 							if (UI.charName.size() > 0) {
 								UI.charName.pop_back();
 							}
@@ -318,8 +351,10 @@ int main()
 				if (!UI.viewLocked) {
 					UI.view = 0;
 				}
+				if (!UI.topLocked) {
+					UI.viewedPlayer = ID;
+				}
 				UI.tooltip = "";
-				UI.viewedPlayer = ID;
 				DrawUI();
 			}
 			else {

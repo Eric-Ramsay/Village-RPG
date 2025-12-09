@@ -169,6 +169,7 @@ void Listen() {
 									players[i].messages[index].type = type;
 									players[i].messages[index].done = true;
 									index = nextMessage(players[i].messages);
+									buffer = players[i].messages[index].data;
 								}
 							}
 						}
@@ -235,6 +236,17 @@ int main() {
 			Character character = load<Character>(path);
 			if (character.ID != "") {
 				CHARACTERS[character.ID] = character;
+			}
+		}
+	}
+
+	// Load all Graves
+	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Characters/Graveyard")) {
+		std::string path = entry.path().string();
+		if (!entry.is_directory()) {
+			Character character = load<Character>(path);
+			if (character.ID != "") {
+				GRAVES[character.ID] = character;
 			}
 		}
 	}

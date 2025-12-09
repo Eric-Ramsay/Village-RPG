@@ -21,6 +21,9 @@ Result dealDamage(Attack attack, std::string attackerId, std::string targetId, s
 		result.msg = "*ORANGE*" + pretty(name(attacker)) + " *RED*attacks " + name(target) + " for *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
 		result.damage = dmg;
 		target->HP -= dmg;
+		if (target->HP <= 0) {
+			target->DEATH = pretty(name(attacker, false));
+		}
 	}
 	else {
 		result.msg += "*ORANGE*" + pretty(name(attacker)) + " *RED*misses!\n";

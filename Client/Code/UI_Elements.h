@@ -117,6 +117,7 @@ void initTabs() {
 void initScrollbars() {
 	scrollbars.push_back(&tradeBar);
 	scrollbars.push_back(&logBar);
+	scrollbars.push_back(&graveBar);
 	logBar.orbPos = logBar.height - 24;
 }
 
@@ -159,6 +160,7 @@ void initColors() {
 	COLORS["indigo"] = sf::Color(25, 70, 75);
 	COLORS["raindrop"] = sf::Color(70, 130, 125);
 	COLORS["goblin"] = sf::Color(100, 150, 50);
+	COLORS["dark"] = sf::Color(10, 20, 30);
 
 	COLORS["yellow"] = sf::Color(180, 140, 0);
 	COLORS["red"] = sf::Color(220, 50, 45);
@@ -173,13 +175,13 @@ void initColors() {
 	COLORS["black"] = sf::Color(125, 125, 125);
 	COLORS["grey"] = sf::Color(240, 240, 235);
 	COLORS["white"] = sf::Color(255, 255, 255);
-	
 
-	for (auto color : COLORS) {
-		COLORS[caps(color.first)] = color.second;
-		COLORS["*" + color.first + "*"] = color.second;
-		COLORS["*" + caps(color.first) + "*"] = color.second;
-	}
+
+for (auto color : COLORS) {
+	COLORS[caps(color.first)] = color.second;
+	COLORS["*" + color.first + "*"] = color.second;
+	COLORS["*" + caps(color.first) + "*"] = color.second;
+}
 }
 
 void updateOrbPos(Scrollbar* bar, int index) {
@@ -193,11 +195,36 @@ void updateOrbPos(Scrollbar* bar, int index) {
 	}
 }
 
+
+void updateBarIndex(Scrollbar* bar) {
+	bar->orbPos = max(0, min(bar->height - 24, bar->orbPos));
+
+	int num = max(0, (bar->numThings - bar->visibleAtOnce));
+	if (num > 0) {
+		float scale = (float)bar->orbPos / (float)(bar->height - 24);
+		int index = ceil(scale * num);
+		if (bar->inverse) {
+			bar->index = num - index;
+		}
+		else {
+			bar->index = index;
+		}
+	}
+}
+
 void updateScrollbars() {
+	Scrollbar* scrolling = nullptr;
 	for (int i = 0; i < scrollbars.size(); i++) {
 		Scrollbar* bar = scrollbars[i];
 		if (bar->visible) {
 			bool change = false;
+			if (UI.scrollDown || UI.scrollUp) {
+				if (range(UI.mX, UI.mY, 0, bar->dY, bar->dX, bar->height)) {
+					if (scrolling == nullptr || bar->dX < scrolling->dX) {
+						scrolling = bar;
+					}
+				}
+			}
 			if (UI.mouseReleased) {
 				bar->dragging = false;
 			}
@@ -225,19 +252,53 @@ void updateScrollbars() {
 			if (bar->dragging) {
 				bar->orbPos = max(0, min(bar->height - 24, UI.mY - (bar->dY + 8)));
 			}
-			bar->orbPos = max(0, min(bar->height - 24, bar->orbPos));
-
-			int num = max(0, (bar->numThings - bar->visibleAtOnce));
-			if (num > 0) {
-				float scale = (float)bar->orbPos / (float)(bar->height - 24);
-				int index = ceil(scale * num);
-				if (bar->inverse) {
-					bar->index = num - index;
-				}
-				else {
-					bar->index = index;
-				}
-			}
+			updateBarIndex(bar);
 		}
+		bar->visible = false;
 	}
+	if (scrolling != nullptr) {
+		int index = scrolling->index - 1;
+		if ((UI.scrollDown && !scrolling->inverse) || (UI.scrollUp && scrolling->inverse)) {
+			index = scrolling->index + 1;
+		}
+		updateOrbPos(scrolling, index);
+		updateBarIndex(scrolling);
+	}
+}
+
+Box DrawSection(int x, int y, int w, int h, std::string border = "grey", std::string inside = "dark") {
+	fillRect(x, y, w, h, getColor(border));
+	fillRect(x + 1, y + 1, w - 2, h - 2, getColor(inside));
+	return Box(x, y, w, h);
+}
+
+void DrawCharacter(int x, int y, std::vector<int> styles, std::vector<int> colors, int scale = 1) {
+	std::vector<std::vector<std::string>> colorOptions = {
+	{ "sand", "orange", "yellow", "amber", "brown", "wood", "pale", "silver", "mint", "green", "raindrop" },
+	{ "sand", "orange", "brown", "wood", "yellow", "amber", "red", "pale", "silver", "steel" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
+	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" }
+	};
+
+	for (int i = 0; i < styles.size(); i++) {
+		Draw(16 * i, 224 + styles[i] * 16, 16, 16, x, y, scale, getColor(colorOptions[i][colors[i]]));
+	}
+}
+
+void DrawCharacter(int x, int y, std::string look, int scale = 1) {
+	if (look.size() != 18) {
+		return;
+	}
+	std::vector<int> styles = {};
+	std::vector<int> colors = {};
+	for (int i = 0; i < look.size(); i += 2) {
+		styles.push_back((int)(look[i] - 'a'));
+		colors.push_back((int)(look[i + 1] - 'a'));
+	}
+	DrawCharacter(x, y, styles, colors, scale);
 }

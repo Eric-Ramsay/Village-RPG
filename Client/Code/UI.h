@@ -8,6 +8,91 @@ std::string padNum(int num) {
 	return to_str(num);
 }
 
+void DrawGraves() {
+	int x = 5;
+	int y = 5;
+	Print("*RED*Graveyard", x, y);
+
+	std::vector<Character> graveList = {};
+	if (UI.graveSearch == "") {
+		graveList = GRAVES;
+	}
+	else {
+		std::string filter = low(UI.graveSearch);
+		for (Character C : GRAVES) {
+			if (includes(low(C.NAME), filter)) {
+				graveList.push_back(C);
+			}
+		}
+	}
+	
+	graveBar.visible = true;
+	graveBar.visibleAtOnce = 8;
+	graveBar.numThings = graveList.size();
+	graveBar.dY = y + 34;
+	graveBar.dX = x + 250;
+	graveBar.height = graveBar.visibleAtOnce * 30;
+	DrawScrollbar(graveBar);
+
+	DrawSection(x, y + 10, 225, 15);
+	Print(UI.graveSearch + '_', x + 4, y + 14, 145);
+
+	int startIndex = graveBar.index;
+	int maxIndex = graveBar.index + graveBar.visibleAtOnce;
+	if (maxIndex > graveList.size()) {
+		maxIndex = graveList.size();
+	}
+	for (int i = startIndex; i < maxIndex; i++) {
+		int yPos = y + 34 + (i - startIndex) * 30;
+		Character C = graveList[i];
+		Box box = DrawSection(x, yPos, 225, 31);
+		if (mRange(box)) {
+			UI.viewedPlayer = C.ID;
+		}
+		DrawCharacter(x, yPos + 7, C.LOOK);
+		Print("*PINK*" + padNum(i + 1) + "*GREY*) *GREEN*" + C.NAME, x + 18, yPos + 5);
+		Print("*PINK*Level " + to_str(C.LEVEL), x + 178, yPos + 5);
+		Print("*BLACK*Killed by *RED*" + to_str(C.DEATH), x + 18, yPos + 18);
+	}
+
+	if (graveList.size() == 0) {
+		Print("*BLACK*You don't see any graves . . .", x, y + 30);
+	}
+
+	if (GRAVEYARD.count(UI.viewedPlayer) > 0) {
+		Character C = GRAVEYARD[UI.viewedPlayer];
+		int xPos = x + 260 + 90;
+		int yPos = y + 10 + 16 * 4;
+		DrawCharacter(xPos - 8 * 4, y, C.LOOK, 4);
+		CPrint("*GREEN*" + C.NAME, xPos, yPos);
+		std::string loc = split(C.LOCATION, '.')[0];
+		CPrint("*RED*" + C.DEATH, xPos, yPos + 12);
+		CPrint("*PURPLE*" + loc, xPos, yPos + 24);
+
+		Print("*PINK*Damage Dealt:", xPos - 55, yPos + 48);
+		Print("0", xPos + 55, yPos + 48);
+
+		Print("*ORANGE*Damage Mitigated:", xPos - 55, yPos + 60);
+		Print("0", xPos + 55, yPos + 60);
+
+		Print("*RED*Healing:", xPos - 55, yPos + 72);
+		Print("0", xPos + 55, yPos + 72);
+
+		Print("*YELLOW*Gold Earned:", xPos - 55, yPos + 84);
+		Print("0", xPos + 55, yPos + 84);
+
+		Print("*BLUE*Battles Won:", xPos - 55, yPos + 96);
+		Print("0", xPos + 55, yPos + 96);
+	}
+
+
+	Box box = DrawButton("Go Back", x, y + 310);
+	if (UI.mouseReleased && mRange(box)) {
+		UI.viewingGraves = false;
+	}
+
+}
+
 void DrawHaircut() {
 	Character C = CHARACTERS[ID];
 	int x = 5;
@@ -203,16 +288,15 @@ void DrawViewUI() {
 	}
 	else if (UI.view == 2) {
 		// Viewing a Character
-		Character C = UI.viewedCharacter;
-		std::string color = "*RED*";
-		if (C.TYPE == "player") {
-			color = "*BLUE*";
-		}
-		Print(color + C.NAME, x, y);
-		if (UI.viewedEffect != "") {
-			Print("*PINK*" + pretty(UI.viewedEffect), x, 340);
-			std::string desc = "blah blah blah";
-			Print(desc, x + 75, 340);
+		if (CHARACTERS.count(UI.viewedEnemy)) {
+			Character C = CHARACTERS[UI.viewedEnemy];
+			std::string color = "*RED*";
+			Print(color + C.NAME, x, y);
+			if (UI.viewedEffect != "") {
+				Print("*PINK*" + pretty(UI.viewedEffect), x, 340);
+				std::string desc = "blah blah blah";
+				Print(desc, x + 75, 340);
+			}
 		}
 	}
 	else {
@@ -237,16 +321,32 @@ void DrawCharacterUI(std::string id) {
 	int y = 3;
 	int w = 185;
 	int h = 208;
+	Character C;
 	if (CHARACTERS.count(id) == 0) {
-		return;
+		if (GRAVEYARD.count(id) == 0) {
+			return;
+		}
+		C = GRAVEYARD[id];
+		C.HP = 0;
+	}
+	else {
+		C = getCharacter(id);
 	}
 
-	Character C = getCharacter(id);
-	Print("*GREEN*" + pretty(C.NAME), x, y);
+	std::string accentOne = "*PINK*";
+	std::string nameColor = "*GREEN*";
+	if (id != ID) {
+		accentOne = "*PURPLE*";
+		nameColor = "*BLUE*";
+	}
+	Print(nameColor + pretty(C.NAME), x, y);
 	Print("*YELLOW*Gold: " + to_str(C.GOLD), x + w - 45, y);
 
-	Print("*PINK*Level " + to_str(C.LEVEL), x, y + 13);
+	Print(accentOne + "Level " + to_str(C.LEVEL), x, y + 13);
 	Print("*YELLOW*" + to_str(C.XP) + "*GREY*/*GREEN*" + to_str(100 * C.LEVEL) + "*GREY* XP", x + 54, y + 13);
+	if (UI.topLocked) {
+		Print("*YELLOW*\7", x + w - 55, y + 13);
+	}
 	Print("*PURPLE*SP: *PINK*" + to_str(C.SP), x + w - 35, y + 13);
 
 	std::vector<std::string> barStats = { "VIT", "DEF", "END", "DEX"};
@@ -260,7 +360,7 @@ void DrawCharacterUI(std::string id) {
 		if (mRange(box)) {
 			UI.tooltip = barStats[i];
 		}
-		if (C.SP > 0) {
+		if (C.SP > 0 && id == ID) {
 			box = Print("*PURPLE*\6", x + (w - 5), y + 25 + 10 * i);
 			if (mRange(box)) {
 				UI.tooltip = barStats[i];
@@ -308,7 +408,7 @@ void DrawCharacterUI(std::string id) {
 				color = "*TEAL*";
 				command = "REMOVE";
 			}
-			std::string str = "*PINK*" + padNum(itemCount) + "*GREY*) " + color + pretty(item.second.id);
+			std::string str = accentOne + padNum(itemCount) + "*GREY*) " + color + pretty(item.second.id);
 			Print(str, xPos, yPos);
 			int len = measureText(str);
 			if (range(UI.mX, UI.mY, xPos, yPos, len, 9)) {
@@ -337,7 +437,7 @@ void DrawCharacterUI(std::string id) {
 		}
 		int num = (10 + (5 * C.BACKPACK)) - itemCount;
 		for (int i = itemCount; i < itemCount + num; i++) {
-			Print("*PINK*" + padNum(i + 1) + "*GREY*) *BLACK*---", x, y + 10 * i);
+			Print(accentOne + padNum(i + 1) + "*GREY*) *BLACK*---", x, y + 10 * i);
 		}
 	}
 	else if (playerMenu.index == 1) {
@@ -379,37 +479,6 @@ enum CHAR_SELECTOR {
 	BELT,
 	SHOES
 };
-
-void DrawCharacter(int x, int y, std::vector<int> styles, std::vector<int> colors, int scale = 1) {
-	std::vector<std::vector<std::string>> colorOptions = {
-	{ "sand", "orange", "yellow", "amber", "brown", "wood", "pale", "silver", "mint", "green", "raindrop" },
-	{ "sand", "orange", "brown", "wood", "yellow", "amber", "red", "pale", "silver", "steel" },
-	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
-	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
-	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
-	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
-	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
-	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" },
-	{ "pale", "silver", "steel", "purple", "pink", "ruby", "orange", "yellow", "amber", "brown", "wood", "coffee", "teal", "blue", "navy", "indigo", "goblin" }
-	};
-
-	for (int i = 0; i < styles.size(); i++) {
-		Draw(16 * i, 224 + styles[i] * 16, 16, 16, x, y, scale, getColor(colorOptions[i][colors[i]]));
-	}
-}
-
-void DrawCharacter(int x, int y, std::string look, int scale = 1) {
-	if (look.size() != 18) {
-		return;
-	}
-	std::vector<int> styles = {};
-	std::vector<int> colors = {};
-	for (int i = 0; i < look.size(); i += 2) {
-		styles.push_back((int)(look[i] - 'a'));
-		colors.push_back((int)(look[i + 1] - 'a'));
-	}
-	DrawCharacter(x, y, styles, colors, scale);
-}
 
 void DrawCharCreation() {
 	int x = 5;
@@ -689,7 +758,7 @@ void DrawBattle() {
 							}
 							else if (!UI.viewLocked) {
 								UI.view = 2;
-								UI.viewedCharacter = C;
+								UI.viewedEnemy = C.ID;
 							}
 							break;
 						}
@@ -712,7 +781,7 @@ void DrawBattle() {
 
 			if (!UI.viewLocked && mRange(box)) {
 				UI.view = 2;
-				UI.viewedCharacter = C;
+				UI.viewedEnemy = C.ID;
 			}
 
 			xPos = x + 300;
@@ -738,7 +807,7 @@ void DrawBattle() {
 				}
 				else if (!UI.viewLocked && mRange(box)) {
 					UI.view = 2;
-					UI.viewedCharacter = C;
+					UI.viewedEnemy = C.ID;
 				}
 			}
 		}
@@ -850,7 +919,9 @@ void DrawRoom() {
 		if (C.ID != ID && C.LOCATION == room.id) {
 			Box box = Print("*PURPLE*" + pretty(C.NAME), x, y + 10 + n++ * 10);
 			if (mRange(box)) {
-				UI.viewedPlayer = C.ID;
+				if (!UI.topLocked) {
+					UI.viewedPlayer = C.ID;
+				}
 			}
 		}
 	}
@@ -905,6 +976,16 @@ void DrawRoom() {
 			}
 		}
 	}
+	if (low(room.id) == "graveyard") {
+		y = 140;
+		x = 5;
+		Box box = DrawButton("View Graves", x, y, "PINK");
+		if (mRange(box)) {
+			if (UI.mouseReleased) {
+				UI.viewingGraves = true;
+			}
+		}
+	}
 	
 	if (room.dungeon || room.parent != "") {
 		y = 205;
@@ -928,6 +1009,8 @@ void DrawRoom() {
 void DrawLogs() {
 	int y = 244;
 	int x = 347;
+
+	logBar.visible = true;
 	logBar.dX = x;
 	logBar.dY = y;
 	logBar.numThings = min(20, logs.size());
@@ -941,25 +1024,30 @@ void DrawLogs() {
 	}
 	for (int i = 1; i <= 7; i++) {
 		if (logs.size() >= (i + logBar.index)) {
-			Print(logs[logs.size() - (i + logBar.index)], 10, HEIGHT - (11 + i * 15), 340);
+			Print(logs[logs.size() - (i + logBar.index)], 5, HEIGHT - (11 + i * 15), 340);
 		}
 	}
 
 	if (logBar.index == 0) {
-		Print("> " + input + "_", 10, HEIGHT - 11, 350);
+		Print("> " + input + "_", 5, HEIGHT - 11, 350);
 	}
 	else {
-		Print("*BLACK*Viewing old logs, scroll down to see latest. . .", 10, HEIGHT - 11, 340);
+		Print("*BLACK*Viewing old logs, scroll down to see latest. . .", 5, HEIGHT - 11, 340);
 	}
 }
 
 void DrawUI() {
+	UI.creatingCharacter = false;
 	if (CHARACTERS.count(ID) == 0) {
+		UI.creatingCharacter = true;
 		DrawCharCreation();
 	}
 	else {
 		if (UI.hairCut) {
 			DrawHaircut();
+		}
+		else if (UI.viewingGraves) {
+			DrawGraves();
 		}
 		else if (getCharacter(ID).LOCATION == BATTLE.id) {
 			DrawBattle();
@@ -972,6 +1060,8 @@ void DrawUI() {
 		}
 		DrawCharacterUI(UI.viewedPlayer);
 		DrawViewUI();
-		DrawLogs();
+		if (!UI.viewingGraves) {
+			DrawLogs();
+		}
 	}
 }

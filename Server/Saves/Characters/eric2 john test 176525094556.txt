@@ -1,0 +1,34 @@
+ID!!!eric2 john test 176525094556!!!
+USER!!!eric2!!!
+LOOK!!!aidbbedpfdekbqapab!!!
+HP!!!30!
+X!!!0!
+Y!!!0!
+SX!!!0!
+SY!!!176!
+ARMOR!!!0!
+MAXHP!!!30!
+TYPE!!!player!!!
+NAME!!!John Test!!!
+LOCATION!!!Tavern!!!
+STAMINA!!!20!
+DESCRIPTION!!!!!!
+TRADING!!!!!!
+LEVEL!!!1!
+XP!!!0!
+SP!!!0!
+GOLD!!!30!
+AP!!!6!
+BACKPACK!!!0!
+ENDED!!!0!
+ATTACKS!!!0!
+CASTS!!!0!
+X_PREFERENCE!!!0!
+Y_PREFERENCE!!!0!
+LEFT!!!dagger.960!!!
+RIGHT!!!!!!
+HITS!!!0!0!
+MISSES!!!0!0!
+STATS!!!0!0!0!0!0!0!0!
+INVENTORY!!!
+ITEM!!!INDEX!!!dagger.960!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!
