@@ -1,6 +1,6 @@
-ID!!!eric2 john test 176525094556!!!
-USER!!!eric2!!!
-LOOK!!!aidbbedpfdekbqapab!!!
+ID!!!eric eric 176532537451!!!
+USER!!!eric!!!
+LOOK!!!aecjbiceegcmaoaiag!!!
 DEATH!!!!!!
 HP!!!30!
 X!!!0!
@@ -10,8 +10,8 @@ SY!!!176!
 ARMOR!!!0!
 MAXHP!!!30!
 TYPE!!!player!!!
-NAME!!!John Test!!!
-LOCATION!!!Tavern!!!
+NAME!!!Eric!!!
+LOCATION!!!Merchant Lane!!!
 STAMINA!!!20!
 DESCRIPTION!!!!!!
 TRADING!!!!!!
@@ -26,10 +26,10 @@ ATTACKS!!!0!
 CASTS!!!0!
 X_PREFERENCE!!!0!
 Y_PREFERENCE!!!0!
-LEFT!!!dagger.960!!!
+LEFT!!!dagger.4564!!!
 RIGHT!!!!!!
 HITS!!!0!0!
 MISSES!!!0!0!
 STATS!!!0!0!0!0!0!0!0!
 INVENTORY!!!
-ITEM!!!INDEX!!!dagger.960!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!
+ITEM!!!INDEX!!!dagger.4564!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!

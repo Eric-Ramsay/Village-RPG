@@ -632,6 +632,19 @@ void command(std::string input, int playerIndex) {
 			validateBattle(loc);
 		}
 	}
+	else {
+		std::vector<int> indices = {};
+		for (auto character : CHARACTERS) {
+			if (character.second.TYPE == "player" && character.second.LOCATION == CHARACTERS[id].LOCATION) {
+				for (int i = 0; i < players.size(); i++) {
+					if (players[i].ID == character.second.ID) {
+						indices.push_back(i);
+					}
+				}
+			}
+		}
+		sendText("*GREEN*" + CHARACTERS[id].NAME + "*GREY*: " + input, indices);
+	}
 	std::cout << msg << std::endl;
 	if (CHARACTERS.count(id) > 0) {
 		save(CHARACTERS[id]);

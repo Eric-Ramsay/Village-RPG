@@ -1,7 +1,7 @@
-ID!!!eric2 john test 176525094556!!!
-USER!!!eric2!!!
-LOOK!!!aidbbedpfdekbqapab!!!
-DEATH!!!!!!
+ID!!!eric test 6 176532530357!!!
+USER!!!eric!!!
+LOOK!!!akfabcanfdclaobhaf!!!
+DEATH!!!Suicide!!!
 HP!!!30!
 X!!!0!
 Y!!!0!
@@ -10,8 +10,8 @@ SY!!!176!
 ARMOR!!!0!
 MAXHP!!!30!
 TYPE!!!player!!!
-NAME!!!John Test!!!
-LOCATION!!!Tavern!!!
+NAME!!!Test 6!!!
+LOCATION!!!Harbor!!!
 STAMINA!!!20!
 DESCRIPTION!!!!!!
 TRADING!!!!!!
@@ -26,10 +26,10 @@ ATTACKS!!!0!
 CASTS!!!0!
 X_PREFERENCE!!!0!
 Y_PREFERENCE!!!0!
-LEFT!!!dagger.960!!!
+LEFT!!!dagger.7536!!!
 RIGHT!!!!!!
 HITS!!!0!0!
 MISSES!!!0!0!
 STATS!!!0!0!0!0!0!0!0!
 INVENTORY!!!
-ITEM!!!INDEX!!!dagger.960!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!
+ITEM!!!INDEX!!!dagger.7536!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!

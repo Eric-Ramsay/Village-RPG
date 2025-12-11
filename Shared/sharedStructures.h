@@ -144,21 +144,54 @@ struct Item {
 };
 
 struct Effect {
+	std::string type;
 	std::string name;
-	bool isDebuff = false;
-	std::string description;
+	std::string desc;
 
-	std::string target = "";
+	int turns;
+
+	bool canStack = false;
+	int stacks;
+
 	std::string causedBy = "";
 
-	bool stackable = false;
-	int duration = 1;
-	int stacks = 1;
-	Effect(std::string n, bool isD, std::string desc, bool stacks = false) {
+	Effect(std::string t, std::string n, std::string d, int tu = 1, int s = 1) {
+		type = t;
 		name = n;
-		isDebuff = isD;
-		description = desc;
-		stackable = stacks;
+		desc = d;
+		turns = tu;
+		stacks = s;
+	}
+};
+
+struct Terrain {
+	std::string name;
+	int index;
+
+	int sX;
+	int sY;
+
+	int moveCost;
+	int hp;
+	bool blocksAttacks;
+
+	std::vector<Effect> passEffects;
+	int passDamage;
+
+	std::vector<Effect> standEffects;
+	int standDamage;
+
+	Terrain(std::string n, int mC = 2, bool canTargetOver = true, int health = 0, int pD = 0, int sD = 0, std::vector<Effect> pE = {}, std::vector<Effect> sE = {}) {
+		name = n;
+		moveCost = mC;
+		blocksAttacks = canTargetOver;
+		hp = health;
+
+		passEffects = pE;
+		passDamage = pD;
+
+		standEffects = sE;
+		standDamage = sD;
 	}
 };
 
@@ -269,6 +302,8 @@ struct Battle {
 	int turn = 0;
 	int round = 0;
 	int difficulty = 0;
+
+	std::vector<std::vector<int>> terrain = {};
 
 	std::vector<Hazard> hazards;
 	std::vector<std::string> teams[2];

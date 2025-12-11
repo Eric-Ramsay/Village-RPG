@@ -398,6 +398,16 @@ void parseChange(Battle& battle, std::string type, std::string data) {
 	else if (type == "ROUND") {
 		battle.round = readInt(data);
 	}
+	else if (type == "TERRAIN") {
+		std::string map = readStr(data);
+		battle.terrain = {};
+		for (int i = 0; i < 12; i++) {
+			battle.terrain.push_back({});
+			for (int j = 0; j < 12; j++) {
+				battle.terrain[i].push_back((int)(map[i * 12 + j] - 'a'));
+			}
+		}
+	}
 	else if (type == "ONE" || type == "TWO") {
 		int index = 0;
 		if (type == "TWO") {

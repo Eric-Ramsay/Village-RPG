@@ -20,7 +20,7 @@ void DrawGraves() {
 	else {
 		std::string filter = low(UI.graveSearch);
 		for (Character C : GRAVES) {
-			if (includes(low(C.NAME), filter)) {
+			if (includes(low(C.NAME), filter) || includes(low(C.DEATH), filter)) {
 				graveList.push_back(C);
 			}
 		}

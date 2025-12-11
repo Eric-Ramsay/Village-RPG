@@ -45,6 +45,10 @@ THINGS NEEDED FOR GAME TO BE PLAYABLE (Hardest to Easiest)
 - NEW ENEMIES
 - RUNES
 - TILE HAZARD SYSTEM
+	- Determine best way to store hazards/terrain
+	- UI to show hazards/terrain
+	- Sprite work
+	- Add in some hazard types & have them take effect on the player (poison pools, fire, slime trails)
 - CHARACTER CREATION UI
 - TERRAIN GENERATION ON MAPS
 - ARMOR

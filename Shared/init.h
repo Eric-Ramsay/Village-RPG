@@ -129,6 +129,19 @@ void initLocations() {
 	}
 }	
 
+void addTerrain(std::string n, int mC = 2, bool canTargetOver = true, int health = 0, int pD = 0, int sD = 0, std::vector<Effect> pE = {}, std::vector<Effect> sE = {}) {
+	TERRAIN.push_back(Terrain(n, mC, canTargetOver, health, pD, sD, pE, sE));
+}
+
+void initTerrain() {
+	addTerrain("Empty Space");
+	addTerrain("Tree", 999, false, 25);
+	addTerrain("Tree", 999, false, 25);
+	addTerrain("Tree", 999, false, 25);
+	addTerrain("Web", 6, true, 8, 0, 0);
+	addTerrain("Water", 4);
+}
+
 void initEnemies() {
 	std::vector<Character> enemies = {};
 	//Character Enemy(std::string name, int hp, std::vector<int> armor, int difficulty, std::vector<int> zones, int AP, std::string type, std::string desc)

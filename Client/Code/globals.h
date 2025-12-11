@@ -36,6 +36,9 @@ std::vector<std::string> logs = {"*BLACK*Connecting . . ."};
 std::string ID = "";
 std::unordered_map<std::string, Character> CHARACTERS = {};
 std::unordered_map<std::string, Character> GRAVEYARD = {};
+
+std::vector<Terrain> TERRAIN = {};
+
 std::vector<Character> GRAVES = {};
 std::vector<Character> sortedGraves = {};
 
