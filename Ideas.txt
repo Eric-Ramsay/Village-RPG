@@ -37,24 +37,65 @@ Start with +2 Casts and +4 Spell Slots (base is 1 & 1)
 
 
 
-
-THINGS NEEDED FOR GAME TO BE PLAYABLE (Hardest to Easiest)
-----------------------------------------------------------------------
-- SPELL CASTING + SPELLS
-- TRAITS
-- NEW ENEMIES
-- RUNES
-- TILE HAZARD SYSTEM
-	- Determine best way to store hazards/terrain
-	- UI to show hazards/terrain
-	- Sprite work
-	- Add in some hazard types & have them take effect on the player (poison pools, fire, slime trails)
-- CHARACTER CREATION UI
-- TERRAIN GENERATION ON MAPS
-- ARMOR
-- ITEMS IN SHOPS
-
-
+1. Effect System
+	- Application Function
+	- Handling in StartTurn / Commands (Stunned/Rooted)
+	- Effect UI
+	- Implementing Effects (At least 10-20)
+	- Saving / Parsing
+	
+2. TILE HAZARD SYSTEM & TERRAIN
+	- UI to show on map
+	- UI to show in help bar
+	- Hazards can vanish
+	- Hazards damage/effect player
+	- Hazard pathing
+	- Spawn terrain in zones
+	- Saving / Parsing
+	
+3. Enemies
+	- Implement new enemies, using effects + hazards
+	
+4. Armor
+	- Armor UI for players & enemies
+	- Handle mitigation in dealDamage function
+	- Update def function to account for player armor
+	
+5. Weapons
+	- Mostly just copy Discord version
+	
+6. Phys + Armor Runes
+	- Handle in Attack, Mitigation functions
+	- Add enchanting to UI
+	- Show runes in UI
+	
+7. Items in Store
+	- Potions
+	- Weapons
+	- Armor
+	- Runes
+	
+8. Traits
+	- Show selected traits in Character UI
+	- Achievement Tracking
+	- Achievement UI
+	- Create specific traits, at least 30
+	
+9. Character Creation UI
+	- Clean up Char Designer
+	- Trait Selector
+	
+10. Targetter UI Work
+	- Lines, AoE
+	- Blocked by Hazards (maybe scrap this idea)
+	
+11. Magic
+	- Add a bunch of spells & casting
+	
+12. Polishing
+	- Animations for combat actions from listener.h (sequential enemy movement, line attacks)
+	- Sound Effects
+	
 
 Armor Stats:
 - Armor

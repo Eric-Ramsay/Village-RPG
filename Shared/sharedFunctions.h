@@ -590,3 +590,14 @@ Character getCharacter(std::string id) {
 	std::cout << "Character not found" << std::endl;
 	return Character();
 }
+
+Effect getEffect(std::string id, int numTurns) {
+	if (EFFECTS.count(id) > 0) {
+		Effect effect = EFFECTS[id];
+		effect.turns = numTurns;
+		effect.stacks = 1;
+		return effect;
+	}
+	std::cout << "Effect not found" << std::endl;
+	return Effect();
+}

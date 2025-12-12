@@ -144,24 +144,28 @@ struct Item {
 };
 
 struct Effect {
-	std::string type;
-	std::string name;
-	std::string desc;
+	std::string type = "";
+	std::string name = "";
+	std::string id = "";
+	std::string desc = "";
 
-	int turns;
+	int turns = 0;
 
 	bool canStack = false;
-	int stacks;
+	int stacks = 0;
 
 	std::string causedBy = "";
 
 	Effect(std::string t, std::string n, std::string d, int tu = 1, int s = 1) {
+		id = low(n);
 		type = t;
 		name = n;
 		desc = d;
 		turns = tu;
 		stacks = s;
 	}
+
+	Effect() {}
 };
 
 struct Terrain {
@@ -175,23 +179,28 @@ struct Terrain {
 	int hp;
 	bool blocksAttacks;
 
-	std::vector<Effect> passEffects;
-	int passDamage;
+	int damage;
+	std::vector<Effect> effects;
 
-	std::vector<Effect> standEffects;
-	int standDamage;
+	//std::vector<Effect> passEffects;
+	//int passDamage;
 
-	Terrain(std::string n, int mC = 2, bool canTargetOver = true, int health = 0, int pD = 0, int sD = 0, std::vector<Effect> pE = {}, std::vector<Effect> sE = {}) {
+	//std::vector<Effect> standEffects;
+	//int standDamage;
+
+	Terrain(std::string n, int mC = 2, bool canTargetOver = true, int health = 0, int dmg = 0, std::vector<Effect> effectList = {}) {
 		name = n;
 		moveCost = mC;
 		blocksAttacks = canTargetOver;
 		hp = health;
 
-		passEffects = pE;
-		passDamage = pD;
+		//passEffects = pE;
+		//passDamage = pD;
 
-		standEffects = sE;
-		standDamage = sD;
+		effects = effectList;
+		damage = dmg;
+		//standEffects = sE;
+		//standDamage = sD;
 	}
 };
 
@@ -284,7 +293,7 @@ struct Character {
 };
 
 struct Hazard {
-	std::string type = "";
+	int index = 0;
 	int x = 0;
 	int y = 0;
 	int duration = 999;
