@@ -33,6 +33,7 @@
 #include "..\..\Shared\init.h"
 #include "data.h"
 #include "server.h"
+#include "combat.h"
 #include "AI.h"
 #include "battle.h"
 #include "commands.h"

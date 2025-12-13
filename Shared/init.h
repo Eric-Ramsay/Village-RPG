@@ -133,16 +133,12 @@ void addTerrain(std::string n, int mC = 2, bool canTargetOver = true, int health
 	TERRAIN.push_back(Terrain(n, mC, canTargetOver, health, dmg, effectList));
 }
 
-void addEffect(std::string t, std::string n, std::string d, int tu = 1, int s = 1) {
-	EFFECTS[low(n)] = Effect(t, n, d, tu, s);
-}
-
 void initEffects() {
-	addEffect("debuff", "Poisoned", "Take 1 damage per stack. Healing is halved");
-	addEffect("debuff", "Bleeding", "Take 2 + (1 per current 10 HP) damage per turn");
-	addEffect("debuff", "Stunned", "Lose your next turn");
-	addEffect("debuff", "Slowed", "Movement costs are doubled");
-	addEffect("debuff", "Rooted", "You're unable to move this turn");
+	EFFECTS["poisoned"] = UI_Effect("debuff", "Poisoned", "Take 1 damage per stack. Healing is halved", true);
+	EFFECTS["bleeding"] = UI_Effect("debuff", "Bleeding", "Take 1 damage per 10 current HP per turn");
+	EFFECTS["stunned"] = UI_Effect("debuff", "Stunned", "This creature can't take any action");
+	EFFECTS["slowed"] = UI_Effect("debuff", "Slowed", "This creature's movement costs are doubled");
+	EFFECTS["rooted"] = UI_Effect("debuff", "Rooted", "This creature can't move");
 }
 
 void initTerrain() {
@@ -150,9 +146,9 @@ void initTerrain() {
 	addTerrain("Tree", 999, false, 25);
 	addTerrain("Tree", 999, false, 25);
 	addTerrain("Tree", 999, false, 25);
-	addTerrain("Web", 6, true, 8, 0, { getEffect("rooted", 1) });
+	addTerrain("Web", 6, true, 8, 0, { Effect("rooted", "", 1)});
 	addTerrain("Water", 4);
-	addTerrain("Slime", 4, true, 0, 0, { getEffect("slowed", 3) });
+	addTerrain("Slime", 4, true, 0, 0, { Effect("slowed", "", 3)});
 	addTerrain("Acid", 2, true, 0, 5);
 
 	for (int i = 0; i < TERRAIN.size(); i++) {

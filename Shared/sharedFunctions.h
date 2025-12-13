@@ -61,6 +61,14 @@ int MaxAP(Character C) {
 	return 6 + C.STATS[DEX] * 3 + C.STATS[AVD];
 }
 
+Effect parseEffect(std::string data) {
+	std::string id = readStr(data);
+	std::string causedBy = readStr(data);
+	int turns = readInt(data);
+	int stacks = readInt(data);
+	return Effect(id, causedBy, turns, stacks);
+}
+
 Item parseItem(std::string data) {
 	Item item;
 	while (data.length() > 0) {
@@ -86,52 +94,14 @@ Item parseItem(std::string data) {
 	return item;
 }
 
-struct PathTile {
-	std::string type = "blank_tile";
-	std::string state = "unexplored";
-	int x = 0;
-	int y = 0;
-	int cost = 0;
-	int baseCost = 0;
-	int team = -1;
-	bool canLand = true;
-	PathTile() {}
-	PathTile(int x1, int y1) {
-		x = x1;
-		y = y1;
-	}
-};
-
-int moveCost(std::string type) {
-	int cost = 2;
-	return cost;
-}
-
-std::vector<std::vector<PathTile>> createMap(Battle b) {
-	std::vector<std::vector<PathTile>> tiles;
-
-	for (int i = 0; i < 12; i++) {
-		tiles.push_back(std::vector<PathTile>());
-		for (int j = 0; j < 12; j++) {
-			tiles[i].push_back(PathTile());
-			tiles[i][j].x = j;
-			tiles[i][j].y = i;
-			tiles[i][j].baseCost = moveCost(tiles[i][j].type);
-		}
-	}
-
-	for (int i = 0; i < 2; i++) {
-		for (std::string id : b.teams[i]) {
-			Character C = CHARACTERS[id];
-			tiles[C.Y][C.X].canLand = false;
-			tiles[C.Y][C.X].team = i;
-		}
-	}
-
-	// Check where characters & hazards are & shit
-
-
-	return tiles;
+Hazard parseHazard(std::string data) {
+	Hazard hazard;
+	hazard.summoner = readStr(data);
+	hazard.index = readInt(data);
+	hazard.x = readInt(data);
+	hazard.y = readInt(data);
+	hazard.duration = readInt(data);
+	return hazard;
 }
 
 int w_attacks(Character C, Item item) {
@@ -194,17 +164,55 @@ int w_range(Character C, Item item) {
 	return baseItem.range;
 }
 
+
+struct PathTile {
+	std::string state = "unexplored";
+	int x = 0;
+	int y = 0;
+	int baseCost = 2;
+	int cost = 0;
+	int team = 0;
+	bool canLand = true;
+	PathTile() {}
+	PathTile(int x1, int y1) {
+		x = x1;
+		y = y1;
+	}
+};
+
+std::vector<std::vector<PathTile>> createMap(Battle b) {
+	std::vector<std::vector<PathTile>> tiles;
+
+	for (int i = 0; i < 12; i++) {
+		tiles.push_back(std::vector<PathTile>());
+		for (int j = 0; j < 12; j++) {
+			tiles[i].push_back(PathTile());
+			tiles[i][j].x = j;
+			tiles[i][j].y = i;
+			tiles[i][j].team = 0;
+		}
+	}
+
+	for (Hazard hazard : b.hazards) {
+		Terrain terrain = TERRAIN[hazard.index];
+		tiles[hazard.y][hazard.x].baseCost = terrain.moveCost;
+	}
+
+	for (std::string id : b.characters) {
+		Character C = CHARACTERS[id];
+		tiles[C.Y][C.X].canLand = false;
+		tiles[C.Y][C.X].team = C.TEAM;
+	}
+
+
+	return tiles;
+}
+
 std::vector<std::vector<int>> moveCosts(Character C, Battle battle) {
 	if (battle.round == 0) {
 		return std::vector<std::vector<int>> (12, std::vector<int>(12));
 	}
-	int team = 1;
-	for (std::string id : battle.teams[0]) {
-		if (C.ID == id) {
-			team = 0;
-			break;
-		}
-	}
+	int team = C.TEAM;
 	std::vector<std::vector<PathTile>> map = createMap(battle);
 	std::vector<Spot> open = { Spot(C.X, C.Y) };
 	while (open.size() > 0) {
@@ -285,6 +293,9 @@ void parseChange(Character& character, std::string type, std::string data) {
 	}
 	else if (type == "LOCATION") {
 		character.LOCATION = readStr(data);
+	}
+	else if (type == "TEAM") {
+		character.TEAM = readInt(data);
 	}
 	else if (type == "LEVEL") {
 		character.LEVEL = readInt(data);
@@ -379,6 +390,17 @@ void parseChange(Character& character, std::string type, std::string data) {
 			parseChange(character, header, lines[i]);
 		}
 	}
+	else if (type == "EFFECT") {
+		Effect effect = parseEffect(data);
+		character.EFFECTS.push_back(effect);
+	}
+	else if (type == "EFFECTS") {
+		character.EFFECTS = {};
+		std::vector<std::string> lines = split(data, '\t');
+		for (int i = 0; i < lines.size(); i++) {
+			parseChange(character, "EFFECT", lines[i]);
+		}
+	}
 }
 
 
@@ -398,24 +420,27 @@ void parseChange(Battle& battle, std::string type, std::string data) {
 	else if (type == "ROUND") {
 		battle.round = readInt(data);
 	}
-	else if (type == "TERRAIN") {
-		std::string map = readStr(data);
-		battle.terrain = {};
-		for (int i = 0; i < 12; i++) {
-			battle.terrain.push_back({});
-			for (int j = 0; j < 12; j++) {
-				battle.terrain[i].push_back((int)(map[i * 12 + j] - 'a'));
-			}
+	else if (type == "HAZARD") {
+		Hazard hazard = parseHazard(data);
+		battle.hazards.push_back(hazard);
+	}
+	else if (type == "HAZARDS") {
+		battle.hazards = {};
+		std::vector<std::string> lines = split(data, '\t');
+		for (int i = 0; i < lines.size(); i++) {
+			parseChange(battle, "HAZARD", lines[i]);
 		}
 	}
-	else if (type == "ONE" || type == "TWO") {
-		int index = 0;
-		if (type == "TWO") {
-			index = 1;
-		}
-		battle.teams[index].clear();
+	else if (type == "CHARACTERS") {
+		battle.characters.clear();
 		while (data.length() > 0) {
-			battle.teams[index].push_back(readStr(data));
+			battle.characters.push_back(readStr(data));
+		}
+	}
+	else if (type == "DEAD") {
+		battle.dead.clear();
+		while (data.length() > 0) {
+			battle.dead.push_back(readStr(data));
 		}
 	}
 	else if (type == "REMOVE_ITEM") {
@@ -427,10 +452,9 @@ void parseChange(Battle& battle, std::string type, std::string data) {
 	}
 	else if (type == "LOOT") {
 		battle.loot = {};
-		std::vector<std::string> lines = split(data, '\n');
+		std::vector<std::string> lines = split(data, '\t');
 		for (int i = 0; i < lines.size(); i++) {
-			std::string header = readStr(lines[i]);
-			parseChange(battle, "ADD_ITEM", lines[i]);
+			parseChange(battle, readStr(lines[i]), lines[i]);
 		}
 	}
 }
@@ -591,13 +615,10 @@ Character getCharacter(std::string id) {
 	return Character();
 }
 
-Effect getEffect(std::string id, int numTurns) {
-	if (EFFECTS.count(id) > 0) {
-		Effect effect = EFFECTS[id];
-		effect.turns = numTurns;
-		effect.stacks = 1;
-		return effect;
+UI_Effect getEffect(std::string id) {
+	if (EFFECTS.count(low(id)) > 0) {
+		return EFFECTS[low(id)];
 	}
-	std::cout << "Effect not found" << std::endl;
-	return Effect();
+	std::cout << "Effect not found: " << id << std::endl;
+	return UI_Effect("", "", "");
 }

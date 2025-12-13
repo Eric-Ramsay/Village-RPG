@@ -38,20 +38,16 @@ Start with +2 Casts and +4 Spell Slots (base is 1 & 1)
 
 
 1. Effect System
-	- Application Function
 	- Handling in StartTurn / Commands (Stunned/Rooted)
 	- Effect UI
 	- Implementing Effects (At least 10-20)
-	- Saving / Parsing
 	
 2. TILE HAZARD SYSTEM & TERRAIN
 	- UI to show on map
 	- UI to show in help bar
 	- Hazards can vanish
 	- Hazards damage/effect player
-	- Hazard pathing
 	- Spawn terrain in zones
-	- Saving / Parsing
 	
 3. Enemies
 	- Implement new enemies, using effects + hazards

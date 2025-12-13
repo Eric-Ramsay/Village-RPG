@@ -21,6 +21,7 @@ std::unordered_map<std::string, Character> GRAVES = {};
 std::unordered_map<std::string, Battle> BATTLES = {};
 
 std::vector<Terrain> TERRAIN = {};
+std::unordered_map<std::string, UI_Effect> EFFECTS = {};
 
 std::unordered_map<std::string, UI_Item> ITEMS = {};
 std::unordered_map<std::string, NPC> PEOPLE = {};

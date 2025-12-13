@@ -38,7 +38,7 @@ std::unordered_map<std::string, Character> CHARACTERS = {};
 std::unordered_map<std::string, Character> GRAVEYARD = {};
 
 std::vector<Terrain> TERRAIN = {};
-std::unordered_map<std::string, Effect> EFFECTS = {};
+std::unordered_map<std::string, UI_Effect> EFFECTS = {};
 
 
 std::vector<Character> GRAVES = {};

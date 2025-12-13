@@ -43,15 +43,16 @@ void ProcessMessages() {
 								for (auto character : CHARACTERS) {
 									if (character.second.USER == players[i].USERNAME) {
 										players[i].ID = character.first;
+										addEffect(players[i].ID, "", "poisoned", 3);
 										std::string location = character.second.LOCATION;
 										if (BATTLES.count(location) > 0) {
-											bundle += str("BATTLE") + serialize(BATTLES[location]) + '\t';
+											bundle += str("BATTLE") + serialize(BATTLES[location]) + '\r';
 										}
 									}
-									bundle += str("CHARACTER") + serialize(character.second) + '\t';
+									bundle += str("CHARACTER") + serialize(character.second) + '\r';
 								}
 								for (auto character : GRAVES) {
-									bundle += str("GRAVE") + serialize(character.second) + '\t';
+									bundle += str("GRAVE") + serialize(character.second) + '\r';
 								}
 								sendData("BUNDLE", bundle);
 							}

@@ -144,33 +144,40 @@ struct Item {
 };
 
 struct Effect {
+	std::string id = "";
+	std::string causedBy = "";
+	int turns = 0;
+	int stacks = 0;
+
+	Effect(std::string i = "", std::string cB = "", int t = 0, int s = 1) {
+		id = i;
+		turns = t;
+		stacks = s;
+		causedBy = cB;
+	}
+};
+
+struct UI_Effect {
 	std::string type = "";
 	std::string name = "";
 	std::string id = "";
 	std::string desc = "";
-
-	int turns = 0;
-
 	bool canStack = false;
-	int stacks = 0;
 
-	std::string causedBy = "";
-
-	Effect(std::string t, std::string n, std::string d, int tu = 1, int s = 1) {
-		id = low(n);
+	UI_Effect(std::string t, std::string n, std::string d, bool cS = false) {
 		type = t;
+		id = low(n);
 		name = n;
 		desc = d;
-		turns = tu;
-		stacks = s;
+		canStack = cS;
 	}
 
-	Effect() {}
+	UI_Effect() {}
 };
 
 struct Terrain {
-	std::string name;
 	int index;
+	std::string name;
 
 	int sX;
 	int sY;
@@ -241,7 +248,7 @@ struct Character {
 	int SX = 0;
 	int SY = 176;
 
-	std::vector<Effect> effects = {};
+	std::vector<Effect> EFFECTS = {};
 	std::string COLOR = "";
 	std::unordered_map<std::string, Item> INVENTORY = {};
 	std::string LEFT = "";
@@ -254,6 +261,7 @@ struct Character {
 	int XP = 0;
 
 	std::string LOCATION = "Harbor";
+	int TEAM = 0;
 
 	bool BACKPACK = false;
 
@@ -293,10 +301,18 @@ struct Character {
 };
 
 struct Hazard {
+	std::string summoner = "";
 	int index = 0;
 	int x = 0;
 	int y = 0;
 	int duration = 999;
+	Hazard (int i = 0, int x1 = 0, int y1 = 0, int d = 999, std::string s = "") {
+		index = i;
+		x = x1;
+		y = y1;
+		duration = d;
+		summoner = s;
+	}
 };
 
 enum ZONE {
@@ -312,11 +328,9 @@ struct Battle {
 	int round = 0;
 	int difficulty = 0;
 
-	std::vector<std::vector<int>> terrain = {};
-
 	std::vector<Hazard> hazards;
-	std::vector<std::string> teams[2];
-	std::vector<std::string> dead[2];
+	std::vector<std::string> characters;
+	std::vector<std::string> dead;
 	std::unordered_map<std::string, Item> loot;
 
 	Battle(std::string ID, std::string Zone) {

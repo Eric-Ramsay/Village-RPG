@@ -20,7 +20,7 @@ void DrawGraves() {
 	else {
 		std::string filter = low(UI.graveSearch);
 		for (Character C : GRAVES) {
-			if (includes(low(C.NAME), filter) || includes(low(C.DEATH), filter)) {
+			if (includes(low(C.NAME), filter) || includes(low(C.DEATH), filter)	) {
 				graveList.push_back(C);
 			}
 		}
@@ -444,6 +444,10 @@ void DrawCharacterUI(std::string id) {
 		CPrint("*PINK*Buffs", x + w / 2, y);
 		CPrint("*RED*Debuffs", x + w / 2, y + 55);
 
+		for (int i = 0; i < C.EFFECTS.size(); i++) {
+			CPrint(C.EFFECTS[i].id, x + w / 2, y + 10 * i);
+		}
+
 	}
 	else if (playerMenu.index == 2) {
 		CPrint("*BLUE*Spell List", x + w / 2, y);
@@ -630,23 +634,40 @@ void DrawCharCreation() {
 
 }
 
-
 void DrawBattle() {
-	Battle battle = BATTLE;
-	std::string msg = "";
 	int x = 0;
 	int y = 0;
-	Print("*RED*" + battle.zone, x, y + 1);
 
-	DrawTabs(combatMenu, 323, y + 10);
-
-	std::vector<std::vector<std::string>> tiles(12, std::vector<std::string>(12, "blank_tile"));
-	std::vector<std::vector<bool>> allied(12, std::vector<bool>(12, false));
+	Battle battle = BATTLE;
 	static std::vector<std::vector<int>> movementCosts;
 	if (updateMovement) {
 		updateMovement = false;
 		movementCosts = moveCosts(getCharacter(ID), BATTLE);
 	}
+
+	std::vector<std::vector<std::string>> characters = {};
+	std::vector<std::vector<Hazard>> hazards = {};
+
+	for (int i = 0; i < 12; i++) {
+		characters.push_back({});
+		hazards.push_back({});
+		for (int j = 0; j < 12; j++) {
+			characters[i].push_back("");
+			hazards[i].push_back(Hazard(0, j, i));
+		}
+	}
+
+	for (int i = 0; i < battle.hazards.size(); i++) {
+		hazards[battle.hazards[i].y][battle.hazards[i].x] = battle.hazards[i];
+	}
+
+	for (std::string id : battle.characters) {
+		Character C = getCharacter(id);
+		characters[C.Y][C.X] = id;
+	}
+
+	Print("*RED*" + battle.zone, x, y + 1);
+	DrawTabs(combatMenu, 323, y + 10);
 
 	if (battle.round > 0) {
 		std::vector<std::string> texts = {
@@ -703,65 +724,45 @@ void DrawBattle() {
 		}
 	}
 
-	for (int i = 0; i < battle.teams[1].size(); i++) {
-		Character C = getCharacter(battle.teams[1][i]);
-		tiles[C.Y][C.X] = C.ID;
-	}
-	for (int i = 0; i < battle.teams[0].size(); i++) {
-		Character C = getCharacter(battle.teams[0][i]);
-		tiles[C.Y][C.X] = C.ID;
-		allied[C.Y][C.X] = true;
-	}
-
 	for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < 12; j++) {
+			Hazard hazard = hazards[i][j];
+			Terrain terrain = TERRAIN[hazard.index];
 			int xPos = (x + j * 16);
 			int yPos = y + 11 + (i * 16);
 			if (battle.round > 0 && movementCosts[i][j] <= getCharacter(ID).AP) {
 				Draw(32, 80, 16, 16, xPos, yPos, 1, sf::Color(135, 155, 0));
 			}
-			if (tiles[i][j] == "blank_tile") {
-				Draw(0, 80, 16, 16, xPos, yPos);
-			}
-			else if (tiles[i][j] == "water_tile") {
-				Draw(16, 80, 16, 16, xPos, yPos);
+			if (characters[i][j] == "") {
+				Draw(terrain.sX, terrain.sY, 16, 16, xPos, yPos);
 			}
 			else {
-				if (CHARACTERS.count(tiles[i][j]) > 0) {
-					Character C = CHARACTERS[tiles[i][j]];
-					if (C.LOOK != "") {
-						DrawCharacter(xPos, yPos, C.LOOK);
-					}
-					else {
-						int sX = C.SX;
-						int sY = C.SY;
-						Draw(sX, sY, 16, 16, xPos, yPos);
-					}
-					if (allied[i][j]) {
-						Draw(96, 144, 16, 16, xPos, yPos);
-					}
-					else {
-						Draw(112, 144, 16, 16, xPos, yPos);
-					}
+				Character C = CHARACTERS[characters[i][j]];
+				if (C.LOOK != "") {
+					DrawCharacter(xPos, yPos, C.LOOK);
 				}
+				else {
+					int sX = C.SX;
+					int sY = C.SY;
+					Draw(sX, sY, 16, 16, xPos, yPos);
+				}
+				std::string borderColor = "RED";
+				if (C.TEAM == 0) {
+					borderColor = "BLUE";
+				}
+				Draw(80, 144, 16, 16, xPos, yPos, 1, getColor(borderColor));
 			}
 			if (range(UI.mX, UI.mY, xPos, yPos, 16, 16)) {
 				if (UI.rightPressed) {
 					sendData("COMMAND", "MOVE " + str(j) + str(i));
 				}
-				else {
-					for (int a = 0; a < battle.teams[1].size(); a++) {
-						Character C = getCharacter(battle.teams[1][a]);
-						if (C.Y == i && C.X == j) {
-							if (UI.doubleClicked) {
-								sendData("COMMAND", "ATTACK " + C.ID);
-							}
-							else if (!UI.viewLocked) {
-								UI.view = 2;
-								UI.viewedEnemy = C.ID;
-							}
-							break;
-						}
+				else if (characters[i][j] != "") {
+					if (UI.doubleClicked) {
+						sendData("COMMAND", "ATTACK " + characters[i][j]);
+					}
+					else if (!UI.viewLocked) {
+						UI.view = 2;
+						UI.viewedEnemy = characters[i][j];
 					}
 				}
 			}
@@ -772,36 +773,22 @@ void DrawBattle() {
 
 	if (combatMenu.index == 0) {
 		Print("*PINK*Enemies", x + 200, y + 10);
-		for (int i = 0; i < battle.teams[1].size(); i++) {
-			Character C = getCharacter(battle.teams[1][i]);
-			int len = measureText("*RED*E" + to_str(i + 1) + " *GREY*" + C.NAME);
+		Print("*YELLOW*Allies", x + 200, y + 107);
+		for (int i = 0; i < battle.characters.size(); i++) {
 			int xPos = x + 200;
 			int yPos = y + 20 + (i * 10);
-			Box box = Print("*RED*E" + to_str(i + 1) + " *GREY*" + C.NAME, xPos, yPos);
+			Character C = getCharacter(battle.characters[i]);
+			std::string tag = "*RED*E" + to_str(i + 1);
+			if (C.TEAM == 0) {
+				tag = "*GREEN*P" + to_str(i + 1);
+				if (C.TYPE != "player") {
+					tag = "*BLUE*P" + to_str(i + 1);
+				}
+				yPos += 97;
+			}
+			Box box = Print(tag + " *GREY*" + C.NAME, xPos, yPos);
 
 			if (!UI.viewLocked && mRange(box)) {
-				UI.view = 2;
-				UI.viewedEnemy = C.ID;
-			}
-
-			xPos = x + 300;
-			Print(DrawBar(C.HP, MaxHP(C), 8, "*RED*"), xPos, yPos);
-		}
-
-		Print("*YELLOW*Allies", x + 200, y + 107);
-		for (int i = 0; i < battle.teams[0].size(); i++) {
-			Character C = getCharacter(battle.teams[0][i]);
-			std::string pColor = "*GREEN*";
-			if (C.TYPE != "player") {
-				pColor = "*BLUE*";
-			}
-			std::string nColor = "*GREY*";
-			if (battle.round > 0 && C.ENDED) {
-				nColor = "*BLACK*";
-			}
-			Box box = Print(pColor + "P" + to_str(i + 1) + " " + nColor + C.NAME, x + 200, y + 117 + (i * 10));
-
-			if (mRange(box)) {
 				if (C.TYPE == "player") {
 					UI.viewedPlayer = C.ID;
 				}
@@ -810,6 +797,9 @@ void DrawBattle() {
 					UI.viewedEnemy = C.ID;
 				}
 			}
+
+			xPos = x + 300;
+			Print(DrawBar(C.HP, MaxHP(C), 8, "*RED*"), xPos, yPos);
 		}
 	}
 	else {

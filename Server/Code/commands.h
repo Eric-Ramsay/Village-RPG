@@ -74,7 +74,7 @@ std::string commandDelve(int playerIndex, Character& C, std::vector<std::string>
 		BATTLES[id] = Battle(id, C.LOCATION);
 	}
 	setStat(C, "LOCATION", id);
-	BATTLES[id].teams[0].push_back(C.ID);
+	BATTLES[id].characters.push_back(C.ID);
 	save(BATTLES[id]);
 	sendBattle(BATTLES[id], { playerIndex });
 	return "*YELLOW*You delve deeper. . .";
@@ -144,15 +144,17 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 	Battle battle = BATTLES[C.LOCATION];
 	std::string target = "";
 	bool found = false;
-	for (std::string enemyId : battle.teams[1]) {
+	for (std::string enemyId : battle.characters) {
 		Character enemy = CHARACTERS[enemyId];
-		int eX = enemy.X;
-		int eY = enemy.Y;
-		if (low(enemy.ID) == args || low(enemy.NAME) == args) {
-			found = true;
-			if (atkDist(x, y, eX, eY) <= item.range) {
-				target = enemyId;
-				break;
+		if (enemy.TEAM != C.TEAM) {
+			int eX = enemy.X;
+			int eY = enemy.Y;
+			if (low(enemy.ID) == args || low(enemy.NAME) == args) {
+				found = true;
+				if (atkDist(x, y, eX, eY) <= item.range) {
+					target = enemyId;
+					break;
+				}
 			}
 		}
 	}
@@ -167,7 +169,7 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 	C.INVENTORY[wepId].attacks--;
 	sendItem(C.ID, C.INVENTORY[wepId]);
 
-	std::string msg = dealDamage(item.attack, C.ID, target, battle.teams[0], battle.teams[1]).msg;
+	std::string msg = dealDamage(item.attack, C.ID, target, battle.characters).msg;
 	sendText(msg, battleIndices(battle));
 
 	handleCombat(battle.id);

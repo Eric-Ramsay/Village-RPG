@@ -28,6 +28,7 @@
     <ClInclude Include="..\Shared\textFunctions.h" />
     <ClInclude Include="Code\AI.h" />
     <ClInclude Include="Code\battle.h" />
+    <ClInclude Include="Code\combat.h" />
     <ClInclude Include="Code\commands.h" />
     <ClInclude Include="Code\data.h" />
     <ClInclude Include="Code\functions.h" />

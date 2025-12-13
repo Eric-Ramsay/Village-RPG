@@ -82,12 +82,10 @@ void sendBattle(Battle battle, std::vector<int> sendList = {}) {
 
 std::vector<int> battleIndices(Battle battle) {
 	std::vector<int> indices = {};
-	for (int i = 0; i < 2; i++) {
-		for (std::string id : battle.teams[i]) {
-			for (int i = 0; i < players.size(); i++) {
-				if (players[i].ID == id) {
-					indices.push_back(i);
-				}
+	for (std::string id : battle.characters) {
+		for (int i = 0; i < players.size(); i++) {
+			if (players[i].ID == id) {
+				indices.push_back(i);
 			}
 		}
 	}
@@ -96,11 +94,9 @@ std::vector<int> battleIndices(Battle battle) {
 
 void updateBattle(Battle battle) {
 	std::string bundle = "";
-	for (int i = 0; i < 2; i++) {
-		for (std::string id : battle.teams[i]) {
-			bundle += str("CHARACTER") + serialize(CHARACTERS[id]) + '\t';
-			save(CHARACTERS[id]);
-		}
+	for (std::string id : battle.characters) {
+		bundle += str("CHARACTER") + serialize(CHARACTERS[id]) + '\r';
+		save(CHARACTERS[id]);
 	}
 	sendData("BUNDLE", bundle);
 	save(battle);
@@ -117,10 +113,10 @@ void removeLoot(Battle& battle, std::string index) {
 
 void removeCharacter(Character character) {
 	std::string bundle = "";
-	bundle += str("REMOVE_CHARACTER") + character.ID + '\t';
+	bundle += str("REMOVE_CHARACTER") + character.ID + '\r';
 	if (character.TYPE == "player") {
 		std::string text = serialize(character);
-		bundle += str("GRAVE") + text + '\t';
+		bundle += str("GRAVE") + text + '\r';
 		saveToFile("Characters/Graveyard/" + character.ID, text);
 		std::remove(("./Saves/Characters/" + character.ID + ".txt").c_str());
 	}

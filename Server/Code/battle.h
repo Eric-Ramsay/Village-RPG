@@ -1,4 +1,5 @@
 #pragma once
+
 int getZoneIndex(std::string zone) {
 	for (int i = 0; i < zoneNames.size(); i++) {
 		if (zoneNames[i] == zone) {
@@ -14,34 +15,28 @@ bool validateBattle(std::string id) {
 	}
 	bool update = false;
 	int numCharacters = 0;
-	for (int i = 0; i < 2; i++) {
-		for (int j = BATTLES[id].teams[i].size() - 1; j >= 0; j--) {
-			std::string character = BATTLES[id].teams[i][j];
-			if (CHARACTERS.count(character) == 0 || CHARACTERS[character].LOCATION != BATTLES[id].id) {
-				BATTLES[id].teams[i].erase(BATTLES[id].teams[i].begin() + j);
-			}
-			else if (CHARACTERS[character].HP <= 0) {
-				BATTLES[id].teams[i].erase(BATTLES[id].teams[i].begin() + j);
-				if (CHARACTERS[character].HP <= 0) {
-					BATTLES[id].dead[i].push_back(CHARACTERS[character].ID);
-					removeCharacter(CHARACTERS[character]);
-					update = true;
-				}
-			}
-			else if (CHARACTERS[character].TYPE == "player") {
-				numCharacters++;
-			}
+	for (int i = BATTLES[id].characters.size() - 1; i >= 0; i--) {
+		std::string character = BATTLES[id].characters[i];
+		if (CHARACTERS.count(character) == 0 || CHARACTERS[character].LOCATION != id) {
+			BATTLES[id].characters.erase(BATTLES[id].characters.begin() + i);
+		}
+		else if (CHARACTERS[character].HP <= 0) {
+			BATTLES[id].characters.erase(BATTLES[id].characters.begin() + i);
+			BATTLES[id].dead.push_back(character);
+			removeCharacter(CHARACTERS[character]);
+			update = true;
+		}
+		else if (CHARACTERS[character].TYPE == "player") {
+			numCharacters++;
 		}
 	}
 	if (numCharacters == 0) {
 		std::string filePath = "./Saves/Battles/" + BATTLES[id].id + ".txt";
 		std::remove(filePath.c_str());
-		for (int i = 0; i < 2; i++) {
-			for (int j = BATTLES[id].teams[i].size() - 1; j >= 0; j--) {
-				std::string playerId = BATTLES[id].teams[i][j];
-				if (CHARACTERS[playerId].TYPE != "player") {
-					removeCharacter(CHARACTERS[playerId]);
-				}
+		for (int i = BATTLES[id].characters.size() - 1; i >= 0; i--) {
+			std::string playerId = BATTLES[id].characters[i];
+			if (CHARACTERS[playerId].TYPE != "player") {
+				removeCharacter(CHARACTERS[playerId]);
 			}
 		}
 		BATTLES.erase(id);
@@ -53,10 +48,13 @@ bool validateBattle(std::string id) {
 	return true;
 }
 
-bool turnCompleted(std::vector<std::string> ids) {
+bool turnCompleted(std::vector<std::string> ids, int turn) {
 	for (std::string id : ids) {
-		if (CHARACTERS[id].HP > 0 && (!CHARACTERS[id].ENDED && CHARACTERS[id].TYPE == "player")) {
-			return false;
+		Character C = CHARACTERS[id];
+		if (C.TEAM == turn) {
+			if (C.HP > 0 && (!C.ENDED && C.TYPE == "player")) {
+				return false;
+			}
 		}
 	}
 	return true;
@@ -66,33 +64,36 @@ std::string winBattle(Battle& battle) {
 	std::string msg = "*GREEN*The enemies are all slain!*GREY*\n";
 	battle.round = 0;
 
-	// Have dead characters drop some of their gear
-	for (std::string id : battle.dead[0]) {
-		std::string path = "./Saves/Characters/Graveyard/" + id;
-		Character character = load<Character>(path);
-		for (auto item : character.INVENTORY) {
-			int dropChance = 20;
-			if (item.second.equipped) {
-				dropChance *= 2;
-			}
-			if (rand() % 100 < dropChance) {
-				battle.loot[item.second.index] = item.second;
-			}
-		}
-	}
-
-	// Give out loot
+	// Process dead characters
 	int lootMax = max(20, battle.difficulty / 3);
 	int lootValue = 0;
 	std::vector<std::string> dropList = {};
-	for (std::string str : battle.dead[1]) {
-		std::string id = split(str, '.')[0];
-		for (Drop drop : ENEMIES[id].LOOT) {
-			int chance = rand() % 100;
-			if (chance < drop.dropChance) {
-				UI_Item item = getItem(drop.item);
-				dropList.push_back(item.id);
-				lootValue += item.cost;
+	for (std::string id : battle.dead) {
+		std::vector<std::string> splitId = split(id, '.');
+		if (splitId.size() == 3) {
+			// Dead Enemy - Give out Loot
+			std::string id = splitId[0];
+			for (Drop drop : ENEMIES[id].LOOT) {
+				int chance = rand() % 100;
+				if (chance < drop.dropChance) {
+					UI_Item item = getItem(drop.item);
+					dropList.push_back(item.id);
+					lootValue += item.cost;
+				}
+			}
+		}
+		else {
+			// Dead Player - Drop Gear
+			std::string path = "./Saves/Characters/Graveyard/" + id;
+			Character character = load<Character>(path);
+			for (auto item : character.INVENTORY) {
+				int dropChance = 20;
+				if (item.second.equipped) {
+					dropChance *= 2;
+				}
+				if (rand() % 100 < dropChance) {
+					battle.loot[item.second.index] = item.second;
+				}
 			}
 		}
 	}
@@ -116,30 +117,40 @@ std::string winBattle(Battle& battle) {
 	int goldReward = min(200, 10 + (battle.difficulty / 20));
 	int expReward = battle.difficulty;
 	msg = msg + "*GREEN*Each player gains " + goldReward + " gold and " + expReward + " experience!\n";
-	for (std::string id : battle.teams[0]) {
+
+	std::string bundle = "";
+	for (std::string id : battle.characters) {
 		Character* C = &CHARACTERS[id];
-		setStat(*C, "GOLD", CHARACTERS[id].GOLD + goldReward);
-		C->XP += expReward;
-		bool levelled = false;
-		while (C->XP > C->LEVEL * 100) {
-			C->XP -= C->LEVEL * 100;
-			C->SP++;
-			C->LEVEL++;
-			levelled = true;
+		if (C->TYPE == "player") {
+			C->GOLD += goldReward;
+			C->XP += expReward;
+			while (C->XP > C->LEVEL * 100) {
+				C->XP -= C->LEVEL * 100;
+				C->SP++;
+				C->LEVEL++;
+			}
+			C->AP = MaxAP(*C);
+			C->STAMINA = MaxStamina(*C);
+			C->EFFECTS = { };
+			std::string changes = str(C->ID);
+			changes += addLine("GOLD", C->GOLD);
+			changes += addLine("XP", C->XP);
+			changes += addLine("SP", C->SP);
+			changes += addLine("LEVEL", C->LEVEL);
+			changes += addLine("AP", C->AP);
+			changes += addLine("STAMINA", C->STAMINA);
+			changes += "EFFECTS!!!" + serialize(C->EFFECTS) + "\n";
+			bundle += changes + '\t';
 		}
-		if (levelled) {
-			sendStat(id, "SP", C->SP);
-			sendStat(id, "LEVEL", C->LEVEL);
-		}
-		sendStat(id, "XP", C->XP);
 	}
+
 	for (std::string id : dropList) {
 		Item newItem(id);
 		battle.loot[newItem.index] = newItem;
 	}
+	sendData("BUNDLE", bundle);
 
-	battle.dead[0] = {};
-	battle.dead[1] = {};
+	battle.dead = {};
 
 	return msg;
 }
@@ -147,9 +158,11 @@ std::string winBattle(Battle& battle) {
 void startTurn(Battle& battle) {
 	std::string msg = "";
 	// Handle Effects for team who's starting (battle.turn)
-	for (int i = battle.teams[battle.turn].size() - 1; i >= 0; i--) {
-		std::string id = battle.teams[battle.turn][i];
-		Character* C = &CHARACTERS[id];
+	for (int i = battle.characters.size() - 1; i >= 0; i--) {
+		Character* C = &CHARACTERS[battle.characters[i]];
+		if (C->TEAM != battle.turn) {
+			continue;
+		}
 		if (C->TYPE == "player") {
 			C->STAMINA = min(C->STAMINA + 2 * (1 + C->STATS[END]), MaxStamina(*C));
 			int diff = min(C->STAMINA, MaxAP(*C) - C->AP);
@@ -168,7 +181,7 @@ void startTurn(Battle& battle) {
 		}
 		else {
 			C->AP = 12;
-			msg += enemyAttack(i, battle.teams[battle.turn], battle.teams[!battle.turn], battle);
+			msg += enemyAttack(C->ID, battle);
 			C->ENDED = true;
 		}
 	}
@@ -183,12 +196,19 @@ void handleCombat(std::string id) {
 		return;
 	}
 	if (validateBattle(id)) {
-		if (battle->teams[1].size() == 0) {
+		bool battleWon = true;
+		for (std::string id : battle->characters) {
+			if (CHARACTERS[id].TEAM > 0) {
+				battleWon = false;
+				break;
+			}
+		}
+		if (battleWon) {
 			msg = winBattle(*battle);
 			updateBattle(*battle);
 		}
 		else {
-			while (turnCompleted(battle->teams[battle->turn]) && validateBattle(id)) {
+			while (turnCompleted(battle->characters, battle->turn) && validateBattle(id)) {
 				battle->turn = !battle->turn;
 				if (battle->turn == 0) {
 					battle->round++;
@@ -208,7 +228,8 @@ void summon(Battle& battle, Character enemy, int x = 0, int y = 0, int team = 1)
 	enemy.X = x;
 	enemy.Y = y;
 	enemy.LOCATION = battle.id;
-	battle.teams[team].push_back(id);
+	enemy.TEAM = team;
+	battle.characters.push_back(id);
 	CHARACTERS[id] = enemy;
 	sendCharacter(enemy);
 	save(enemy);
@@ -244,7 +265,7 @@ void startBattle(Battle& battle) {
 	float lvl = 0.0;
 	int num = 0;
 
-	for (std::string id : battle.teams[0]) {
+	for (std::string id : battle.characters) {
 		if (CHARACTERS[id].TYPE == "player") {
 			num++;
 			lvl += CHARACTERS[id].LEVEL;
@@ -284,6 +305,11 @@ void startBattle(Battle& battle) {
 		int y = rand() % 2;
 		summon(battle, enemy, x, y);
 	}
+
+	battle.hazards.push_back(Hazard(1, 1, 1));
+	battle.hazards.push_back(Hazard(5, 2, 3));
+	battle.hazards.push_back(Hazard(5, 2, 4));
+	battle.hazards.push_back(Hazard(5, 2, 5));
 
 	updateBattle(battle);
 }

@@ -7,32 +7,6 @@ std::string Name(Character C) {
 	return pretty(C.NAME);
 }
 
-Result dealDamage(Attack attack, std::string attackerId, std::string targetId, std::vector<std::string> allies, std::vector<std::string> enemies) {
-	Result result;
-	if (CHARACTERS.count(attackerId) * CHARACTERS.count(targetId) == 0) {
-		return result;
-	}
-	Character* attacker = &CHARACTERS[attackerId];
-	Character* target = &CHARACTERS[targetId];
-
-	int hitValue = rand() % 100;
-	int dmg = attack.min + rand() % (attack.max - attack.min);
-	if (hitValue < attack.hitChance) {
-		result.msg = "*ORANGE*" + pretty(name(attacker)) + " *RED*attacks " + name(target) + " for *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
-		result.damage = dmg;
-		target->HP -= dmg;
-		if (target->HP <= 0) {
-			target->DEATH = pretty(name(attacker, false));
-		}
-	}
-	else {
-		result.msg += "*ORANGE*" + pretty(name(attacker)) + " *RED*misses!\n";
-		result.damage = 0;
-	}
-
-	return result;
-}
-
 std::vector<std::string> findTargets(int x, int y, int range, std::vector<std::string> potentialTargets) {
 	std::vector<std::string> targets = {};
 	for (std::string id : potentialTargets) {
@@ -87,11 +61,26 @@ void moveInRange(Character* C, std::vector<std::string> enemies, int range, std:
 	}
 }
 
-std::string enemyAttack(int enemyIndex, std::vector<std::string> allies, std::vector<std::string> enemies, Battle battle) {\
+std::string enemyAttack(std::string enemyId, Battle battle) {
 	std::string msg = "";
-	Character* C = &CHARACTERS[allies[enemyIndex]];
+	Character* C = &CHARACTERS[enemyId];
+
+	std::vector<std::string> allies;
+	std::vector<std::string> enemies;
+	
 	std::string eName = low(C->NAME);
 	std::vector<std::vector<int>> movementCosts = moveCosts(*C, battle);
+
+	for (std::string id : battle.characters) {
+		if (id != enemyId) {
+			if (CHARACTERS[id].TEAM == C->TEAM) {
+				allies.push_back(id);
+			}
+			else {
+				enemies.push_back(id);
+			}
+		}
+	}
 
 	/*
 	- Prefer not moving. Check if you can attack from where you are.
@@ -106,7 +95,7 @@ std::string enemyAttack(int enemyIndex, std::vector<std::string> allies, std::ve
 		std::vector<std::string> targets = findTargets(C->X, C->Y, 1, enemies);
 		if (targets.size() > 0) {
 			int index = rand() % targets.size();
-			Result result = dealDamage(P_Attack(10, 16, 90), C->ID, CHARACTERS[enemies[index]].ID, allies, enemies);
+			Result result = dealDamage(P_Attack(10, 16, 90), C->ID, CHARACTERS[enemies[index]].ID, battle.characters);
 			msg += "*RED*" + pretty(Name(*C)) + " bites savagely at " + pretty(CHARACTERS[enemies[index]].NAME);
 			if (result.damage > 0) {
 				msg += ", dealing *ORANGE*" + to_str(result.damage) + "*RED* damage!\n";

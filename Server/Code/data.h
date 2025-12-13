@@ -21,7 +21,7 @@ std::string serialize(std::vector<Item> items) {
 	std::string data = "";
 	for (Item item : items) {
 		data += serialize(item);
-		data += "\n";
+		data += "\t";
 	}
 	return data;
 }
@@ -30,7 +30,25 @@ std::string serialize(std::unordered_map<std::string, Item> items) {
 	std::string data = "";
 	for (auto item : items) {
 		data += serialize(item.second);
-		data += "\n";
+		data += "\t";
+	}
+	return data;
+}
+
+std::string serialize(Hazard hazard) {
+	std::string data = "";
+	data += str(hazard.summoner);
+	data += str(hazard.index);
+	data += str(hazard.x);
+	data += str(hazard.y);
+	data += str(hazard.duration);
+	return data;
+}
+
+std::string serialize(std::vector<Hazard> hazards) {
+	std::string data = "";
+	for (Hazard hazard : hazards) {
+		data += serialize(hazard) + "\t";
 	}
 	return data;
 }
@@ -39,6 +57,23 @@ std::string serialize(Account P) {
 	std::string data = "";
 	data += addLine("USERNAME", P.USERNAME);
 	data += addLine("PASSWORD", P.PASSWORD);
+	return data;
+}
+
+std::string serialize(Effect effect) {
+	std::string data = "";
+	data += str(effect.id);
+	data += str(effect.causedBy);
+	data += str(effect.turns);
+	data += str(effect.stacks);
+	return data;
+}
+
+std::string serialize(std::vector<Effect> effects) {
+	std::string data = "";
+	for (Effect effect : effects) {
+		data += serialize(effect) + "\t";
+	}
 	return data;
 }
 
@@ -58,6 +93,8 @@ std::string serialize(Character C) {
 	data += addLine("TYPE", C.TYPE);
 	data += addLine("NAME", C.NAME);
 	data += addLine("LOCATION", C.LOCATION);
+	data += addLine("TEAM", C.TEAM);
+	data += "EFFECTS!!!" + serialize(C.EFFECTS) + "\n";
 	if (C.TYPE != "player") {
 		return data;
 	}
@@ -87,24 +124,34 @@ std::string serialize(Character C) {
 	return data;
 }
 
-std::string serialize(Battle battle) {
+
+
+std::string serialize(Battle battle, bool saving = false) {
 	std::string data = "";
 	data += addLine("ID", battle.id);
 	data += addLine("ZONE", battle.zone);
 	data += addLine("TURN", battle.turn);
 	data += addLine("ROUND", battle.round);
 	data += addLine("DIFFICULTY", battle.difficulty);
-	data += "ONE!!!";
-	for (std::string id : battle.teams[0]) {
+
+	data += "CHARACTERS!!!";
+	for (std::string id : battle.characters) {
 		data += str(id);
 	}
-	data += "\n";
-	data += "TWO!!!";
-	for (std::string id : battle.teams[1]) {
-		data += str(id);
+
+	if (saving) {
+		data += "DEAD!!!";
+		for (std::string id : battle.dead) {
+			data += str(id);
+		}
 	}
+
 	data += "\n";
-	data += "LOOT!!!\n";
+	data += "HAZARDS!!!";
+	data += serialize(battle.hazards);
+
+	data += "\n";
+	data += "LOOT!!!";
 	data += serialize(battle.loot);
 	return data;
 }
@@ -132,7 +179,7 @@ void save(Character character) {
 }
 
 void save(Battle battle) {
-	saveToFile("Battles/" + battle.id, serialize(battle));
+	saveToFile("Battles/" + battle.id, serialize(battle, true));
 }
 
 void save(Account account) {

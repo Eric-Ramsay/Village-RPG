@@ -86,17 +86,13 @@ void process(std::string type, std::string data) {
 		if (data == ID) {
 			ID = "";
 		}
-		for (int i = 0; i < 2; i++) {
-			std::vector<std::string> team = {};
-			for (std::string id : BATTLE.teams[i]) {
-				if (id != data) {
-					team.push_back(id);
-				}
+		std::vector<std::string> team = {};
+		for (std::string id : BATTLE.characters) {
+			if (id != data) {
+				team.push_back(id);
 			}
-			BATTLE.teams[i] = team;
 		}
-
-
+		BATTLE.characters = team;
 	}
 	if (type == "STAT") {
 		std::string id = readStr(data);
@@ -112,7 +108,7 @@ void process(std::string type, std::string data) {
 		}
 	}
 	if (type == "BUNDLE") {
-		std::vector<std::string> strings = split(data, '\t');
+		std::vector<std::string> strings = split(data, '\r');
 		for (std::string str : strings) {
 			std::string type = readStr(str);
 			process(type, str);
