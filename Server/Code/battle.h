@@ -67,6 +67,7 @@ std::string winBattle(Battle& battle) {
 	// Process dead characters
 	int lootMax = max(20, battle.difficulty / 3);
 	int lootValue = 0;
+	lootMax = 0;
 	std::vector<std::string> dropList = {};
 	for (std::string id : battle.dead) {
 		std::vector<std::string> splitId = split(id, '.');
@@ -116,6 +117,8 @@ std::string winBattle(Battle& battle) {
 	// Give out gold and XP
 	int goldReward = min(200, 10 + (battle.difficulty / 20));
 	int expReward = battle.difficulty;
+	goldReward = 0;
+	expReward = 0;
 	msg = msg + "*GREEN*Each player gains " + goldReward + " gold and " + expReward + " experience!\n";
 
 	std::string bundle = "";
@@ -319,38 +322,41 @@ void startBattle(Battle& battle) {
 	battle.hazards = {};
 	if (rand() % 2 == 0) {
 		x = 11;
-		y = rand() % 12;
-		bannedDir = 1;
+		y = 1 + rand() % 10;
+		bannedDir = 3;
+		dir = 1;
 	}
 	else {
-		x = rand() % 12;
+		x = 1 + rand() % 10;
 		y = 11;
 		bannedDir = 2;
+		dir = 0;
 	}
 	bool run = true;
 	while (run) {
-		if (run) {
-			battle.hazards.push_back(Hazard(5, x, y));
+		for (int i = 0; i < 2; i++) {
+			if (run) {
+				battle.hazards.push_back(Hazard(5, x, y));
+			}
+			lastDir = (dir + 2) % 4;
+			if (dir == 0) {
+				y--;
+			}
+			if (dir == 1) {
+				x--;
+			}
+			if (dir == 2) {
+				y++;
+			}
+			if (dir == 3) {
+				x++;
+			}
+			run = (x >= 0 && y >= 0 & x < 12 && y < 12);
 		}
 		do {
 			dir = rand() % 4;
 			std::cout << dir << std::endl;
 		} while (dir == lastDir || dir == bannedDir);
-		std::cout << "Picked: " << dir << std::endl;
-		lastDir = (dir + 2) % 4;
-		if (dir == 0) {
-			y--;
-		}
-		if (dir == 1) {
-			y++;
-		}
-		if (dir == 2) {
-			x--;
-		}
-		if (dir == 3) {
-			x++;
-		}
-		run = (x >= 0 && y >= 0 & x < 12 && y < 12);
 	}
 
 
