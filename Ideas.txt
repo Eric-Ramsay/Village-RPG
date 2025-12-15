@@ -35,6 +35,8 @@ Spells AP costs are doubled, but replaced by Stamina.
 
 Start with +2 Casts and +4 Spell Slots (base is 1 & 1)
 
+Thief - Rob the fat merchant in the Wilted Woods - When you buy something from the store, you have a 10% chance to keep your gold.
+
 
 
 1. Effect System
@@ -43,10 +45,9 @@ Start with +2 Casts and +4 Spell Slots (base is 1 & 1)
 	- Implementing Effects (At least 10-20)
 	
 2. TILE HAZARD SYSTEM & TERRAIN
-	- UI to show on map
 	- UI to show in help bar
 	- Hazards can vanish
-	- Hazards damage/effect player
+	- Hazards damage/affect player
 	- Spawn terrain in zones
 	
 3. Enemies

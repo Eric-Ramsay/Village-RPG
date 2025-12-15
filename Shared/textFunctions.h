@@ -200,16 +200,28 @@ std::string removeAtEnd(std::string str, int num) {
 std::string readStr(std::string& msg) {
 	std::string str = "";
 	int index = 0;
-	while (index < msg.length() && !endsWith(str, "!!!")) {
-		str += msg[index++];
+	int len = msg.size();
+	int numExclamations = 0;
+	while (index < len && numExclamations < 3) {
+		if (msg[index] == '!') {
+			numExclamations++;
+		}
+		else {
+			for (int i = 0; i < numExclamations; i++) {
+				str += "!";
+			}
+			numExclamations = 0;
+			str += msg[index];
+		}
+		index++;
 	}
-	if (index >= msg.length()) {
+	if (index >= len) {
 		msg = "";
 	}
 	else {
 		msg = msg.substr(index);
 	}
-	return removeAtEnd(str, 3);
+	return str;
 }
 
 std::string str(int num) {

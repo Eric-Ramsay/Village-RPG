@@ -1,8 +1,0 @@
-ID!!!Wilted Woods.7153!!!
-ZONE!!!Wilted Woods!!!
-TURN!!!0!
-ROUND!!!26!
-DIFFICULTY!!!144!
-CHARACTERS!!!eric cheesemerelda 176561521961!!!Giant Amoeba.Wilted Woods.7153.5927!!!Goblin Archer.Wilted Woods.7153.783!!!Goblin Archer.Wilted Woods.7153.2175!!!DEAD!!!
-HAZARDS!!!!!!1!1!1!999!	!!!5!2!3!999!	!!!5!2!4!999!	!!!5!2!5!999!	
-LOOT!!!

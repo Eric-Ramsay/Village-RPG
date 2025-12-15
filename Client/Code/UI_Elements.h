@@ -118,6 +118,7 @@ void initScrollbars() {
 	scrollbars.push_back(&tradeBar);
 	scrollbars.push_back(&logBar);
 	scrollbars.push_back(&graveBar);
+	scrollbars.push_back(&lootBar);
 	logBar.orbPos = logBar.height - 24;
 }
 

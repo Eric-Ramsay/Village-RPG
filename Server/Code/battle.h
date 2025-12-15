@@ -306,10 +306,53 @@ void startBattle(Battle& battle) {
 		summon(battle, enemy, x, y);
 	}
 
-	battle.hazards.push_back(Hazard(1, 1, 1));
-	battle.hazards.push_back(Hazard(5, 2, 3));
-	battle.hazards.push_back(Hazard(5, 2, 4));
-	battle.hazards.push_back(Hazard(5, 2, 5));
+	// Make a river:
+	int x = 0;
+	int y = 0;
+	int bannedDir = 0;
+	int lastDir = 0;
+	int dir = 0;
+	// 0 - Up
+	// 1 - Left
+	// 2 - Down
+	// 3 - Right
+	battle.hazards = {};
+	if (rand() % 2 == 0) {
+		x = 11;
+		y = rand() % 12;
+		bannedDir = 1;
+	}
+	else {
+		x = rand() % 12;
+		y = 11;
+		bannedDir = 2;
+	}
+	bool run = true;
+	while (run) {
+		if (run) {
+			battle.hazards.push_back(Hazard(5, x, y));
+		}
+		do {
+			dir = rand() % 4;
+			std::cout << dir << std::endl;
+		} while (dir == lastDir || dir == bannedDir);
+		std::cout << "Picked: " << dir << std::endl;
+		lastDir = (dir + 2) % 4;
+		if (dir == 0) {
+			y--;
+		}
+		if (dir == 1) {
+			y++;
+		}
+		if (dir == 2) {
+			x--;
+		}
+		if (dir == 3) {
+			x++;
+		}
+		run = (x >= 0 && y >= 0 & x < 12 && y < 12);
+	}
+
 
 	updateBattle(battle);
 }

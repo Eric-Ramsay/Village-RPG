@@ -442,7 +442,7 @@ std::string commandLevel(int playerIndex, Character& C, std::string stat) {
 		return "*RED*You don't have any SP";
 	}
 	std::vector<std::string> stats = {
-		"VIT", "END", "DEX", "MAG", "WEP", "AVD"
+		"VIT", "END", "DEX", "MAG", "WEP", "AVD", "DEF"
 	};
 	int index = -1;
 	for (int i = 0; i < stats.size(); i++) {

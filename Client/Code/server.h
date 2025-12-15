@@ -1,7 +1,7 @@
 #pragma once
 
 void sendData(std::string type, std::string data) {
-	std::string str = type + "!" + data + "!STOP!";
+	std::string str = type + "!" + data + (char)250;
 	const int len = str.length();
 	char* arr = new char[len + 1];
 	for (int i = 0; i < len; i++) {
@@ -56,12 +56,11 @@ void listenToServer() {
 			disconnects = 0;
 			int index = nextMessage(messageBuffer);
 			for (int i = 0; i < bytesReceived; i++) {
-				messageBuffer[index].data += buf[i];
-				if (endsWith(messageBuffer[index].data, "!STOP!")) {
+				if (buf[i] == (char)(250)) {
 					std::string type = "";
 					std::string data = "";
 					bool setType = true;
-					for (int j = 0; j < messageBuffer[index].data.size() - 6; j++) {
+					for (int j = 0; j < messageBuffer[index].data.size(); j++) {
 						char c = messageBuffer[index].data[j];
 						if (setType) {
 							if (c == '!') {
@@ -79,6 +78,9 @@ void listenToServer() {
 					messageBuffer[index].type = type;
 					messageBuffer[index].done = true;
 					index = nextMessage(messageBuffer);
+				}
+				else {
+					messageBuffer[index].data += buf[i];
 				}
 			}
 			std::deque<Message> newMessages = {};

@@ -7,7 +7,7 @@ Message* bufferEnd = nullptr;
 Message* firstProcess = nullptr;
 
 bool connected = true;
-std::string IP = "10.0.0.143";
+std::string IP = "10.0.0.11";
 sockaddr_in hint;
 int port = 1234;
 SOCKET sock;
@@ -71,5 +71,6 @@ std::vector<Scrollbar*> scrollbars = {};
 Scrollbar tradeBar(195, 110, 127);
 Scrollbar logBar(244, 347, 97, true);
 Scrollbar graveBar(0, 0, 0);
+Scrollbar lootBar(0, 0, 0);
 
 int numMessages = 0;

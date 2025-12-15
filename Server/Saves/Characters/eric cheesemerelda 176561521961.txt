@@ -3,7 +3,7 @@ USER!!!eric!!!
 LOOK!!!ahagafcjdhcdbeaiad!!!
 DEATH!!!!!!
 HP!!!30!
-X!!!0!
+X!!!8!
 Y!!!1!
 SX!!!0!
 SY!!!176!
@@ -11,19 +11,19 @@ ARMOR!!!0!
 MAXHP!!!30!
 TYPE!!!player!!!
 NAME!!!Cheesemerelda!!!
-LOCATION!!!Wilted Woods.7153!!!
+LOCATION!!!Acrid Swamp!!!
 TEAM!!!0!
-EFFECTS!!!
-STAMINA!!!13!
+EFFECTS!!!poisoned!!!!!!3!9!	
+STAMINA!!!20!
 DESCRIPTION!!!!!!
 TRADING!!!!!!
-LEVEL!!!4!
-XP!!!84!
-SP!!!2!
-GOLD!!!141!
-AP!!!9!
+LEVEL!!!192!
+XP!!!6454!
+SP!!!187!
+GOLD!!!2894!
+AP!!!15!
 BACKPACK!!!0!
-ENDED!!!0!
+ENDED!!!1!
 ATTACKS!!!0!
 CASTS!!!0!
 X_PREFERENCE!!!0!
@@ -32,6 +32,6 @@ LEFT!!!dagger.553!!!
 RIGHT!!!!!!
 HITS!!!0!0!
 MISSES!!!0!0!
-STATS!!!0!0!1!0!0!0!0!
+STATS!!!0!0!3!0!0!0!1!
 INVENTORY!!!
-ITEM!!!INDEX!!!dagger.553!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	ITEM!!!INDEX!!!dagger.2094!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!	
+ITEM!!!INDEX!!!dagger.553!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!	ITEM!!!INDEX!!!dagger.2094!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!	ITEM!!!INDEX!!!dagger.2435!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	

@@ -634,11 +634,10 @@ void DrawCharCreation() {
 
 }
 
-void DrawBattle() {
+void DrawBattle(Battle battle) {
 	int x = 0;
 	int y = 0;
 
-	Battle battle = BATTLE;
 	static std::vector<std::vector<int>> movementCosts;
 	if (updateMovement) {
 		updateMovement = false;
@@ -803,18 +802,34 @@ void DrawBattle() {
 		}
 	}
 	else {
-		int itemCount = 0;
+		lootBar.visible = true;
+		lootBar.visibleAtOnce = 17;
+		lootBar.numThings = battle.loot.size();
+		lootBar.dY = y + 29;
+		lootBar.dX = x + 420;
+		lootBar.height = lootBar.visibleAtOnce * 10;
+		DrawScrollbar(lootBar);
+
+		int startIndex = lootBar.index;
+		int maxIndex = lootBar.index + lootBar.visibleAtOnce;
+		if (maxIndex > lootBar.numThings) {
+			maxIndex = lootBar.numThings;
+		}
 		std::string helpMsg = "*YELLOW*Double click to take items";
 		if (battle.loot.size() == 0) {
 			helpMsg = "*BLACK*There's no loot here . . .";
 		}
 		CPrint(helpMsg, 323, y + 18);
+		std::vector<Item> items = {};
 		for (auto item : battle.loot) {
-			UI_Item baseItem = getItem(item.second.id);
-			itemCount++;
-			std::string text = "*PINK*" + padNum(itemCount) + "*GREY*) *TEAL*" + pretty(item.second.id);
+			items.push_back(item.second);
+		}
+		for (int i = startIndex; i < maxIndex; i++) {
+			Item item = items[i];
+			UI_Item baseItem = getItem(item.id);
+			std::string text = "*PINK*" + padNum(i) + "*GREY*) *TEAL*" + pretty(item.id);
 			int xPos = (x + 200);
-			int yPos = (y + 19 + 10 * itemCount);
+			int yPos = (y + 29 + 10 * (i - startIndex));
 			int w = measureText(text);
 			int h = 9;
 			Print(text, xPos, yPos);
@@ -822,11 +837,11 @@ void DrawBattle() {
 			// Check if player clicks on any of these items
 			if (range(UI.mX, UI.mY, xPos, yPos, w, h)) {
 				if (UI.doubleClicked) {
-					sendData("COMMAND", "TAKE " + item.second.index);
+					sendData("COMMAND", "TAKE " + item.index);
 				}
 				else if (!UI.viewLocked) {
 					UI.view = 1;
-					UI.viewedItem = item.second;
+					UI.viewedItem = item;
 				}
 			}
 		}
@@ -1040,7 +1055,7 @@ void DrawUI() {
 			DrawGraves();
 		}
 		else if (getCharacter(ID).LOCATION == BATTLE.id) {
-			DrawBattle();
+			DrawBattle(BATTLE);
 		}
 		else if (getCharacter(ID).TRADING != "") {
 			DrawTrade();

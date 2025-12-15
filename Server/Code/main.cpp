@@ -63,7 +63,7 @@ void Send() {
 						if (j < players.size()) {
 							// The current client is one of the clients this message should be sent to
 							if (master.fd_array[i] == players[j].socket) {
-								std::string data = processing->type + "!" + processing->data + "!STOP!";
+								std::string data = processing->type + "!" + processing->data + (char)(250);
 								std::vector<std::string> dataToSend = {};
 
 								int numStrings = 1 + (int)data.length() / 8000;
@@ -147,12 +147,11 @@ void Listen() {
 							int index = nextMessage(players[i].messages);
 							std::string buffer = players[i].messages[index].data;
 							for (int j = 0; j < bytesReceived; j++) {
-								buffer += buf[j];
-								if (endsWith(buffer, "!STOP!")) {
+								if (buf[j] == (char)(250)) {
 									std::string type = "";
 									std::string data = "";
 									bool setType = true;
-									for (int j = 0; j < buffer.size() - 6; j++) {
+									for (int j = 0; j < buffer.size(); j++) {
 										char c = buffer[j];
 										if (setType) {
 											if (c == '!') {
@@ -171,6 +170,9 @@ void Listen() {
 									players[i].messages[index].done = true;
 									index = nextMessage(players[i].messages);
 									buffer = players[i].messages[index].data;
+								}
+								else {
+									buffer += buf[j];
 								}
 							}
 						}
