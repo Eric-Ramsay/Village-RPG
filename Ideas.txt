@@ -44,12 +44,6 @@ Thief - Rob the fat merchant in the Wilted Woods - When you buy something from t
 	- Effect UI
 	- Implementing Effects (At least 10-20)
 	
-2. TILE HAZARD SYSTEM & TERRAIN
-	- UI to show in help bar
-	- Hazards can vanish
-	- Hazards damage/affect player
-	- Spawn terrain in zones
-	
 3. Enemies
 	- Implement new enemies, using effects + hazards
 	

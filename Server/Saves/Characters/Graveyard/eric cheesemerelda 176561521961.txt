@@ -1,9 +1,9 @@
 ID!!!eric cheesemerelda 176561521961!!!
 USER!!!eric!!!
 LOOK!!!ahagafcjdhcdbeaiad!!!
-DEATH!!!!!!
+DEATH!!!Suicide!!!
 HP!!!30!
-X!!!7!
+X!!!8!
 Y!!!6!
 SX!!!0!
 SY!!!176!
@@ -11,9 +11,9 @@ ARMOR!!!0!
 MAXHP!!!30!
 TYPE!!!player!!!
 NAME!!!Cheesemerelda!!!
-LOCATION!!!Acrid Swamp.4101!!!
+LOCATION!!!Wilted Woods.3538!!!
 TEAM!!!0!
-EFFECTS!!!
+EFFECTS!!!!!!!!!0!0!	poisoned!!!!!!3!1!	
 STAMINA!!!20!
 DESCRIPTION!!!!!!
 TRADING!!!!!!
@@ -21,7 +21,7 @@ LEVEL!!!192!
 XP!!!6454!
 SP!!!187!
 GOLD!!!2894!
-AP!!!3!
+AP!!!15!
 BACKPACK!!!0!
 ENDED!!!1!
 ATTACKS!!!0!
@@ -34,4 +34,4 @@ HITS!!!0!0!
 MISSES!!!0!0!
 STATS!!!0!0!3!0!0!0!1!
 INVENTORY!!!
-ITEM!!!INDEX!!!dagger.553!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!	ITEM!!!INDEX!!!dagger.2094!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!	ITEM!!!INDEX!!!dagger.2435!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	!!!	!!!	!!!	!!!	!!!	
+ITEM!!!INDEX!!!dagger.553!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!	ITEM!!!INDEX!!!dagger.2094!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!	ITEM!!!INDEX!!!dagger.2435!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	!!!	!!!	!!!	!!!	!!!	!!!	!!!	!!!	

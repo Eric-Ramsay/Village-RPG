@@ -129,8 +129,8 @@ void initLocations() {
 	}
 }	
 
-void addTerrain(std::string n, int mC = 2, bool canTargetOver = true, int health = 0, int dmg = 0, std::vector<Effect> effectList = {}) {
-	TERRAIN.push_back(Terrain(n, mC, canTargetOver, health, dmg, effectList));
+void addTerrain(std::string n, int mC = 2, int health = 0, int dmg = 0, std::vector<Effect> effectList = {}) {
+	TERRAIN.push_back(Terrain(n, mC, health, dmg, effectList));
 }
 
 void initEffects() {
@@ -143,13 +143,13 @@ void initEffects() {
 
 void initTerrain() {
 	addTerrain("Empty Space");
-	addTerrain("Tree", 999, false, 25);
-	addTerrain("Tree", 999, false, 25);
-	addTerrain("Tree", 999, false, 25);
-	addTerrain("Web", 6, true, 8, 0, { Effect("rooted", "", 1)});
-	addTerrain("Water", 4);
-	addTerrain("Slime", 4, true, 0, 0, { Effect("slowed", "", 3)});
-	addTerrain("Acid", 2, true, 0, 5);
+	addTerrain("Tree", 999, 25);
+	addTerrain("Tree", 999, 25);
+	addTerrain("Tree", 999, 25);
+	addTerrain("Web", 6, 8, 0, { Effect("rooted", "", 1)});
+	addTerrain("Water", 4, 8, 4, { Effect("rooted", "", 1), Effect("poisoned", "", 3) });
+	addTerrain("Slime", 4, 0, 0, { Effect("slowed", "", 3)});
+	addTerrain("Acid", 2, 0, 5);
 
 	for (int i = 0; i < TERRAIN.size(); i++) {
 		TERRAIN[i].sX = (i * 16);

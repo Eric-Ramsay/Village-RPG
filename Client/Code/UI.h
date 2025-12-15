@@ -292,11 +292,55 @@ void DrawViewUI() {
 			Character C = CHARACTERS[UI.viewedEnemy];
 			std::string color = "*RED*";
 			Print(color + C.NAME, x, y);
-			if (UI.viewedEffect != "") {
-				Print("*PINK*" + pretty(UI.viewedEffect), x, 340);
-				std::string desc = "blah blah blah";
-				Print(desc, x + 75, 340);
+		}
+	}
+	else if (UI.view == 3) {
+		Hazard hazard = UI.viewedHazard;
+		Terrain terrain = TERRAIN[hazard.index];
+		Box titleBox = Print("*BLUE*" + terrain.name, x, y);
+		Draw(terrain.sX, terrain.sY, 16, 16, x + titleBox.w + 5, y - 7);
+
+		std::string description = "";
+		if (hazard.duration < 999) {
+			description += "*RED*" + to_str(hazard.duration) + " Turns*GREY*\n\n";
+		}
+		if (terrain.moveCost == 999) {
+			description += "*BLACK*This tile is impassable.\n";
+		}
+		else {
+			description += "*GREY*It costs *YELLOW*" + to_str(terrain.moveCost) + " AP*GREY* to cross this tile.\n";
+		}
+
+		if (terrain.hp > 0) {
+			description += "*GREY*Can be removed if hit for *ORANGE*" + to_str(terrain.hp) + "+*GREY* damage.\n";
+		}
+
+		if (terrain.damage > 0) {
+			description += "Deals *ORANGE*" + to_str(terrain.damage) + "*GREY* damage per turn.\n";
+		}
+		if (terrain.effects.size() > 0) {
+			description += "\n*TEAL*Afflicts the following effects: \n";
+		}
+
+		Box box = Print(description, x, y + 12);
+
+		int num = 0;
+		for (Effect effect : terrain.effects) {
+			num++;
+			Box effectBox = Print("*BLUE*" + pretty(effect.id), x, y + box.h + 11 * num);
+			if (mRange(effectBox)) {
+				UI.viewedEffect = effect.id;
 			}
+			std::string duration = "*YELLOW*" + to_str(effect.turns) + " turn";
+			if (effect.turns > 1) {
+				duration += "s";
+			}
+			std::string stacks = "*PURPLE*" + to_str(effect.stacks) + " stack";
+			if (effect.stacks > 1) {
+				stacks += "s";
+			}
+			Print(duration, x + 80, y + box.h + 11 * num);
+			Print(stacks, x + 135, y + box.h + 11 * num);
 		}
 	}
 	else {
@@ -308,10 +352,13 @@ void DrawViewUI() {
 	}
 	if (UI.view != 0) {
 		if (!UI.viewLocked) {
-			CPrint("*BLACK*Press CTRL to lock view", x + w / 2, 340, w);
+			CPrint("*BLACK*Press CTRL to lock view", x + w / 2, 339, w);
 		}
 		else {
 			Print("*YELLOW*\7", x + w - 10, y);
+			if (UI.viewedEffect != "") {
+				CPrint(EFFECTS[UI.viewedEffect].desc, x + w / 2, 339, w);
+			}
 		}
 	}
 }
@@ -340,10 +387,10 @@ void DrawCharacterUI(std::string id) {
 		nameColor = "*BLUE*";
 	}
 	Print(nameColor + pretty(C.NAME), x, y);
-	Print("*YELLOW*Gold: " + to_str(C.GOLD), x + w - 45, y);
+	Print("*YELLOW*Gold: " + to_str(C.GOLD), x + w - 50, y);
 
 	Print(accentOne + "Level " + to_str(C.LEVEL), x, y + 13);
-	Print("*YELLOW*" + to_str(C.XP) + "*GREY*/*GREEN*" + to_str(100 * C.LEVEL) + "*GREY* XP", x + 54, y + 13);
+	Print("*YELLOW*" + to_str(C.XP) + "*GREY*/*GREEN*" + to_str(100 * C.LEVEL) + "*GREY* XP", x + 57, y + 13);
 	if (UI.topLocked) {
 		Print("*YELLOW*\7", x + w - 55, y + 13);
 	}
@@ -763,6 +810,10 @@ void DrawBattle(Battle battle) {
 						UI.view = 2;
 						UI.viewedEnemy = characters[i][j];
 					}
+				}
+				else if (!UI.viewLocked && hazard.index > 0) {
+					UI.viewedHazard = hazard;
+					UI.view = 3;
 				}
 			}
 		}

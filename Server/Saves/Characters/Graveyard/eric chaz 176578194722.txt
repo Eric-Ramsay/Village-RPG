@@ -1,0 +1,37 @@
+ID!!!eric chaz 176578194722!!!
+USER!!!eric!!!
+LOOK!!!abcdamdpdhefbaajag!!!
+DEATH!!!The Environment!!!
+HP!!!-3!
+X!!!7!
+Y!!!10!
+SX!!!0!
+SY!!!176!
+ARMOR!!!0!
+MAXHP!!!30!
+TYPE!!!player!!!
+NAME!!!Chaz!!!
+LOCATION!!!Wilted Woods.3228!!!
+TEAM!!!0!
+EFFECTS!!!!!!!!!0!0!	poisoned!!!!!!3!18!	rooted!!!!!!1!1!	
+STAMINA!!!20!
+DESCRIPTION!!!!!!
+TRADING!!!!!!
+LEVEL!!!1!
+XP!!!0!
+SP!!!0!
+GOLD!!!30!
+AP!!!6!
+BACKPACK!!!0!
+ENDED!!!0!
+ATTACKS!!!0!
+CASTS!!!0!
+X_PREFERENCE!!!0!
+Y_PREFERENCE!!!0!
+LEFT!!!dagger.9976!!!
+RIGHT!!!!!!
+HITS!!!0!0!
+MISSES!!!0!0!
+STATS!!!0!0!0!0!0!0!0!
+INVENTORY!!!
+ITEM!!!INDEX!!!dagger.9976!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	!!!	!!!	!!!	!!!	!!!	

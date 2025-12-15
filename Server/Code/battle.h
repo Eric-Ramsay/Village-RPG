@@ -160,6 +160,29 @@ std::string winBattle(Battle& battle) {
 
 void startTurn(Battle& battle) {
 	std::string msg = "";
+
+	std::vector<std::vector<Hazard>> hazards = {};
+	for (int i = 0; i < 12; i++) {
+		hazards.push_back({});
+		for (int j = 0; j < 12; j++) {
+			hazards[i].push_back(Hazard(0, j, i));
+		}
+	}
+
+	if (battle.turn == 0) {
+		for (int i = battle.hazards.size() - 1; i >= 0; i--) {
+			if (battle.hazards[i].duration > 0) {
+				hazards[battle.hazards[i].y][battle.hazards[i].x] = battle.hazards[i];
+			}
+			if (battle.hazards[i].duration < 999) {
+				battle.hazards[i].duration--;
+				if (battle.hazards[i].duration < 0) {
+					battle.hazards.erase(battle.hazards.begin() + i);
+				}
+			}
+		}
+	}
+
 	// Handle Effects for team who's starting (battle.turn)
 	for (int i = battle.characters.size() - 1; i >= 0; i--) {
 		Character* C = &CHARACTERS[battle.characters[i]];
@@ -167,17 +190,24 @@ void startTurn(Battle& battle) {
 			continue;
 		}
 		if (C->TYPE == "player") {
+			Hazard hazard = hazards[C->Y][C->X];
+			Terrain terrain = TERRAIN[hazard.index];
+			if (terrain.damage > 0) {
+				msg += dealDamage(Attack(TRUE_DMG, terrain.damage, terrain.damage, 100, 100), hazard.summoner, C->ID, battle.characters).msg;
+			}
+			for (Effect effect : terrain.effects) {
+				msg += addEffect(C->ID, hazard.summoner, effect.id, effect.stacks, effect.turns);
+			}
 			C->STAMINA = min(C->STAMINA + 2 * (1 + C->STATS[END]), MaxStamina(*C));
 			int diff = min(C->STAMINA, MaxAP(*C) - C->AP);
-			setStat(*C, "AP", C->AP + diff);
-			setStat(*C, "STAMINA", C->STAMINA - diff);
-			setStat(*C, "ENDED", false);
+			C->AP += diff;
+			C->STAMINA -= diff;
+			C->ENDED = false;
 			for (auto item : C->INVENTORY) {
 				if (item.second.equipped) {
 					UI_Item rawItem = getItem(item.second.id);
 					if (rawItem.type == "weapon") {
 						C->INVENTORY[item.first].attacks = rawItem.attacks;
-						sendItem(C->ID, item.second);
 					}
 				}
 			}
@@ -258,6 +288,78 @@ void summon(Battle& battle, std::string name, int team = 1) {
 	std::cout << "Couldn't summon enemy '" + name + "'!" << std::endl;
 }
 
+void addRiver(Battle& battle) {
+	// Make a river:
+	int x = 0;
+	int y = 0;
+	int bannedDir = 0;
+	int lastDir = 0;
+	int dir = 0;
+	// 0 - Up
+	// 1 - Left
+	// 2 - Down
+	// 3 - Right
+	battle.hazards = {};
+	if (rand() % 2 == 0) {
+		x = 11;
+		y = 1 + rand() % 10;
+		bannedDir = 3;
+		dir = 1;
+	}
+	else {
+		x = 1 + rand() % 10;
+		y = 11;
+		bannedDir = 2;
+		dir = 0;
+	}
+	bool run = true;
+	while (run) {
+		for (int i = 0; i < 2; i++) {
+			if (run) {
+				battle.hazards.push_back(Hazard(5, x, y));
+			}
+			lastDir = (dir + 2) % 4;
+			if (dir == 0) {
+				y--;
+			}
+			if (dir == 1) {
+				x--;
+			}
+			if (dir == 2) {
+				y++;
+			}
+			if (dir == 3) {
+				x++;
+			}
+			run = (x >= 0 && y >= 0 & x < 12 && y < 12);
+		}
+		do {
+			dir = rand() % 4;
+			std::cout << dir << std::endl;
+		} while (dir == lastDir || dir == bannedDir);
+	}
+}
+
+void addTrees(Battle& battle) {
+	int numTrees = 6;
+	while (numTrees > 0) {
+		int treeIndex = 1 + rand() % 3;
+		int x = rand() % 12;
+		int y = rand() % 12;
+		bool found = false;
+		for (Hazard hazard : battle.hazards) {
+			if (hazard.x == x && hazard.y == y) {
+				found = true;
+				break;	
+			}
+		}
+		if (!found) {
+			battle.hazards.push_back(Hazard(treeIndex, x, y, 3));
+			numTrees--;
+		}
+	}
+}
+
 void startBattle(Battle& battle) {
 	std::vector<Character> enemies = {};
 	battle.round = 1;
@@ -309,56 +411,8 @@ void startBattle(Battle& battle) {
 		summon(battle, enemy, x, y);
 	}
 
-	// Make a river:
-	int x = 0;
-	int y = 0;
-	int bannedDir = 0;
-	int lastDir = 0;
-	int dir = 0;
-	// 0 - Up
-	// 1 - Left
-	// 2 - Down
-	// 3 - Right
-	battle.hazards = {};
-	if (rand() % 2 == 0) {
-		x = 11;
-		y = 1 + rand() % 10;
-		bannedDir = 3;
-		dir = 1;
-	}
-	else {
-		x = 1 + rand() % 10;
-		y = 11;
-		bannedDir = 2;
-		dir = 0;
-	}
-	bool run = true;
-	while (run) {
-		for (int i = 0; i < 2; i++) {
-			if (run) {
-				battle.hazards.push_back(Hazard(5, x, y));
-			}
-			lastDir = (dir + 2) % 4;
-			if (dir == 0) {
-				y--;
-			}
-			if (dir == 1) {
-				x--;
-			}
-			if (dir == 2) {
-				y++;
-			}
-			if (dir == 3) {
-				x++;
-			}
-			run = (x >= 0 && y >= 0 & x < 12 && y < 12);
-		}
-		do {
-			dir = rand() % 4;
-			std::cout << dir << std::endl;
-		} while (dir == lastDir || dir == bannedDir);
-	}
-
+	addRiver(battle);
+	addTrees(battle);
 
 	updateBattle(battle);
 }

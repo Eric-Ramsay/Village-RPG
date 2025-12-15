@@ -350,6 +350,7 @@ int main()
 			if (UI.signInState == COMPLETED) {
 				if (!UI.viewLocked) {
 					UI.view = 0;
+					UI.viewedEffect = "";
 				}
 				if (!UI.topLocked) {
 					UI.viewedPlayer = ID;

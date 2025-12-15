@@ -184,7 +184,6 @@ struct Terrain {
 
 	int moveCost;
 	int hp;
-	bool blocksAttacks;
 
 	int damage;
 	std::vector<Effect> effects;
@@ -195,10 +194,9 @@ struct Terrain {
 	//std::vector<Effect> standEffects;
 	//int standDamage;
 
-	Terrain(std::string n, int mC = 2, bool canTargetOver = true, int health = 0, int dmg = 0, std::vector<Effect> effectList = {}) {
+	Terrain(std::string n, int mC = 2, int health = 0, int dmg = 0, std::vector<Effect> effectList = {}) {
 		name = n;
 		moveCost = mC;
-		blocksAttacks = canTargetOver;
 		hp = health;
 
 		//passEffects = pE;

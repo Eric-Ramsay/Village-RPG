@@ -20,16 +20,46 @@ std::string addEffect(std::string target, std::string attacker, std::string id, 
 	return "";
 }
 
+Result takeDamage(Attack attack, std::string targetId, std::vector<std::string> characters) {
+	Result result;
+	if (CHARACTERS.count(targetId) == 0) {
+		return result;
+	}
+	Character* target = &CHARACTERS[targetId];
+	int hitValue = rand() % 100;
+	int dmg = attack.min;
+	if (attack.max > attack.min) {
+		dmg = attack.min + rand() % (attack.max - attack.min);
+	}
+	if (hitValue < attack.hitChance) {
+		result.msg = name(target) + " takes *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
+		result.damage = dmg;
+		target->HP -= dmg;
+		if (target->HP <= 0) {
+			target->DEATH = "The Environment";
+		}
+	}
+
+	return result;
+}
+
 Result dealDamage(Attack attack, std::string attackerId, std::string targetId, std::vector<std::string> characters) {
 	Result result;
-	if (CHARACTERS.count(attackerId) * CHARACTERS.count(targetId) == 0) {
+	if (CHARACTERS.count(attackerId) == 0) {
+		return takeDamage(attack, targetId, characters);
+	}
+
+	if (CHARACTERS.count(targetId) == 0) {
 		return result;
 	}
 	Character* attacker = &CHARACTERS[attackerId];
 	Character* target = &CHARACTERS[targetId];
 
 	int hitValue = rand() % 100;
-	int dmg = attack.min + rand() % (attack.max - attack.min);
+	int dmg = attack.min;
+	if (attack.max > attack.min) {
+		dmg = attack.min + rand() % (attack.max - attack.min);
+	}
 	if (hitValue < attack.hitChance) {
 		result.msg = "*ORANGE*" + pretty(name(attacker)) + " *RED*attacks " + name(target) + " for *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
 		result.damage = dmg;

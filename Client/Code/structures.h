@@ -114,6 +114,9 @@ struct UIState {
 
 	Item viewedItem;
 	std::string viewedEnemy;
+
+	Hazard viewedHazard;
+
 	std::string viewedPlayer;
 	std::string viewedEffect;
 
