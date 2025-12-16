@@ -386,8 +386,10 @@ void parseChange(Character& character, std::string type, std::string data) {
 		character.INVENTORY = {};
 		std::vector<std::string> lines = split(data, '\n');
 		for (int i = 0; i < lines.size(); i++) {
-			std::string header = readStr(lines[i]);
-			parseChange(character, header, lines[i]);
+			if (lines[i] != "") {
+				std::string header = readStr(lines[i]);
+				parseChange(character, header, lines[i]);
+			}
 		}
 	}
 	else if (type == "EFFECT") {
@@ -398,7 +400,9 @@ void parseChange(Character& character, std::string type, std::string data) {
 		character.EFFECTS = {};
 		std::vector<std::string> lines = split(data, '\t');
 		for (int i = 0; i < lines.size(); i++) {
-			parseChange(character, "EFFECT", lines[i]);
+			if (lines[i] != "") {
+				parseChange(character, "EFFECT", lines[i]);
+			}
 		}
 	}
 }
@@ -428,7 +432,9 @@ void parseChange(Battle& battle, std::string type, std::string data) {
 		battle.hazards = {};
 		std::vector<std::string> lines = split(data, '\t');
 		for (int i = 0; i < lines.size(); i++) {
-			parseChange(battle, "HAZARD", lines[i]);
+			if (lines[i] != "") {
+				parseChange(battle, "HAZARD", lines[i]);
+			}
 		}
 	}
 	else if (type == "CHARACTERS") {
@@ -454,7 +460,9 @@ void parseChange(Battle& battle, std::string type, std::string data) {
 		battle.loot = {};
 		std::vector<std::string> lines = split(data, '\t');
 		for (int i = 0; i < lines.size(); i++) {
-			parseChange(battle, readStr(lines[i]), lines[i]);
+			if (lines[i] != "") {
+				parseChange(battle, readStr(lines[i]), lines[i]);
+			}
 		}
 	}
 }

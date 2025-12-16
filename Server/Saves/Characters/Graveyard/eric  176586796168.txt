@@ -1,0 +1,37 @@
+ID!!!eric  176586796168!!!
+USER!!!eric!!!
+LOOK!!!ahhgbmddbjembkabaf!!!
+DEATH!!!The Environment!!!
+HP!!!-1!
+X!!!7!
+Y!!!7!
+SX!!!0!
+SY!!!176!
+ARMOR!!!0!
+MAXHP!!!30!
+TYPE!!!player!!!
+NAME!!!!!!
+LOCATION!!!Wilted Woods.6157!!!
+TEAM!!!0!
+EFFECTS!!!rooted!!!!!!0!1!	poisoned!!!!!!2!15!	
+STAMINA!!!4!
+DESCRIPTION!!!!!!
+TRADING!!!!!!
+LEVEL!!!1!
+XP!!!0!
+SP!!!0!
+GOLD!!!30!
+AP!!!6!
+BACKPACK!!!0!
+ENDED!!!0!
+ATTACKS!!!0!
+CASTS!!!0!
+X_PREFERENCE!!!0!
+Y_PREFERENCE!!!0!
+LEFT!!!dagger.7521!!!
+RIGHT!!!!!!
+HITS!!!0!0!
+MISSES!!!0!0!
+STATS!!!0!0!0!0!0!0!0!
+INVENTORY!!!
+ITEM!!!INDEX!!!dagger.7521!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	!!!	!!!	

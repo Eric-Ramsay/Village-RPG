@@ -1,19 +1,19 @@
 ID!!!eric luciliana 176578596813!!!
 USER!!!eric!!!
 LOOK!!!aigfbjchcccqabbjao!!!
-DEATH!!!!!!
-HP!!!30!
-X!!!0!
-Y!!!0!
+DEATH!!!The Environment!!!
+HP!!!-2!
+X!!!9!
+Y!!!4!
 SX!!!0!
 SY!!!176!
 ARMOR!!!0!
 MAXHP!!!30!
 TYPE!!!player!!!
 NAME!!!Luciliana!!!
-LOCATION!!!Graveyard!!!
+LOCATION!!!Wilted Woods.9009!!!
 TEAM!!!0!
-EFFECTS!!!
+EFFECTS!!!rooted!!!!!!1!1!	poisoned!!!!!!3!13!	
 STAMINA!!!20!
 DESCRIPTION!!!!!!
 TRADING!!!!!!
@@ -34,4 +34,4 @@ HITS!!!0!0!
 MISSES!!!0!0!
 STATS!!!0!0!0!0!0!0!0!
 INVENTORY!!!
-ITEM!!!INDEX!!!dagger.2985!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!	
+ITEM!!!INDEX!!!dagger.2985!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	!!!	!!!	!!!	!!!	!!!	!!!	

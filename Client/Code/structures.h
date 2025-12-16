@@ -152,9 +152,8 @@ struct Scrollbar {
 	bool visible = true;
 	bool inverse = false;
 
-	Scrollbar(int x, int y, int h, bool inv = false) {
-		dX = x;
-		dY = y;
+	Scrollbar(int visible, int h, bool inv = false) {
+		visibleAtOnce = visible;
 		height = h;
 		inverse = inv;
 	}

@@ -40,8 +40,6 @@ Thief - Rob the fat merchant in the Wilted Woods - When you buy something from t
 
 
 1. Effect System
-	- Handling in StartTurn / Commands (Stunned/Rooted)
-	- Effect UI
 	- Implementing Effects (At least 10-20)
 	
 3. Enemies

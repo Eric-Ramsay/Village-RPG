@@ -2,7 +2,7 @@
 
 std::string addEffect(std::string target, std::string attacker, std::string id, int turns, int stacks = 1) {
 	UI_Effect effect = getEffect(id);
-	if (CHARACTERS.count(target) == 0 || effect.name == "") {
+	if (id == "" || CHARACTERS.count(target) == 0 || effect.name == "") {
 		return "";
 	}
 	Character* C = &CHARACTERS[target];
@@ -12,12 +12,24 @@ std::string addEffect(std::string target, std::string attacker, std::string id, 
 			if (effect.canStack) {
 				active->stacks += stacks;
 			}
-			active->turns = std::max(turns, active->turns);
+			if (effect.canRefresh) {
+				active->turns = std::max(turns, active->turns);
+			}
 			return "";
 		}
 	}
 	C->EFFECTS.push_back(Effect(id, attacker, turns, stacks));
 	return "";
+}
+
+int numStacks(Character C, std::string effectId) {
+	std::string id = low(effectId);
+	for (Effect effect : C.EFFECTS) {
+		if (effect.id == id) {
+			return effect.stacks;
+		}
+	}
+	return -1;
 }
 
 Result takeDamage(Attack attack, std::string targetId, std::vector<std::string> characters) {

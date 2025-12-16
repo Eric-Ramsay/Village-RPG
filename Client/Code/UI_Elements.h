@@ -122,6 +122,20 @@ void initScrollbars() {
 	logBar.orbPos = logBar.height - 24;
 }
 
+void setScrollBar(Scrollbar& scrollbar, int dX, int dY, int numThings, int& startIndex, int& maxIndex) {
+	scrollbar.visible = true;
+	scrollbar.numThings = numThings;
+	scrollbar.dX = dX;
+	scrollbar.dY = dY;
+	DrawScrollbar(scrollbar);
+
+	startIndex = scrollbar.index;
+	maxIndex = scrollbar.index + scrollbar.visibleAtOnce;
+	if (maxIndex > scrollbar.numThings) {
+		maxIndex = scrollbar.numThings;
+	}
+}
+
 void initToolTips() {
 	TOOLTIPS["VIT"] = Tooltip("Vitality *RED*\2", "*GREEN*+10*GREY* Max *RED*HP*GREY*\n\n*RED*HP*GREY* is a measure of how much *ORANGE*damage*GREY* you can take before your character *BLACK*dies");
 	TOOLTIPS["END"] = Tooltip("Endurance *GREEN*\5", "*GREEN*+10*GREY* Max Stamina\n*GREEN*+1 *GREY*Stamina Regeneration\n\n*GREEN*Endurance*GREY* is used to refill your *YELLOW*AP*GREY* at the start of each turn");

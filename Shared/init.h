@@ -55,7 +55,8 @@ void initLocations() {
 	Harbor.buildings = { "Curio Shop", "Rune Shop" };
 	Harbor.connections = {
 		Connection("south", "Merchant Lane"),
-		Connection("north", "Island Ferry")
+		Connection("north", "Island Ferry"),
+		Connection("east", "Graveyard")
 	};
 
 	Location Churchyard("Churchyard", "A stony, two-story church dominates this side of town. It's dead quiet here.\n\nBeyond the church is a graveyard. It seems like new graves are always being dug.");
@@ -77,6 +78,7 @@ void initLocations() {
 	Location Graveyard("Graveyard", "A vast field, covered in withered weeds and shabby wooden markers, long since fallen into disrepair. \n\nThe graves of ancient warriors are now little more than chunks of weathered stone, and the dirt here is always churning.");
 	Graveyard.connections = {
 		Connection("south", "Churchyard"),
+		Connection("west", "Harbor")
 	};
 	Graveyard.people = { "Janice" };
 
@@ -134,11 +136,11 @@ void addTerrain(std::string n, int mC = 2, int health = 0, int dmg = 0, std::vec
 }
 
 void initEffects() {
-	EFFECTS["poisoned"] = UI_Effect("debuff", "Poisoned", "Take 1 damage per stack. Healing is halved", true);
-	EFFECTS["bleeding"] = UI_Effect("debuff", "Bleeding", "Take 1 damage per 10 current HP per turn");
-	EFFECTS["stunned"] = UI_Effect("debuff", "Stunned", "This creature can't take any action");
-	EFFECTS["slowed"] = UI_Effect("debuff", "Slowed", "This creature's movement costs are doubled");
-	EFFECTS["rooted"] = UI_Effect("debuff", "Rooted", "This creature can't move");
+	EFFECTS["poisoned"] = UI_Effect("debuff", "Poisoned", "Take 1 damage per stack. Healing is halved.", true);
+	EFFECTS["bleeding"] = UI_Effect("debuff", "Bleeding", "Take 1 damage per 10 current HP per turn.");
+	EFFECTS["stunned"] = UI_Effect("debuff", "Stunned", "This creature can't take any action.", false, false);
+	EFFECTS["slowed"] = UI_Effect("debuff", "Slowed", "This creature's movement costs are doubled.");
+	EFFECTS["rooted"] = UI_Effect("debuff", "Rooted", "This creature can't move.", false, false);
 }
 
 void initTerrain() {
@@ -147,7 +149,7 @@ void initTerrain() {
 	addTerrain("Tree", 999, 25);
 	addTerrain("Tree", 999, 25);
 	addTerrain("Web", 6, 8, 0, { Effect("rooted", "", 1)});
-	addTerrain("Water", 4, 8, 4, { Effect("rooted", "", 1), Effect("poisoned", "", 3) });
+	addTerrain("Water", 4, 8, 4, { Effect("rooted", "", 1), Effect("poisoned", "", 3, 3) });
 	addTerrain("Slime", 4, 0, 0, { Effect("slowed", "", 3)});
 	addTerrain("Acid", 2, 0, 5);
 

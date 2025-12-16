@@ -185,6 +185,7 @@ std::string commandLeave(int playerIndex, Character& C, std::vector<std::string>
 	std::string id = C.LOCATION;
 	if (BATTLES.count(id) > 0) {
 		if (BATTLES[id].round == 0) {
+			std::string changes = str(C.ID);
 			setStat(C, "LOCATION", BATTLES[id].zone);
 			validateBattle(id);
 			return "*YELLOW*You leave the battle . . .";
@@ -505,6 +506,35 @@ std::string commandSleep(int playerIndex, Character& C) {
 	return "*RED*You have to be at the tavern to sleep.\n";
 }
 
+std::string commandMove(std::string id, std::vector<std::string> words) {
+	if (BATTLES.count(CHARACTERS[id].LOCATION) > 0) {
+		if (numStacks(CHARACTERS[id], "rooted") > -1) {
+			return "*RED*You're rooted and can't move!";
+		}
+		if (numStacks(CHARACTERS[id], "stunned") > -1) {
+			return "*RED*Youre stunned and can't act!";
+		}
+		int x = readInt(words[0]);
+		int y = readInt(words[0]);
+		if (x >= 0 && y >= 0 && x < 12 && y < 12) {
+			std::string changes = str(id);
+			std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[id], BATTLES[CHARACTERS[id].LOCATION]);
+			if (movementCosts[y][x] <= CHARACTERS[id].AP) {
+				if (BATTLES[CHARACTERS[id].LOCATION].round != 0) {
+					CHARACTERS[id].AP -= movementCosts[y][x];
+					changes += addLine("AP", CHARACTERS[id].AP);
+				}
+				CHARACTERS[id].X = x;
+				CHARACTERS[id].Y = y;
+				changes += addLine("X", x);
+				changes += addLine("Y", y);
+				sendData("STATS", changes);
+			}
+		}
+	}
+	return "";
+}
+
 void command(std::string input, int playerIndex) {
 	std::string id = players[playerIndex].ID;
 	std::string msg = "";
@@ -588,25 +618,7 @@ void command(std::string input, int playerIndex) {
 		msg = commandLeave(playerIndex, CHARACTERS[id], words);
 	}
 	else if (keyword == "move") {
-		if (BATTLES.count(CHARACTERS[id].LOCATION) > 0) {
-			int x = readInt(words[0]);
-			int y = readInt(words[0]);
-			if (x >= 0 && y >= 0 && x < 12 && y < 12) {
-				std::string changes = str(id);
-				std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[id], BATTLES[CHARACTERS[id].LOCATION]);
-				if (movementCosts[y][x] <= CHARACTERS[id].AP) {
-					if (BATTLES[CHARACTERS[id].LOCATION].round != 0) {
-						CHARACTERS[id].AP -= movementCosts[y][x];
-						changes += addLine("AP", CHARACTERS[id].AP);
-					}
-					CHARACTERS[id].X = x;
-					CHARACTERS[id].Y = y;
-					changes += addLine("X", x);
-					changes += addLine("Y", y);
-					sendData("STATS", changes);
-				}
-			}
-		}
+		msg = commandMove(id, words);
 	}
 	else if (keyword == "hp") {
 		if (words.size() > 0) {

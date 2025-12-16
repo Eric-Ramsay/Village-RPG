@@ -26,22 +26,13 @@ void DrawGraves() {
 		}
 	}
 	
-	graveBar.visible = true;
-	graveBar.visibleAtOnce = 8;
-	graveBar.numThings = graveList.size();
-	graveBar.dY = y + 34;
-	graveBar.dX = x + 250;
-	graveBar.height = graveBar.visibleAtOnce * 30;
-	DrawScrollbar(graveBar);
+	int startIndex;
+	int maxIndex;
+	setScrollBar(graveBar, x + 250, y + 34, graveList.size(), startIndex, maxIndex);
 
 	DrawSection(x, y + 10, 225, 15);
 	Print(UI.graveSearch + '_', x + 4, y + 14, 145);
 
-	int startIndex = graveBar.index;
-	int maxIndex = graveBar.index + graveBar.visibleAtOnce;
-	if (maxIndex > graveList.size()) {
-		maxIndex = graveList.size();
-	}
 	for (int i = startIndex; i < maxIndex; i++) {
 		int yPos = y + 34 + (i - startIndex) * 30;
 		Character C = graveList[i];
@@ -199,19 +190,11 @@ void DrawTrade() {
 	Print("*YELLOW*" + to_str(npc.ITEMS.size()) + " Items for Sale", x, y);
 
 	y = 120;
-	tradeBar.visible = true;
-	tradeBar.visibleAtOnce = 10;
-	tradeBar.numThings = npc.ITEMS.size();
-	tradeBar.dY = y;
-	tradeBar.dX = x + 250;
-	tradeBar.height = tradeBar.visibleAtOnce * 10;
-	DrawScrollbar(tradeBar);
 
-	int startIndex = tradeBar.index;
-	int maxIndex = tradeBar.index + tradeBar.visibleAtOnce;
-	if (maxIndex > npc.ITEMS.size()) {
-		maxIndex = npc.ITEMS.size();
-	}
+	int startIndex;
+	int maxIndex;
+	setScrollBar(tradeBar, x + 250, y, npc.ITEMS.size(), startIndex, maxIndex);
+
 	for (int i = startIndex; i < maxIndex; i++) {
 		UI_Item item = getItem(npc.ITEMS[i]);
 		Box box = Print("*PINK*" + padNum(i + 1) + "*GREY*) " + pretty(item.id), x, y + 10 * (i - startIndex), 420);
@@ -318,29 +301,30 @@ void DrawViewUI() {
 		if (terrain.damage > 0) {
 			description += "Deals *ORANGE*" + to_str(terrain.damage) + "*GREY* damage per turn.\n";
 		}
-		if (terrain.effects.size() > 0) {
-			description += "\n*TEAL*Afflicts the following effects: \n";
-		}
 
 		Box box = Print(description, x, y + 12);
 
-		int num = 0;
-		for (Effect effect : terrain.effects) {
-			num++;
-			Box effectBox = Print("*BLUE*" + pretty(effect.id), x, y + box.h + 11 * num);
-			if (mRange(effectBox)) {
-				UI.viewedEffect = effect.id;
+		if (terrain.effects.size() > 0) {
+			int yPos = y + 24 + box.h;
+			Print("*PINK*Effects", x, yPos);
+			CPrint("*YELLOW*Turns", x + 2 * w / 5, yPos);
+			CPrint("*PURPLE*Stacks", x + 2 * w / 3, yPos);
+			int num = 1;
+			for (Effect effect : terrain.effects) {
+				UI_Effect baseEffect = getEffect(effect.id);
+				int yPos = y + 24 + box.h + 11 * num;
+				num++;
+				std::string color = "*RED*";
+				if (baseEffect.type == "buff") {
+					color = "*GREEN*";
+				}
+				Box effectBox = Print(color + pretty(effect.id), x, yPos);
+				if (mRange(effectBox)) {
+					UI.viewedEffect = effect.id;
+				}
+				CPrint("*YELLOW*" + to_str(effect.turns), x + 2 * w / 5, yPos);
+				CPrint("*PURPLE*" + to_str(effect.stacks), x + 2 * w / 3, yPos);
 			}
-			std::string duration = "*YELLOW*" + to_str(effect.turns) + " turn";
-			if (effect.turns > 1) {
-				duration += "s";
-			}
-			std::string stacks = "*PURPLE*" + to_str(effect.stacks) + " stack";
-			if (effect.stacks > 1) {
-				stacks += "s";
-			}
-			Print(duration, x + 80, y + box.h + 11 * num);
-			Print(stacks, x + 135, y + box.h + 11 * num);
 		}
 	}
 	else {
@@ -356,10 +340,10 @@ void DrawViewUI() {
 		}
 		else {
 			Print("*YELLOW*\7", x + w - 10, y);
-			if (UI.viewedEffect != "") {
-				CPrint(EFFECTS[UI.viewedEffect].desc, x + w / 2, 339, w);
-			}
 		}
+	}
+	if (UI.viewedEffect != "") {
+		CPrint("*TEAL*" + EFFECTS[UI.viewedEffect].desc, x + w / 2, 339, w);
 	}
 }
 
@@ -488,13 +472,35 @@ void DrawCharacterUI(std::string id) {
 		}
 	}
 	else if (playerMenu.index == 1) {
-		CPrint("*PINK*Buffs", x + w / 2, y);
-		CPrint("*RED*Debuffs", x + w / 2, y + 55);
-
-		for (int i = 0; i < C.EFFECTS.size(); i++) {
-			CPrint(C.EFFECTS[i].id, x + w / 2, y + 10 * i);
+		if (C.EFFECTS.size() == 0) {
+			CPrint("*BLACK*You have no active effects.\n\nTip: You can hover an effect's name to see what it does.", x + w / 2, y, w);
 		}
+		else {
+			Print("*PINK*Effects", x, y);
+			CPrint("*YELLOW*Turns", x + 2 * w / 5, y);
+			CPrint("*PURPLE*Stacks", x + 2 * w / 3, y);
 
+			int numEffects = 0;
+			for (int i = 0; i < 2; i++) {
+				for (Effect effect : C.EFFECTS) {
+					UI_Effect baseEffect = getEffect(effect.id);
+					if ((i == 0 && baseEffect.type == "buff") || (i == 1 && baseEffect.type == "debuff")) {
+						numEffects++;
+						int yPos = y + 10 * numEffects;
+						std::string color = "*GREEN*";
+						if (baseEffect.type == "debuff") {
+							color = "*RED*";
+						}
+						Box effectBox = Print(color + pretty(effect.id), x, yPos);
+						if (mRange(effectBox)) {
+							UI.viewedEffect = effect.id;
+						}
+						CPrint("*YELLOW*" + to_str(effect.turns), x + 2 * w / 5, yPos);
+						CPrint("*PURPLE*" + to_str(effect.stacks), x + 2 * w / 3, yPos);
+					}
+				}
+			}
+		}
 	}
 	else if (playerMenu.index == 2) {
 		CPrint("*BLUE*Spell List", x + w / 2, y);
@@ -853,19 +859,10 @@ void DrawBattle(Battle battle) {
 		}
 	}
 	else {
-		lootBar.visible = true;
-		lootBar.visibleAtOnce = 17;
-		lootBar.numThings = battle.loot.size();
-		lootBar.dY = y + 29;
-		lootBar.dX = x + 420;
-		lootBar.height = lootBar.visibleAtOnce * 10;
-		DrawScrollbar(lootBar);
+		int startIndex;
+		int maxIndex;
+		setScrollBar(lootBar, x + 420, y + 29, battle.loot.size(), startIndex, maxIndex);
 
-		int startIndex = lootBar.index;
-		int maxIndex = lootBar.index + lootBar.visibleAtOnce;
-		if (maxIndex > lootBar.numThings) {
-			maxIndex = lootBar.numThings;
-		}
 		std::string helpMsg = "*YELLOW*Double click to take items";
 		if (battle.loot.size() == 0) {
 			helpMsg = "*BLACK*There's no loot here . . .";
@@ -1066,22 +1063,12 @@ void DrawLogs() {
 	int y = 244;
 	int x = 347;
 
-	logBar.visible = true;
-	logBar.dX = x;
-	logBar.dY = y;
-	logBar.numThings = min(20, logs.size());
-	logBar.visibleAtOnce = 7;
-	DrawScrollbar(logBar);
+	int startIndex;
+	int maxIndex;
+	setScrollBar(logBar, x, y, logs.size(), startIndex, maxIndex);
 
-	int startIndex = logBar.index;
-	int maxIndex = logBar.index + logBar.visibleAtOnce;
-	if (maxIndex > logs.size()) {
-		maxIndex = logs.size();
-	}
-	for (int i = 1; i <= 7; i++) {
-		if (logs.size() >= (i + logBar.index)) {
-			Print(logs[logs.size() - (i + logBar.index)], 5, HEIGHT - (11 + i * 15), 340);
-		}
+	for (int i = 1 + startIndex; i <= maxIndex; i++) {
+		Print(logs[logs.size() - i], 5, HEIGHT - (11 + (i - startIndex) * 15), 340);
 	}
 
 	if (logBar.index == 0) {

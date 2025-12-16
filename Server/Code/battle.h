@@ -169,7 +169,7 @@ void startTurn(Battle& battle) {
 		}
 	}
 
-	if (battle.turn == 0) {
+	if (battle.turn == 0 && battle.round > 0) {
 		for (int i = battle.hazards.size() - 1; i >= 0; i--) {
 			if (battle.hazards[i].duration > 0) {
 				hazards[battle.hazards[i].y][battle.hazards[i].x] = battle.hazards[i];
@@ -196,8 +196,23 @@ void startTurn(Battle& battle) {
 				msg += dealDamage(Attack(TRUE_DMG, terrain.damage, terrain.damage, 100, 100), hazard.summoner, C->ID, battle.characters).msg;
 			}
 			for (Effect effect : terrain.effects) {
-				msg += addEffect(C->ID, hazard.summoner, effect.id, effect.stacks, effect.turns);
+				msg += addEffect(C->ID, hazard.summoner, effect.id, effect.turns, effect.stacks);
 			}
+		}
+
+		for (int i = C->EFFECTS.size() - 1; i >= 0; i--) {
+			Effect* effect = &C->EFFECTS[i];
+			effect->turns--;
+			if (effect->turns > -1) {
+				if (effect->id == "poisoned" && C->HP > 1) {
+					C->HP = std::max(1, C->HP - effect->stacks);
+				}
+			}
+			else {
+				C->EFFECTS.erase(C->EFFECTS.begin() + i);
+			}
+		}
+		if (C->TYPE == "player") {
 			C->STAMINA = min(C->STAMINA + 2 * (1 + C->STATS[END]), MaxStamina(*C));
 			int diff = min(C->STAMINA, MaxAP(*C) - C->AP);
 			C->AP += diff;

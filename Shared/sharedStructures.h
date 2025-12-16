@@ -163,13 +163,15 @@ struct UI_Effect {
 	std::string id = "";
 	std::string desc = "";
 	bool canStack = false;
+	bool canRefresh = true;
 
-	UI_Effect(std::string t, std::string n, std::string d, bool cS = false) {
+	UI_Effect(std::string t, std::string n, std::string d, bool cS = false, bool cR = true) {
 		type = t;
 		id = low(n);
 		name = n;
 		desc = d;
 		canStack = cS;
+		canRefresh = cR;
 	}
 
 	UI_Effect() {}
