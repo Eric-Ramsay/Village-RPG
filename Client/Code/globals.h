@@ -1,6 +1,6 @@
 #pragma once
 
-std::deque<Message> messageBuffer = {};
+std::vector<Message> messageBuffer = {};
 bool SENDING = false;
 Message* bufferStart = nullptr;
 Message* bufferEnd = nullptr;

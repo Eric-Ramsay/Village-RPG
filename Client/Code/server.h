@@ -1,26 +1,13 @@
 #pragma once
 
 void sendData(std::string type, std::string data) {
-	std::string str = type + "!" + data + (char)250;
-	const int len = str.length();
+	std::string text = str(type) + data + (char)250;
+	const int len = text.length();
 	char* arr = new char[len + 1];
 	for (int i = 0; i < len; i++) {
-		arr[i] = str[i];
+		arr[i] = text[i];
 	}
 	send(sock, arr, len, 0);
-}
-
-
-int nextMessage(std::deque<Message>& msgs) {
-	int msgIndex = 0;
-	while (msgIndex < msgs.size() && msgs[msgIndex].done) {
-		msgIndex++;
-	}
-	if (msgIndex >= msgs.size()) {
-		Message m;
-		msgs.push_back(m);
-	}
-	return msgIndex;
 }
 
 
@@ -52,30 +39,10 @@ void listenToServer() {
 		Sleep(1);
 		int bytesReceived = recv(sock, buf, 8192, 0);
 		if (bytesReceived > 1) {
-			std::string text = "";
 			disconnects = 0;
 			int index = nextMessage(messageBuffer);
 			for (int i = 0; i < bytesReceived; i++) {
 				if (buf[i] == (char)(250)) {
-					std::string type = "";
-					std::string data = "";
-					bool setType = true;
-					for (int j = 0; j < messageBuffer[index].data.size(); j++) {
-						char c = messageBuffer[index].data[j];
-						if (setType) {
-							if (c == '!') {
-								setType = false;
-							}
-							else {
-								type += c;
-							}
-						}
-						else {
-							data += c;
-						}
-					}
-					messageBuffer[index].data = data;
-					messageBuffer[index].type = type;
 					messageBuffer[index].done = true;
 					index = nextMessage(messageBuffer);
 				}
@@ -83,11 +50,11 @@ void listenToServer() {
 					messageBuffer[index].data += buf[i];
 				}
 			}
-			std::deque<Message> newMessages = {};
+			std::vector<Message> newMessages = {};
 			for (int i = 0; i < messageBuffer.size(); i++) {
 				if (messageBuffer[i].done) {
 					SENDING = true;
-					Message* m = new Message(messageBuffer[i].type, messageBuffer[i].data);
+					Message* m = new Message(messageBuffer[i].data);
 					if (bufferStart == nullptr) {
 						bufferStart = m;
 					}

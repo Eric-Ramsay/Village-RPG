@@ -2,7 +2,7 @@ ID!!!eric clyde 176586980641!!!
 USER!!!eric!!!
 LOOK!!!aiaiakcdfbcnbeblae!!!
 DEATH!!!!!!
-HP!!!13!
+HP!!!5!
 X!!!2!
 Y!!!1!
 SX!!!0!
@@ -34,4 +34,4 @@ HITS!!!0!0!
 MISSES!!!0!0!
 STATS!!!0!0!0!0!0!0!0!
 INVENTORY!!!
-ITEM!!!INDEX!!!dagger.769!!!ATTACKS!!!2!EQUIPPED!!!1!RUNES!!!	!!!	!!!	
+ITEM!!!INDEX!!!dagger.769!!!ATTACKS!!!2!EQUIPPED!!!1!RUNES!!!	!!!	!!!	!!!	

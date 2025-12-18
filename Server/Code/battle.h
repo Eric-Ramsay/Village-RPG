@@ -143,7 +143,7 @@ std::string winBattle(Battle& battle) {
 			changes += addLine("AP", C->AP);
 			changes += addLine("STAMINA", C->STAMINA);
 			changes += "EFFECTS!!!" + serialize(C->EFFECTS) + "\n";
-			bundle += changes + '\t';
+			bundle += changes + (char)249;
 		}
 	}
 
@@ -151,14 +151,14 @@ std::string winBattle(Battle& battle) {
 		Item newItem(id);
 		battle.loot[newItem.index] = newItem;
 	}
-	sendData("BUNDLE", bundle);
+	sendData(bundle);
 
 	battle.dead = {};
 
 	return msg;
 }
 
-void startTurn(Battle& battle) {
+std::string startTurn(Battle& battle) {
 	std::string msg = "";
 
 	std::vector<std::vector<Hazard>> hazards = {};
@@ -235,6 +235,7 @@ void startTurn(Battle& battle) {
 	}
 	updateBattle(battle);
 	sendText(msg, battleIndices(battle));
+	return "";
 }
 
 void handleCombat(std::string id) {

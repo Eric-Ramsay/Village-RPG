@@ -39,18 +39,6 @@
 #include "commands.h"
 #include "listener.h"
 
-int nextMessage(std::vector<Message>& msgs) {
-	int msgIndex = 0;
-	while (msgIndex < msgs.size() && msgs[msgIndex].done) {
-		msgIndex++;
-	}
-	if (msgIndex >= msgs.size()) {
-		Message m;
-		msgs.push_back(m);
-	}
-	return msgIndex;
-}
-
 void Send() {
 	for (;;) {
 		Sleep(1);
@@ -63,7 +51,7 @@ void Send() {
 						if (j < players.size()) {
 							// The current client is one of the clients this message should be sent to
 							if (master.fd_array[i] == players[j].socket) {
-								std::string data = processing->type + "!" + processing->data + (char)(250);
+								std::string data = processing->data + (char)(250);
 								std::vector<std::string> dataToSend = {};
 
 								int numStrings = 1 + (int)data.length() / 8000;
@@ -145,34 +133,13 @@ void Listen() {
 						int bytesReceived = recv(players[i].socket, buf, 2048, 0);
 						if (bytesReceived >= 1) {
 							int index = nextMessage(players[i].messages);
-							std::string buffer = players[i].messages[index].data;
 							for (int j = 0; j < bytesReceived; j++) {
 								if (buf[j] == (char)(250)) {
-									std::string type = "";
-									std::string data = "";
-									bool setType = true;
-									for (int j = 0; j < buffer.size(); j++) {
-										char c = buffer[j];
-										if (setType) {
-											if (c == '!') {
-												setType = false;
-											}
-											else {
-												type += c;
-											}
-										}
-										else {
-											data += c;
-										}
-									}
-									players[i].messages[index].data = data;
-									players[i].messages[index].type = type;
 									players[i].messages[index].done = true;
 									index = nextMessage(players[i].messages);
-									buffer = players[i].messages[index].data;
 								}
 								else {
-									buffer += buf[j];
+									players[i].messages[index].data += buf[j];
 								}
 							}
 						}

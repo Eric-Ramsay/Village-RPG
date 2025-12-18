@@ -8,7 +8,7 @@ void ProcessMessages() {
 			if (players[i].messages[j].done) {
 				if (players[i].messages[j].data.size() > 0) {
 					std::string data = players[i].messages[j].data;
-					std::string type = players[i].messages[j].type;
+					std::string type = readStr(data);
 					std::cout << type << " " << data << std::endl;
 					if (!players[i].connected) {
 						if (type == "REGISTER_USERNAME") {
@@ -46,15 +46,15 @@ void ProcessMessages() {
 										addEffect(players[i].ID, "", "poisoned", 3);
 										std::string location = character.second.LOCATION;
 										if (BATTLES.count(location) > 0) {
-											bundle += str("BATTLE") + serialize(BATTLES[location]) + '\r';
+											bundle += addBundle("BATTLE", serialize(BATTLES[location]));
 										}
 									}
-									bundle += str("CHARACTER") + serialize(character.second) + '\r';
+									bundle += addBundle("CHARACTER", serialize(character.second));
 								}
 								for (auto character : GRAVES) {
-									bundle += str("GRAVE") + serialize(character.second) + '\r';
+									bundle += addBundle("GRAVE", serialize(character.second));
 								}
-								sendData("BUNDLE", bundle);
+								sendData(bundle);
 							}
 							else {
 								sendData("REJECT_PASSWORD", "", { i });

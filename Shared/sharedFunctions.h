@@ -384,7 +384,7 @@ void parseChange(Character& character, std::string type, std::string data) {
 	}
 	else if (type == "INVENTORY") {
 		character.INVENTORY = {};
-		std::vector<std::string> lines = split(data, '\n');
+		std::vector<std::string> lines = split(data, '\t');
 		for (int i = 0; i < lines.size(); i++) {
 			if (lines[i] != "") {
 				std::string header = readStr(lines[i]);
@@ -629,4 +629,17 @@ UI_Effect getEffect(std::string id) {
 	}
 	std::cout << "Effect not found: " << id << std::endl;
 	return UI_Effect("", "", "");
+}
+
+
+int nextMessage(std::vector<Message>& msgs) {
+	int msgIndex = 0;
+	while (msgIndex < msgs.size() && msgs[msgIndex].done) {
+		msgIndex++;
+	}
+	if (msgIndex >= msgs.size()) {
+		Message m;
+		msgs.push_back(m);
+	}
+	return msgIndex;
 }

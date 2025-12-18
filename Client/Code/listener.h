@@ -1,6 +1,7 @@
 #pragma once
 
 void process(std::string type, std::string data) {
+	std::cout << type << std::endl;
 	if (type == "TEXT") {
 		std::vector < std::string> lines = splitLines(data, 340);
 		for (std::string line : lines) {
@@ -107,13 +108,6 @@ void process(std::string type, std::string data) {
 			parseChange(CHARACTERS[id], type, str);
 		}
 	}
-	if (type == "BUNDLE") {
-		std::vector<std::string> strings = split(data, '\r');
-		for (std::string str : strings) {
-			std::string type = readStr(str);
-			process(type, str);
-		}
-	}
 	if (type == "BATTLE") {
 		std::vector<std::string> strings = split(data, '\n');
 		for (std::string str : strings) {
@@ -134,10 +128,13 @@ void processMessages() {
 		while (firstProcess != nullptr) {
 			static int numMessages = 0;
 			std::string data = firstProcess->data;
-			std::string type = firstProcess->type;
-			std::cout << type << " " << std::endl;
+			//std::cout << data << " " << std::endl;
 
-			process(type, data);
+			std::vector<std::string> strings = split(data, 249);
+			for (std::string str : strings) {
+				std::string type = readStr(str);
+				process(type, str);
+			}
 
 			Message* temp = firstProcess;
 			firstProcess = firstProcess->next;

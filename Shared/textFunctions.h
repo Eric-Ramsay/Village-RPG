@@ -250,6 +250,10 @@ std::string addLine(std::string stat, std::vector<int> value) {
 	return str(stat) + str(value) + "\n";
 }
 
+std::string addBundle(std::string type, std::string data) {
+	return str(type) + data + (char)249;
+}
+
 std::string pretty(std::string txt) {
 	if (txt.size() == 0) {
 		return txt;

@@ -1,7 +1,29 @@
 #pragma once
 void sendData(std::string type, std::string data, std::vector<int> sendList = {}) {
 	SENDING = TRUE;
-	Message* m = new Message(type, data, sendList);
+	Message* m = new Message(str(type) + data, sendList);
+	if (m->players.size() == 0) {
+		for (int i = 0; i < players.size(); i++) {
+			m->players.push_back(i);
+		}
+	}
+	if (bufferStart == nullptr) {
+		bufferStart = m;
+	}
+	else if (bufferStart->next == nullptr) {
+		bufferStart->next = m;
+		bufferEnd = m;
+	}
+	else {
+		bufferEnd->next = m;
+		bufferEnd = m;
+	}
+	SENDING = FALSE;
+}
+
+void sendData(std::string data, std::vector<int> sendList = {}) {
+	SENDING = TRUE;
+	Message* m = new Message(data, sendList);
 	if (m->players.size() == 0) {
 		for (int i = 0; i < players.size(); i++) {
 			m->players.push_back(i);
@@ -95,10 +117,10 @@ std::vector<int> battleIndices(Battle battle) {
 void updateBattle(Battle battle) {
 	std::string bundle = "";
 	for (std::string id : battle.characters) {
-		bundle += str("CHARACTER") + serialize(CHARACTERS[id]) + '\r';
+		bundle += str("CHARACTER") + serialize(CHARACTERS[id]) + (char)249;
 		save(CHARACTERS[id]);
 	}
-	sendData("BUNDLE", bundle);
+	sendData(bundle);
 	save(battle);
 	sendBattle(battle, battleIndices(battle));
 }
@@ -113,10 +135,10 @@ void removeLoot(Battle& battle, std::string index) {
 
 void removeCharacter(Character character) {
 	std::string bundle = "";
-	bundle += str("REMOVE_CHARACTER") + character.ID + '\r';
+	bundle += str("REMOVE_CHARACTER") + character.ID + (char)249;
 	if (character.TYPE == "player") {
 		std::string text = serialize(character);
-		bundle += str("GRAVE") + text + '\r';
+		bundle += str("GRAVE") + text + (char)249;
 		saveToFile("Characters/Graveyard/" + character.ID, text);
 		std::remove(("./Saves/Characters/" + character.ID + ".txt").c_str());
 	}
@@ -124,7 +146,7 @@ void removeCharacter(Character character) {
 		std::remove(("./Saves/Characters/Enemies/" + character.ID + ".txt").c_str());
 	}
 
-	sendData("BUNDLE", bundle);
+	sendData(bundle);
 
 	for (int i = 0; i < players.size(); i++) {
 		if (players[i].ID == character.ID) {

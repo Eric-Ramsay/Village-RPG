@@ -45,13 +45,11 @@ Attack T_Attack(int min, int max, int hitChance = 100, int pen = 100) {
 
 struct Message {
 	std::vector<int> players = {};
-	std::string type = "";
 	std::string data = "";
 	Message* next = nullptr;
 	bool done = false;
 
-	Message(std::string t = "", std::string d = "", std::vector<int> p = {}) {
-		type = t;
+	Message(std::string d = "", std::vector<int> p = {}) {
 		data = d;
 		players = p;
 	}
