@@ -134,9 +134,6 @@ struct Item {
 	int attacks = 0;
 	Item(std::string id1 = "") {
 		id = id1;
-		if (id1 == "") {
-			std::cout << "Weird Item detected" << std::endl;
-		}
 		index = id1 + "." + rand() % 9999;
 	}
 };

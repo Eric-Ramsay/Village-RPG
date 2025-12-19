@@ -39,8 +39,15 @@ Thief - Rob the fat merchant in the Wilted Woods - When you buy something from t
 
 
 
-1. Effect System
-	- Implementing Effects (At least 10-20)
+1. Player tracks all battles
+	- Same as characters
+	- Server sends all battle info to all clients
+
+2. Animation work
+	- Battle/Character used in UI is a copy, updated by animation queue.
+	- Animation queue
+	- Client shows animations when certain things received
+	- Server refactor to send all data sequentially during combat, rather than total state messages
 	
 3. Enemies
 	- Implement new enemies, using effects + hazards

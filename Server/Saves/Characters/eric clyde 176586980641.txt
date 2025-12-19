@@ -2,16 +2,16 @@ ID!!!eric clyde 176586980641!!!
 USER!!!eric!!!
 LOOK!!!aiaiakcdfbcnbeblae!!!
 DEATH!!!!!!
-HP!!!5!
-X!!!2!
-Y!!!1!
+HP!!!27!
+X!!!4!
+Y!!!0!
 SX!!!0!
 SY!!!176!
 ARMOR!!!0!
 MAXHP!!!30!
 TYPE!!!player!!!
 NAME!!!Clyde!!!
-LOCATION!!!Wilted Woods.3096!!!
+LOCATION!!!Wilted Woods.7519!!!
 TEAM!!!0!
 EFFECTS!!!
 STAMINA!!!20!
@@ -20,7 +20,7 @@ TRADING!!!!!!
 LEVEL!!!1!
 XP!!!0!
 SP!!!0!
-GOLD!!!20!
+GOLD!!!15!
 AP!!!6!
 BACKPACK!!!0!
 ENDED!!!0!
@@ -34,4 +34,4 @@ HITS!!!0!0!
 MISSES!!!0!0!
 STATS!!!0!0!0!0!0!0!0!
 INVENTORY!!!
-ITEM!!!INDEX!!!dagger.769!!!ATTACKS!!!2!EQUIPPED!!!1!RUNES!!!	!!!	!!!	!!!	
+ITEM!!!INDEX!!!dagger.769!!!ATTACKS!!!2!EQUIPPED!!!1!RUNES!!!	!!!	!!!	!!!	!!!	

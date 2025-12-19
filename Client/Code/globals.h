@@ -7,7 +7,7 @@ Message* bufferEnd = nullptr;
 Message* firstProcess = nullptr;
 
 bool connected = true;
-std::string IP = "10.0.0.143";
+std::string IP = "10.0.0.12";
 sockaddr_in hint;
 int port = 1234;
 SOCKET sock;

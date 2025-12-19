@@ -714,8 +714,10 @@ void DrawBattle(Battle battle) {
 	}
 
 	for (std::string id : battle.characters) {
-		Character C = getCharacter(id);
-		characters[C.Y][C.X] = id;
+		if (CHARACTERS.count(id) > 0) {
+			Character C = CHARACTERS[id];
+			characters[C.Y][C.X] = id;
+		}
 	}
 
 	Print("*RED*" + battle.zone, x, y + 1);
@@ -828,7 +830,7 @@ void DrawBattle(Battle battle) {
 	y += 10;
 
 	if (combatMenu.index == 0) {
-		Print("*PINK*Enemies", x + 200, y + 10);
+		Print("*PINK*Enemies", x + 200, y + 20);
 		Print("*YELLOW*Allies", x + 200, y + 107);
 		for (int i = 0; i < battle.characters.size(); i++) {
 			int xPos = x + 200;

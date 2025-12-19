@@ -172,8 +172,8 @@ void initEnemies() {
 	enemies.push_back(Character("Acidic Slime",  40, 2, 40, { 2 }, 3, "animal", ""));
 
 	for (int i = 0; i < enemies.size(); i++) {
-		enemies[i].SX = 16 + 16 * (i % 26);
-		enemies[i].SY = 176 + 16 * (	i / 26);
+		enemies[i].SX = 16 * (i % 26);
+		enemies[i].SY = 176 + 16 * (i / 26);
 		ENEMIES[low(enemies[i].ID)] = enemies[i];
 	}
 }

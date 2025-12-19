@@ -9,43 +9,42 @@ int getZoneIndex(std::string zone) {
 	return 0;
 }
 
-bool validateBattle(std::string id) {
-	if (BATTLES.count(id) == 0) {
-		return false;
+std::string validateBattle(std::string battleId) {
+	if (BATTLES.count(battleId) == 0) {
+		return "";
 	}
-	bool update = false;
-	int numCharacters = 0;
-	for (int i = BATTLES[id].characters.size() - 1; i >= 0; i--) {
-		std::string character = BATTLES[id].characters[i];
-		if (CHARACTERS.count(character) == 0 || CHARACTERS[character].LOCATION != id) {
-			BATTLES[id].characters.erase(BATTLES[id].characters.begin() + i);
-		}
-		else if (CHARACTERS[character].HP <= 0) {
-			BATTLES[id].characters.erase(BATTLES[id].characters.begin() + i);
-			BATTLES[id].dead.push_back(character);
-			removeCharacter(CHARACTERS[character]);
-			update = true;
-		}
-		else if (CHARACTERS[character].TYPE == "player") {
-			numCharacters++;
-		}
-	}
-	if (numCharacters == 0) {
-		std::string filePath = "./Saves/Battles/" + BATTLES[id].id + ".txt";
-		std::remove(filePath.c_str());
-		for (int i = BATTLES[id].characters.size() - 1; i >= 0; i--) {
-			std::string playerId = BATTLES[id].characters[i];
-			if (CHARACTERS[playerId].TYPE != "player") {
-				removeCharacter(CHARACTERS[playerId]);
+	std::string changes = "";
+	int numPlayers = 0;
+	std::vector<std::string> newCharacters = {};
+	for (std::string id : BATTLES[battleId].characters) {
+		if (CHARACTERS.count(id) > 0) {
+			Character C = CHARACTERS[id];
+			if (C.HP <= 0) {
+				BATTLES[id].dead.push_back(id);
+				changes += removeCharacter(C);
+			}
+			else if (C.LOCATION == battleId) {
+				newCharacters.push_back(id);
+				if (C.TYPE == "player") {
+					numPlayers++;
+				}
 			}
 		}
-		BATTLES.erase(id);
-		return false;
 	}
-	else if (update) {
-		updateBattle(BATTLES[id]);
+	if (numPlayers == 0) {
+		std::string filePath = "./Saves/Battles/" + BATTLES[id].id + ".txt";
+		std::remove(filePath.c_str());
+		for (std::string id : BATTLES[id].characters) {
+			changes += removeCharacter(id);
+		}
 	}
-	return true;
+	else {
+		BATTLE[battleId].characters = newCharacters;
+		if (changes != "") {
+			saveBattle(BATTLES[id]);
+		}
+	}
+	return changes;
 }
 
 bool turnCompleted(std::vector<std::string> ids, int turn) {
@@ -159,7 +158,7 @@ std::string winBattle(Battle& battle) {
 }
 
 std::string startTurn(Battle& battle) {
-	std::string msg = "";
+	std::string changes = "";
 
 	std::vector<std::vector<Hazard>> hazards = {};
 	for (int i = 0; i < 12; i++) {
@@ -233,41 +232,51 @@ std::string startTurn(Battle& battle) {
 			C->ENDED = true;
 		}
 	}
-	updateBattle(battle);
+	saveBattle(battle);
 	sendText(msg, battleIndices(battle));
 	return "";
 }
 
 void handleCombat(std::string id) {
-	Battle* battle = &BATTLES[id];
-	std::string msg = "";
-	if (battle->round == 0) {
+	bool delta = false;
+	std::string changes = validateBattle(id);
+	if (BATTLES.count(id) == 0 || BATTLES[id].round == 0) {
 		return;
 	}
-	if (validateBattle(id)) {
-		bool battleWon = true;
-		for (std::string id : battle->characters) {
-			if (CHARACTERS[id].TEAM > 0) {
-				battleWon = false;
-				break;
-			}
-		}
-		if (battleWon) {
-			msg = winBattle(*battle);
-			updateBattle(*battle);
-		}
-		else {
-			while (turnCompleted(battle->characters, battle->turn) && validateBattle(id)) {
-				battle->turn = !battle->turn;
-				if (battle->turn == 0) {
-					battle->round++;
-				}
-				startTurn(*battle);
-			}
+
+	Battle* battle = BATTLES[id];
+
+	bool battleWon = true;
+	for (std::string id : battle->characters) {
+		if (CHARACTERS.count(id) > 0 && CHARACTERS[id].TEAM > 0) {
+			battleWon = false;
+			break;
 		}
 	}
-	if (BATTLES.count(id)) {
-		sendText(msg, battleIndices(*battle));
+	if (battleWon) {
+		changes += winBattle(*battle);
+		saveBattle(*battle);
+	}
+	else {
+		while (BATTLES.count(id) > 0 && turnCompleted(battle->characters, battle->turn)) {
+			delta = true;
+			battle->turn = !battle->turn;
+			if (battle->turn == 0) {
+				battle->round++;
+			}
+			changes += startTurn(*battle);
+			saveBattle(*battle);
+			changes += validateBattle(id);
+		}
+	}
+	if (changes != "") {
+		std::vector<int> present = {};
+		for (int i = 0; i < players.size(); i++) {
+			if (CHARACTERS.count(players[i].ID) > 0 && CHARACTERS[players[i].ID].LOCATION == id) {
+				present.push_back(i);
+			}
+		}
+		sendData(changes, present);
 	}
 }
 
@@ -280,16 +289,13 @@ void summon(Battle& battle, Character enemy, int x = 0, int y = 0, int team = 1)
 	enemy.TEAM = team;
 	battle.characters.push_back(id);
 	CHARACTERS[id] = enemy;
-	sendCharacter(enemy);
+	//sendCharacter(enemy);
 	save(enemy);
 }
 
-void summon(Battle& battle, std::vector<Character> enemyList, int team = 1, bool update = false) {
+void summon(Battle& battle, std::vector<Character> enemyList, int team = 1) {
 	for (Character enemy : enemyList) {
 		summon(battle, enemy, team);
-	}
-	if (update) {
-		updateBattle(battle);
 	}
 }
 
@@ -297,7 +303,6 @@ void summon(Battle& battle, std::string name, int team = 1) {
 	for (auto enemy : ENEMIES) {
 		if (low(enemy.second.NAME) == low(name)) {
 			summon(battle, enemy.second, team);
-			updateBattle(battle);
 			return;
 		}
 	}
@@ -430,5 +435,5 @@ void startBattle(Battle& battle) {
 	addRiver(battle);
 	addTrees(battle);
 
-	updateBattle(battle);
+	saveBattle(battle);
 }
