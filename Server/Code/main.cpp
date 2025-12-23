@@ -162,7 +162,7 @@ void Input() {
 		Sleep(1);
 		std::string text;
 		std::getline(std::cin, text);
-		sendData("TEXT", text);
+		sendText(text);
 	}
 }
 

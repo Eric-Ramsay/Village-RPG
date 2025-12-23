@@ -273,7 +273,7 @@ struct Character {
 	int Y_PREFERENCE = 0;
 
 	// Enemy Stats
-	int MaxHP = 30;
+	int MAX_HP = 30;
 	int PHASE = 0;
 	int MOVES = 0;
 	std::vector<int> ZONES;
@@ -285,7 +285,7 @@ struct Character {
 	{
 		NAME = name;
 		ID = name;
-		MaxHP = hp;
+		MAX_HP = hp;
 		STATS[DEF] = def;
 		LEVEL = difficulty;
 		ZONES = zones;

@@ -32,7 +32,8 @@ int numStacks(Character C, std::string effectId) {
 	return -1;
 }
 
-Result takeDamage(Attack attack, std::string targetId, std::vector<std::string> characters) {
+Result takeDamage(Battle battle, Attack attack, std::string targetId) {
+	std::string msg = "";
 	Result result;
 	if (CHARACTERS.count(targetId) == 0) {
 		return result;
@@ -44,21 +45,30 @@ Result takeDamage(Attack attack, std::string targetId, std::vector<std::string> 
 		dmg = attack.min + rand() % (attack.max - attack.min);
 	}
 	if (hitValue < attack.hitChance) {
-		result.msg = name(target) + " takes *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
-		result.damage = dmg;
 		target->HP -= dmg;
+
+		result.damage = dmg;
+		result.changes += addBundle("STAT", str(targetId) + str("HP") + str(target->HP));
+		msg = name(target) + " takes *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
+		
 		if (target->HP <= 0) {
 			target->DEATH = "The Environment";
+			result.changes += addBundle("STAT", str(targetId) + str("DEATH") + str(target->DEATH));
+			msg += "*RED*" + pretty(name(target)) + " is struck down!\n";
 		}
+	}
+	if (msg != "") {
+		result.changes += addBundle("TEXT", str(battle.id) + msg);
 	}
 
 	return result;
 }
 
-Result dealDamage(Attack attack, std::string attackerId, std::string targetId, std::vector<std::string> characters) {
+Result dealDamage(Battle battle, Attack attack, std::string attackerId, std::string targetId) {
+	std::string msg = "";
 	Result result;
 	if (CHARACTERS.count(attackerId) == 0) {
-		return takeDamage(attack, targetId, characters);
+		return takeDamage(battle, attack, targetId);
 	}
 
 	if (CHARACTERS.count(targetId) == 0) {
@@ -73,16 +83,24 @@ Result dealDamage(Attack attack, std::string attackerId, std::string targetId, s
 		dmg = attack.min + rand() % (attack.max - attack.min);
 	}
 	if (hitValue < attack.hitChance) {
-		result.msg = "*ORANGE*" + pretty(name(attacker)) + " *RED*attacks " + name(target) + " for *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
-		result.damage = dmg;
 		target->HP -= dmg;
+
+		result.damage = dmg;
+		result.changes += addBundle("STAT", str(targetId) + str("HP") + str(target->HP));
+		msg += "*ORANGE*" + pretty(name(attacker)) + " *RED*attacks " + name(target) + " for *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
+
 		if (target->HP <= 0) {
 			target->DEATH = pretty(name(attacker, false));
+			result.changes += addBundle("STAT", str(targetId) + str("DEATH") + str(target->DEATH));
+			msg += "*RED*" + pretty(name(target)) + " is struck down!\n";
 		}
 	}
 	else {
-		result.msg += "*ORANGE*" + pretty(name(attacker)) + " *RED*misses!\n";
-		result.damage = 0;
+		msg += "*ORANGE*" + pretty(name(attacker)) + " *RED*misses!\n";
+	}
+
+	if (msg != "") {
+		result.changes += addBundle("TEXT", str(battle.id) + msg);
 	}
 
 	return result;

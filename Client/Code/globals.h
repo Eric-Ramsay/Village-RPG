@@ -16,6 +16,9 @@ std::unordered_map<std::string, UI_Item> ITEMS = {};
 std::unordered_map<std::string, NPC> PEOPLE = {};
 std::unordered_map<std::string, Location> LOCATIONS = {};
 std::unordered_map<std::string, Character> ENEMIES = {};
+std::unordered_map<std::string, Battle> BATTLES = {};
+
+std::deque<Animation> animations = {};
 
 UIState UI;
 
@@ -23,7 +26,7 @@ std::vector<sf::Vertex> vertices;
 int numVertices = 0;
 int vertSize = 200000;
 
-Battle BATTLE;
+//Battle BATTLE;
 
 int WIDTH = 640;
 int HEIGHT = 360;

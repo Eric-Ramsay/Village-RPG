@@ -117,18 +117,6 @@ void initLocations() {
 	for (Location loc : locations) {
 		LOCATIONS[low(loc.id)] = loc;
 	}
-
-	std::cout << "Beginning Check" << std::endl;
-
-	for (auto loc : LOCATIONS) {
-		getLocation(loc.second.id);
-		for (Connection con : loc.second.connections) {
-			getLocation(con.location);
-		}
-		for (std::string id : loc.second.buildings) {
-			getLocation(id);
-		}
-	}
 }	
 
 void addTerrain(std::string n, int mC = 2, int health = 0, int dmg = 0, std::vector<Effect> effectList = {}) {
@@ -164,12 +152,12 @@ void initEnemies() {
 	std::vector<Character> enemies = {};
 	//Character Enemy(std::string name, int hp, std::vector<int> armor, int difficulty, std::vector<int> zones, int AP, std::string type, std::string desc)
 	enemies.push_back(Character("Crazed Wolf", 40, 2, 40, { 2 }, 3, "animal", "A mangy wolf, foaming at its mouth and snapping viciously."));
-	enemies.push_back(Character("Giant Amoeba",  40, 2, 40, { 2 }, 3, "animal", ""));
-	enemies.push_back(Character("Slugbeast",  40, 2, 40, { 2 }, 3, "animal", ""));
-	enemies.push_back(Character("Goblin Archer",  40, 2, 40, { 2 }, 3, "animal", ""));
-	enemies.push_back(Character("Goblin Swordsman",  40, 2, 40, { 2 }, 3, "animal", ""));
-	enemies.push_back(Character("Goblin Spearman",  40, 2, 40, { 2 }, 3, "animal", ""));
-	enemies.push_back(Character("Acidic Slime",  40, 2, 40, { 2 }, 3, "animal", ""));
+	//enemies.push_back(Character("Giant Amoeba",  40, 2, 40, { 2 }, 3, "animal", ""));
+	//enemies.push_back(Character("Slugbeast",  40, 2, 40, { 2 }, 3, "animal", ""));
+	//enemies.push_back(Character("Goblin Archer",  40, 2, 40, { 2 }, 3, "animal", ""));
+	//enemies.push_back(Character("Goblin Swordsman",  40, 2, 40, { 2 }, 3, "animal", ""));
+	//enemies.push_back(Character("Goblin Spearman",  40, 2, 40, { 2 }, 3, "animal", ""));
+	//enemies.push_back(Character("Acidic Slime",  40, 2, 40, { 2 }, 3, "animal", ""));
 
 	for (int i = 0; i < enemies.size(); i++) {
 		enemies[i].SX = 16 * (i % 26);

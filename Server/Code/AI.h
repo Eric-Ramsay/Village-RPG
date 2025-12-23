@@ -17,7 +17,8 @@ std::vector<std::string> findTargets(int x, int y, int range, std::vector<std::s
 	return targets;
 }
 
-void moveInRange(Character* C, std::vector<std::string> enemies, int range, std::vector<std::vector<int>> movementCosts, bool retreat = false) {
+std::string moveInRange(Character* C, std::vector<std::string> enemies, int range, std::vector<std::vector<int>> movementCosts, bool retreat = false) {
+	std::string changes = "";
 	float minDist = 9999;
 	int minX = C->X;
 	int minY = C->Y;
@@ -34,7 +35,7 @@ void moveInRange(Character* C, std::vector<std::string> enemies, int range, std:
 
 	int startDist = atkDist(minX, minY, C->X, C->Y);
 	if ((!retreat && startDist < range) || startDist == range) {
-		return;
+		return "";
 	}
 
 	int newX = C->X;
@@ -58,10 +59,14 @@ void moveInRange(Character* C, std::vector<std::string> enemies, int range, std:
 		C->X = newX;
 		C->Y = newY;
 		C->AP -= movementCosts[newY][newX];
+		changes += addBundle("STAT", str(C->ID) + str("X") + str(C->X));
+		changes += addBundle("STAT", str(C->ID) + str("Y") + str(C->Y));
 	}
+	return changes;
 }
 
 std::string enemyAttack(std::string enemyId, Battle battle) {
+	std::string changes = "";
 	std::string msg = "";
 	Character* C = &CHARACTERS[enemyId];
 
@@ -95,14 +100,15 @@ std::string enemyAttack(std::string enemyId, Battle battle) {
 		std::vector<std::string> targets = findTargets(C->X, C->Y, 1, enemies);
 		if (targets.size() > 0) {
 			int index = rand() % targets.size();
-			Result result = dealDamage(P_Attack(10, 16, 90), C->ID, CHARACTERS[enemies[index]].ID, battle.characters);
+			Result result = dealDamage(battle, P_Attack(10, 16, 90), C->ID, CHARACTERS[enemies[index]].ID);
 			msg += "*RED*" + pretty(Name(*C)) + " bites savagely at " + pretty(CHARACTERS[enemies[index]].NAME);
 			if (result.damage > 0) {
 				msg += ", dealing *ORANGE*" + to_str(result.damage) + "*RED* damage!\n";
 			}
+			changes += result.changes;
 		}
 		else {
-			moveInRange(C, enemies, 1, movementCosts, true);
+			changes += moveInRange(C, enemies, 1, movementCosts, true);
 		}
 	}
 
@@ -127,5 +133,10 @@ std::string enemyAttack(std::string enemyId, Battle battle) {
 	data += changes;
 	sendData("BUNDLE", data);
 	save(*C);*/
-	return msg;
+
+	if (msg != "") {
+		changes += addBundle("TEXT", str(battle.id) + msg);
+	}
+
+	return changes;
 }

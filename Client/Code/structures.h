@@ -1,12 +1,14 @@
 #pragma once
 
 struct C {
-	int x;
-	int y;
+	int x = 0;
+	int y = 0;
 	C(int x1, int y1) {
 		x = x1;
 		y = y1;
 	}
+
+	C() {}
 	bool operator==(const C rhs) {
 		return this->x == rhs.x && this->y == rhs.y;
 	}
@@ -182,3 +184,43 @@ struct Tab {
 		}
 	}
 };
+
+struct Position {
+	float x;
+	float y;
+	Position(int x1, int y1) {
+		x = x1;
+		y = y1;
+	}
+
+	Position() {}
+};
+
+struct Animation {
+	std::string type = "";
+	int duration = 25;
+	int timePassed = 0;
+
+	Position position;
+	Position endPos;
+
+	float opacity = 255;
+	int endOpacity = 255;
+	int beginFade = 0;
+
+	
+	// Text Animation
+	std::string text = "";
+
+	// Sprite Animation
+	std::string characterId = "";
+
+	// Line Animation
+	std::string color = "";
+
+	Animation() {}
+};
+
+
+
+

@@ -32,16 +32,16 @@ std::string validateBattle(std::string battleId) {
 		}
 	}
 	if (numPlayers == 0) {
-		std::string filePath = "./Saves/Battles/" + BATTLES[id].id + ".txt";
+		std::string filePath = "./Saves/Battles/" + BATTLES[battleId].id + ".txt";
 		std::remove(filePath.c_str());
-		for (std::string id : BATTLES[id].characters) {
-			changes += removeCharacter(id);
+		for (std::string id : BATTLES[battleId].characters) {
+			changes += removeCharacter(CHARACTERS[id]);
 		}
 	}
 	else {
-		BATTLE[battleId].characters = newCharacters;
+		BATTLES[battleId].characters = newCharacters;
 		if (changes != "") {
-			saveBattle(BATTLES[id]);
+			saveBattle(BATTLES[battleId]);
 		}
 	}
 	return changes;
@@ -60,13 +60,12 @@ bool turnCompleted(std::vector<std::string> ids, int turn) {
 }
 
 std::string winBattle(Battle& battle) {
-	std::string msg = "*GREEN*The enemies are all slain!*GREY*\n";
-	battle.round = 0;
+	std::string changes = textChange("*GREEN*The enemies are all slain!*GREY*\n");
+	changes += makeChange(battle, "ROUND", str(0));
 
 	// Process dead characters
 	int lootMax = max(20, battle.difficulty / 3);
 	int lootValue = 0;
-	lootMax = 0;
 	std::vector<std::string> dropList = {};
 	for (std::string id : battle.dead) {
 		std::vector<std::string> splitId = split(id, '.');
@@ -116,11 +115,8 @@ std::string winBattle(Battle& battle) {
 	// Give out gold and XP
 	int goldReward = min(200, 10 + (battle.difficulty / 20));
 	int expReward = battle.difficulty;
-	goldReward = 0;
-	expReward = 0;
-	msg = msg + "*GREEN*Each player gains " + goldReward + " gold and " + expReward + " experience!\n";
+	//changes += textChange("*GREEN*Each player gains " + goldReward + " gold and " + expReward + " experience!\n");
 
-	std::string bundle = "";
 	for (std::string id : battle.characters) {
 		Character* C = &CHARACTERS[id];
 		if (C->TYPE == "player") {
@@ -131,10 +127,11 @@ std::string winBattle(Battle& battle) {
 				C->SP++;
 				C->LEVEL++;
 			}
+			changes += 
 			C->AP = MaxAP(*C);
 			C->STAMINA = MaxStamina(*C);
 			C->EFFECTS = { };
-			std::string changes = str(C->ID);
+
 			changes += addLine("GOLD", C->GOLD);
 			changes += addLine("XP", C->XP);
 			changes += addLine("SP", C->SP);
@@ -142,7 +139,7 @@ std::string winBattle(Battle& battle) {
 			changes += addLine("AP", C->AP);
 			changes += addLine("STAMINA", C->STAMINA);
 			changes += "EFFECTS!!!" + serialize(C->EFFECTS) + "\n";
-			bundle += changes + (char)249;
+			//bundle += changes + (char)249;
 		}
 	}
 
@@ -150,15 +147,15 @@ std::string winBattle(Battle& battle) {
 		Item newItem(id);
 		battle.loot[newItem.index] = newItem;
 	}
-	sendData(bundle);
 
 	battle.dead = {};
 
-	return msg;
+	return changes;
 }
 
 std::string startTurn(Battle& battle) {
 	std::string changes = "";
+	bool delta = false;
 
 	std::vector<std::vector<Hazard>> hazards = {};
 	for (int i = 0; i < 12; i++) {
@@ -177,6 +174,7 @@ std::string startTurn(Battle& battle) {
 				battle.hazards[i].duration--;
 				if (battle.hazards[i].duration < 0) {
 					battle.hazards.erase(battle.hazards.begin() + i);
+					delta = true;
 				}
 			}
 		}
@@ -192,10 +190,10 @@ std::string startTurn(Battle& battle) {
 			Hazard hazard = hazards[C->Y][C->X];
 			Terrain terrain = TERRAIN[hazard.index];
 			if (terrain.damage > 0) {
-				msg += dealDamage(Attack(TRUE_DMG, terrain.damage, terrain.damage, 100, 100), hazard.summoner, C->ID, battle.characters).msg;
+				changes += dealDamage(battle, Attack(TRUE_DMG, terrain.damage, terrain.damage, 100, 100), hazard.summoner, C->ID).changes;
 			}
 			for (Effect effect : terrain.effects) {
-				msg += addEffect(C->ID, hazard.summoner, effect.id, effect.turns, effect.stacks);
+				changes += addEffect(C->ID, hazard.summoner, effect.id, effect.turns, effect.stacks);
 			}
 		}
 
@@ -217,6 +215,9 @@ std::string startTurn(Battle& battle) {
 			C->AP += diff;
 			C->STAMINA -= diff;
 			C->ENDED = false;
+			//changes += addBundle("STAT", str(C.ID) + str("AP") + str(C->AP));
+			//changes += addBundle("STAT", str(C.ID) + str("STAMINA") + str(C->STAMINA));
+			//changes += addBundle("STAT", str(C.ID) + str("ENDED") + str(C->ENDED));
 			for (auto item : C->INVENTORY) {
 				if (item.second.equipped) {
 					UI_Item rawItem = getItem(item.second.id);
@@ -228,13 +229,17 @@ std::string startTurn(Battle& battle) {
 		}
 		else {
 			C->AP = 12;
-			msg += enemyAttack(C->ID, battle);
+			changes += enemyAttack(C->ID, battle);
 			C->ENDED = true;
 		}
 	}
 	saveBattle(battle);
-	sendText(msg, battleIndices(battle));
-	return "";
+
+	if (delta) {
+		changes += addBundle("BATTLE", serialize(battle));
+	}
+
+	return changes;
 }
 
 void handleCombat(std::string id) {
@@ -244,7 +249,7 @@ void handleCombat(std::string id) {
 		return;
 	}
 
-	Battle* battle = BATTLES[id];
+	Battle* battle = &BATTLES[id];
 
 	bool battleWon = true;
 	for (std::string id : battle->characters) {
@@ -264,23 +269,19 @@ void handleCombat(std::string id) {
 			if (battle->turn == 0) {
 				battle->round++;
 			}
+			//changes += addBundle("BATTLE_STAT", "ROUND", str(battle->round));
+			//changes += addBundle("BATTLE_STAT", "TURN", str(battle->round));
 			changes += startTurn(*battle);
 			saveBattle(*battle);
 			changes += validateBattle(id);
 		}
 	}
 	if (changes != "") {
-		std::vector<int> present = {};
-		for (int i = 0; i < players.size(); i++) {
-			if (CHARACTERS.count(players[i].ID) > 0 && CHARACTERS[players[i].ID].LOCATION == id) {
-				present.push_back(i);
-			}
-		}
-		sendData(changes, present);
+		sendData(changes);
 	}
 }
 
-void summon(Battle& battle, Character enemy, int x = 0, int y = 0, int team = 1) {
+void summon(Battle& battle, Character& enemy, int x = 0, int y = 0, int team = 1) {
 	std::string id = enemy.NAME + "." + battle.id + "." + to_str(rand() % 9999);
 	enemy.ID = id;
 	enemy.X = x;
@@ -293,7 +294,7 @@ void summon(Battle& battle, Character enemy, int x = 0, int y = 0, int team = 1)
 	save(enemy);
 }
 
-void summon(Battle& battle, std::vector<Character> enemyList, int team = 1) {
+void summon(Battle& battle, std::vector<Character>& enemyList, int team = 1) {
 	for (Character enemy : enemyList) {
 		summon(battle, enemy, team);
 	}
@@ -382,6 +383,8 @@ void addTrees(Battle& battle) {
 }
 
 void startBattle(Battle& battle) {
+	std::string bundle = "";
+
 	std::vector<Character> enemies = {};
 	battle.round = 1;
 	battle.turn = 0;
@@ -430,10 +433,14 @@ void startBattle(Battle& battle) {
 		int x = rand() % 12;
 		int y = rand() % 2;
 		summon(battle, enemy, x, y);
+		bundle += addBundle("CHARACTER", serialize(enemy));
 	}
 
 	addRiver(battle);
 	addTrees(battle);
 
+	bundle += addBundle("BATTLE", serialize(battle));
+
 	saveBattle(battle);
+	sendData(bundle);
 }

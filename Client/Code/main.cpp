@@ -98,8 +98,7 @@ int main()
 	auto clock = sf::Clock{};
 	float timeSinceLastClick = 0;
 	float elapsedTime = 0;
-	float targetTime = .04f;
-
+	float targetTime = 1/60;
 
 	UI.W = sf::VideoMode::getDesktopMode().width;
 	UI.H = sf::VideoMode::getDesktopMode().height;
@@ -119,8 +118,6 @@ int main()
 
 	int xScale = UI.W / WIDTH;
 	int yScale = UI.H / HEIGHT;
-
-	
 
 	while (!quit && window.isOpen()) {
 		sf::Event event;
@@ -294,7 +291,6 @@ int main()
 				}
 			}
 		}
-		Sleep(1);
 		if (UI.inGame) {
 			if (updateFPS) {
 				FPS = 1.f / clock.getElapsedTime().asSeconds();
@@ -340,7 +336,30 @@ int main()
 				else {
 					holdingBackspace = 0;
 				}
+
+				if (animations.size() > 0) {
+					animations[0].timePassed++;
+					if (animations[0].timePassed >= animations[0].duration) {
+						animations.pop_front();
+					}
+					else {
+						float x = animations[0].position.x;
+						float y = animations[0].position.y;
+						float endX = animations[0].endPos.x;
+						float endY = animations[0].endPos.y;
+						int timeRemaining = (animations[0].duration - animations[0].timePassed);
+						animations[0].position.x += (endX - x) / timeRemaining;
+						animations[0].position.y += (endY - y) / timeRemaining;
+
+						if (animations[0].timePassed >= animations[0].beginFade) {
+							animations[0].opacity += (animations[0].endOpacity - animations[0].opacity) / timeRemaining;
+						}
+					}
+				}
 			}
+
+
+			processMessages();
 
 			sf::Sprite sprite;
 			sprite.setPosition(0, 0);
@@ -357,6 +376,8 @@ int main()
 				}
 				UI.tooltip = "";
 				DrawUI();
+
+				CPrint(to_str((int)FPS), WIDTH / 2, 1);
 			}
 			else {
 				DrawLogs();

@@ -21,12 +21,12 @@ void connect() {
 	inet_pton(AF_INET, IP.c_str(), &hint.sin_addr);
 
 	sock = socket(AF_INET, SOCK_STREAM, 0);
-
-	int connection = connect(sock, (sockaddr*)&hint, sizeof(hint));
-	if (connection == SOCKET_ERROR) {
+	int connection = SOCKET_ERROR;
+	while (connection == SOCKET_ERROR) {
+		connection = connect(sock, (sockaddr*)&hint, sizeof(hint));
 		int error = WSAGetLastError();
-  		std::cout << "Error #" << error << " Retrying Connection. . ." << std::endl;
-		connect();
+		std::cout << "Error #" << error << " Retrying Connection. . ." << std::endl;
+		Sleep(10);
 	}
 	std::cout << "Connected." << std::endl;
 }

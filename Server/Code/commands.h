@@ -169,8 +169,8 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 	C.INVENTORY[wepId].attacks--;
 	//sendItem(C.ID, C.INVENTORY[wepId]);
 
-	std::string msg = dealDamage(item.attack, C.ID, target, battle.characters).msg;
-	sendText(msg, battleIndices(battle));
+	Result result = dealDamage(battle, item.attack, C.ID, target);
+	sendData(result.changes);
 
 	handleCombat(battle.id);
 	return "";
@@ -559,7 +559,7 @@ void command(std::string input, int playerIndex) {
 	}
 
 	if (players[playerIndex].ID == "") {
-		sendText("*RED*You need to make a character!", { playerIndex });
+		sendText("*RED*You need to make a character!", "", { playerIndex });
 		return;
 	}
 
@@ -647,21 +647,11 @@ void command(std::string input, int playerIndex) {
 		}
 	}
 	else {
-		std::vector<int> indices = {};
-		for (auto character : CHARACTERS) {
-			if (character.second.TYPE == "player" && character.second.LOCATION == CHARACTERS[id].LOCATION) {
-				for (int i = 0; i < players.size(); i++) {
-					if (players[i].ID == character.second.ID) {
-						indices.push_back(i);
-					}
-				}
-			}
-		}
-		sendText("*GREEN*" + CHARACTERS[id].NAME + "*GREY*: " + input, indices);
+		sendText("*GREEN*" + CHARACTERS[id].NAME + "*GREY*: " + input, CHARACTERS[id].LOCATION);
 	}
 	std::cout << msg << std::endl;
 	if (CHARACTERS.count(id) > 0) {
 		save(CHARACTERS[id]);
 	}
-	sendText(msg, { playerIndex });
+	sendText(msg, "", { playerIndex });
 }

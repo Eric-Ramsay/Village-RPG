@@ -694,7 +694,7 @@ void DrawBattle(Battle battle) {
 	static std::vector<std::vector<int>> movementCosts;
 	if (updateMovement) {
 		updateMovement = false;
-		movementCosts = moveCosts(getCharacter(ID), BATTLE);
+		movementCosts = moveCosts(getCharacter(ID), battle);
 	}
 
 	std::vector<std::vector<std::string>> characters = {};
@@ -896,6 +896,14 @@ void DrawBattle(Battle battle) {
 			}
 		}
 	}
+
+	if (animations.size() > 0) {
+		if (animations[0].type == "text") {
+			int xPos = animations[0].position.x;
+			int yPos = animations[0].position.y;
+			CPrint(animations[0].color + animations[0].text, xPos, yPos, WIDTH, 1, animations[0].opacity);
+		}
+	}
 }
 
 void DrawRoom() {
@@ -1094,8 +1102,8 @@ void DrawUI() {
 		else if (UI.viewingGraves) {
 			DrawGraves();
 		}
-		else if (getCharacter(ID).LOCATION == BATTLE.id) {
-			DrawBattle(BATTLE);
+		else if (BATTLES.count(CHARACTERS[ID].LOCATION) > 0) {
+			DrawBattle(BATTLES[CHARACTERS[ID].LOCATION]);
 		}
 		else if (getCharacter(ID).TRADING != "") {
 			DrawTrade();

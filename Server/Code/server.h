@@ -83,9 +83,9 @@ void sendItem(std::string id, Item item, std::vector<int> sendList = {}) {
 	sendData("STAT", id + "!!!ITEM!!!" + serialize(item), sendList);
 }
 
-void sendText(std::string text, std::vector<int> sendList = {}) {
+void sendText(std::string text, std::string location = "", std::vector<int> sendList = {}) {
 	if (text != "") {
-		sendData("TEXT", text, sendList);
+		sendData("TEXT", str(location) + text, sendList);
 	}
 }
 
@@ -100,18 +100,6 @@ void sendStat(std::string id, std::string stat, std::vector<Item> value, std::ve
 void sendBattle(Battle battle, std::vector<int> sendList = {}) {
 	std::string data = serialize(battle);
 	sendData("BATTLE", data, sendList);
-}
-
-std::vector<int> battleIndices(Battle battle) {
-	std::vector<int> indices = {};
-	for (std::string id : battle.characters) {
-		for (int i = 0; i < players.size(); i++) {
-			if (players[i].ID == id) {
-				indices.push_back(i);
-			}
-		}
-	}
-	return indices;
 }
 
 void saveBattle(Battle battle) {
@@ -129,30 +117,22 @@ void removeLoot(Battle& battle, std::string index) {
 	if (battle.loot.count(index) > 0) {
 		battle.loot.erase(index);
 		save(battle);
-		sendData("BATTLE", "REMOVE_ITEM!!!" + index, battleIndices(battle));
+		sendData("BATTLE", str(battle.id) + str("REMOVE_ITEM") + str(index));
 	}
 }
 
-std::string removeCharacter(Character character) {
-	std::string bundle = str("REMOVE_CHARACTER") + character.ID + (char)249;
-	if (character.TYPE == "player") {
-		std::string text = serialize(character);
-		bundle += str("GRAVE") + text + (char)249;
-		saveToFile("Characters/Graveyard/" + character.ID, text);
-		std::remove(("./Saves/Characters/" + character.ID + ".txt").c_str());
-	}
-	else {
-		std::remove(("./Saves/Characters/Enemies/" + character.ID + ".txt").c_str());
-	}
+std::string makeChange(Character& C, std::string type, std::string data) {
+	parseChange(C, type, data);
+	return str("STAT") + str(C.ID) + str(type) + data + (char)249;
+}
 
-	for (int i = 0; i < players.size(); i++) {
-		if (players[i].ID == character.ID) {
-			players[i].ID = "";
-		}
-	}
-	CHARACTERS.erase(character.ID);
+std::string makeChange(Battle& battle, std::string type, std::string data) {
+	parseChange(battle, type, data);
+	return str("BATLE_STAT") + str(battle.id) + str(type) + data + (char)249;
+}
 
-	return bundle;
+std::string textChange(std::string message, std::string location = "") {
+	return str("TEXT") + str(location) + message + (char)249;
 }
 
 void setStat(Character& C, std::string stat, std::string value) {
@@ -168,4 +148,26 @@ void setStat(Character& C, std::string stat, int value) {
 void setStat(Character& C, std::string stat, std::vector<int> value) {
 	parseChange(C, stat, str(value));
 	sendData("STAT", C.ID + "!!!" + stat + "!!!" + str(value));
+}
+
+std::string removeCharacter(Character character) {
+	std::string bundle = addBundle("REMOVE_CHARACTER", character.ID);
+	if (character.TYPE == "player") {
+		std::string text = serialize(character);
+		bundle += addBundle("GRAVE", text);
+		saveToFile("Characters/Graveyard/" + character.ID, text);
+		std::remove(("./Saves/Characters/" + character.ID + ".txt").c_str());
+	}
+	else {
+		std::remove(("./Saves/Characters/Enemies/" + character.ID + ".txt").c_str());
+	}
+
+	for (int i = 0; i < players.size(); i++) {
+		if (players[i].ID == character.ID) {
+			players[i].ID = "";
+		}
+	}
+	CHARACTERS.erase(character.ID);
+
+	return bundle;
 }

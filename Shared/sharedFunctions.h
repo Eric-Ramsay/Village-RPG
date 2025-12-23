@@ -42,7 +42,7 @@ float max(float a, float b) {
 }
 
 int MaxHP(Character C) {
-	return C.MaxHP + 10 * C.STATS[VIT];
+	return C.MAX_HP + 10 * C.STATS[VIT];
 }
 
 int MaxArmor(Character C) {
@@ -450,7 +450,7 @@ void parseChange(Battle& battle, std::string type, std::string data) {
 		}
 	}
 	else if (type == "REMOVE_ITEM") {
-		battle.loot.erase(data);
+		battle.loot.erase(readStr(data));
 	}
 	else if (type == "ITEM") {
 		Item item = parseItem(data);

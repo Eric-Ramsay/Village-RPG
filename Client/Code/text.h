@@ -123,11 +123,13 @@ int measureText(std::string text, float scale = 1, int textSize = 2) {
 	return ((size - 1) * scale);
 }
 
-sf::Color getColor(std::string input = "") {
+sf::Color getColor(std::string input = "", int opacity = 255) {
 	if (COLORS.count(input) > 0) {
-		return COLORS[input];
+		sf::Color color = COLORS[input];
+		color.a = opacity;
+		return color;
 	}
-	return sf::Color(245, 245, 240);
+	return sf::Color(245, 245, 240, opacity);
 }
 
 int measureText(std::string text, int scale) {
@@ -191,7 +193,7 @@ std::vector<std::string> splitLines(std::string text, int maxLength = WIDTH, int
 }
 
 // Print Function
-Box Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1, ALIGN align = LEFT) {
+Box Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1, ALIGN align = LEFT, int opacity = 255) {
 	bool printing = true;
 	std::string color = "white";
 	std::vector<std::string> lines = splitLines(text, maxLength, scale);
@@ -232,7 +234,7 @@ Box Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1
 						Draw(sX, sY - 1, sW, 9, drawX, drawY - 1, scale);
 					}
 					else {
-						Draw(sX, sY, sW, 9, drawX, drawY - 1, scale, getColor(color));
+						Draw(sX, sY, sW, 9, drawX, drawY - 1, scale, getColor(color, opacity));
 					}
 					drawX += (sW + 1) * scale;
 					if (c != ' ') {
@@ -277,12 +279,12 @@ Box Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1
 	return box;
 }
 
-void CPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1) {
-	Print(text, dX, dY, maxLength, scale, CENTER);
+void CPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1, int opacity = 255) {
+	Print(text, dX, dY, maxLength, scale, CENTER, opacity);
 }
 
-void RPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1) {
-	Print(text, dX, dY, maxLength, scale, RIGHT);
+void RPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1, int opacity = 255) {
+	Print(text, dX, dY, maxLength, scale, RIGHT, opacity);
 }
 
 std::string DrawBar(int val, int max, int size, std::string color, bool drawNum = true, std::string braceColor = "*GREY*") {

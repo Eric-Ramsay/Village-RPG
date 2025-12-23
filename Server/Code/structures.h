@@ -29,6 +29,6 @@ struct Account {
 };
 
 struct Result {
-	std::string msg = "";
+	std::string changes = "";
 	int damage = 0;
 };
