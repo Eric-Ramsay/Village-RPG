@@ -1,0 +1,8 @@
+ID!!!Wilted Woods.4172!!!
+ZONE!!!Wilted Woods!!!
+TURN!!!0!
+ROUND!!!0!
+DIFFICULTY!!!81!
+CHARACTERS!!!eric martha 176646164871!!!DEAD!!!
+HAZARDS!!!!!!5!11!7!999!	!!!5!10!7!999!	!!!5!9!7!999!	!!!5!9!8!999!	!!!5!9!9!999!	!!!5!8!9!999!	!!!5!7!9!999!	!!!5!6!9!999!	!!!5!5!9!999!	!!!5!5!8!999!	!!!5!5!7!999!	!!!5!4!7!999!	!!!5!3!7!999!	!!!5!3!6!999!	!!!5!3!5!999!	!!!5!2!5!999!	!!!5!1!5!999!	!!!5!0!5!999!	
+LOOT!!!ITEM!!!INDEX!!!dagger.9814!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!	ITEM!!!INDEX!!!dagger.6047!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!	ITEM!!!INDEX!!!dagger.651!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!	ITEM!!!INDEX!!!longbow.5098!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!	ITEM!!!INDEX!!!dagger.3222!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!	

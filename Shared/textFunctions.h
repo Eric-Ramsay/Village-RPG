@@ -181,8 +181,9 @@ int readInt(std::string& msg) {
 
 std::vector<int> readInts(std::string& msg) {
 	std::vector<int> data = {};
-	while (msg.size() > 0) {
-		data.push_back(readInt(msg));
+	std::vector<std::string> nums = split(msg, '\t');
+	for (std::string num : nums) {
+		data.push_back(readInt(num));
 	}
 	return data;
 }

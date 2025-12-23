@@ -127,19 +127,17 @@ std::string winBattle(Battle& battle) {
 				C->SP++;
 				C->LEVEL++;
 			}
-			changes += 
 			C->AP = MaxAP(*C);
 			C->STAMINA = MaxStamina(*C);
 			C->EFFECTS = { };
 
-			changes += addLine("GOLD", C->GOLD);
-			changes += addLine("XP", C->XP);
-			changes += addLine("SP", C->SP);
-			changes += addLine("LEVEL", C->LEVEL);
-			changes += addLine("AP", C->AP);
-			changes += addLine("STAMINA", C->STAMINA);
-			changes += "EFFECTS!!!" + serialize(C->EFFECTS) + "\n";
-			//bundle += changes + (char)249;
+			changes += printStat(*C, "GOLD");
+			changes += printStat(*C, "XP");
+			changes += printStat(*C, "SP");
+			changes += printStat(*C, "LEVEL");
+			changes += printStat(*C, "AP");
+			changes += printStat(*C, "STAMINA");
+			changes += printStat(*C, "EFFECTS");
 		}
 	}
 
@@ -149,6 +147,8 @@ std::string winBattle(Battle& battle) {
 	}
 
 	battle.dead = {};
+
+	changes += str("BATTLE_CHANGES") + str(battle.id) + str("LOOT") + serialize(battle.loot);
 
 	return changes;
 }
@@ -196,7 +196,6 @@ std::string startTurn(Battle& battle) {
 				changes += addEffect(C->ID, hazard.summoner, effect.id, effect.turns, effect.stacks);
 			}
 		}
-
 		for (int i = C->EFFECTS.size() - 1; i >= 0; i--) {
 			Effect* effect = &C->EFFECTS[i];
 			effect->turns--;
@@ -209,15 +208,16 @@ std::string startTurn(Battle& battle) {
 				C->EFFECTS.erase(C->EFFECTS.begin() + i);
 			}
 		}
+		changes += printStat(*C, "EFFECTS");
 		if (C->TYPE == "player") {
 			C->STAMINA = min(C->STAMINA + 2 * (1 + C->STATS[END]), MaxStamina(*C));
 			int diff = min(C->STAMINA, MaxAP(*C) - C->AP);
 			C->AP += diff;
 			C->STAMINA -= diff;
 			C->ENDED = false;
-			//changes += addBundle("STAT", str(C.ID) + str("AP") + str(C->AP));
-			//changes += addBundle("STAT", str(C.ID) + str("STAMINA") + str(C->STAMINA));
-			//changes += addBundle("STAT", str(C.ID) + str("ENDED") + str(C->ENDED));
+			changes += printStat(*C, "AP");
+			changes += printStat(*C, "STAMINA");
+			changes += printStat(*C, "ENDED");
 			for (auto item : C->INVENTORY) {
 				if (item.second.equipped) {
 					UI_Item rawItem = getItem(item.second.id);

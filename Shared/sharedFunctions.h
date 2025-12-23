@@ -315,6 +315,9 @@ void parseChange(Character& character, std::string type, std::string data) {
 	else if (type == "HP") {
 		character.HP = readInt(data);
 	}
+	else if (type == "MAX_HP") {
+		character.MAX_HP = readInt(data);
+	}
 	else if (type == "STAMINA") {
 		character.STAMINA = readInt(data);
 	}

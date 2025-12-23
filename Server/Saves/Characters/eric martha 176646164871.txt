@@ -1,36 +1,36 @@
-ID!!!eric  176638982135!!!
+ID!!!eric martha 176646164871!!!
 USER!!!eric!!!
-LOOK!!!acagbqalfochahbpae!!!
+LOOK!!!aegebmddfgecaebnam!!!
 DEATH!!!!!!
-HP!!!1!
-X!!!6!
-Y!!!6!
+HP!!!30!
+X!!!5!
+Y!!!5!
 SX!!!0!
 SY!!!176!
 ARMOR!!!0!
 MAX_HP!!!30!
 TYPE!!!player!!!
-NAME!!!!!!
-LOCATION!!!Wilted Woods.3983!!!
+NAME!!!Martha!!!
+LOCATION!!!Wilted Woods.4172!!!
 TEAM!!!0!
 EFFECTS!!!
 STAMINA!!!20!
 DESCRIPTION!!!!!!
 TRADING!!!!!!
-LEVEL!!!1!
-XP!!!54!
-SP!!!0!
-GOLD!!!42!
+LEVEL!!!2!
+XP!!!170!
+SP!!!1!
+GOLD!!!82!
 AP!!!6!
 BACKPACK!!!0!
-ENDED!!!1!
+ENDED!!!0!
 ATTACKS!!!0!
 CASTS!!!0!
 X_PREFERENCE!!!0!
 Y_PREFERENCE!!!0!
-LEFT!!!dagger.7613!!!
+LEFT!!!dagger.70!!!
 RIGHT!!!!!!
 HITS!!!0!	0!	
 MISSES!!!0!	0!	
 STATS!!!0!	0!	0!	0!	0!	0!	0!	
-INVENTORY!!!ITEM!!!INDEX!!!dagger.7613!!!ATTACKS!!!2!EQUIPPED!!!1!RUNES!!!	!!!	!!!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.70!!!ATTACKS!!!2!EQUIPPED!!!1!RUNES!!!	

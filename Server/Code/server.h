@@ -128,7 +128,7 @@ std::string makeChange(Character& C, std::string type, std::string data) {
 
 std::string makeChange(Battle& battle, std::string type, std::string data) {
 	parseChange(battle, type, data);
-	return str("BATLE_STAT") + str(battle.id) + str(type) + data + (char)249;
+	return str("BATTLE_CHANGE") + str(battle.id) + str(type) + data + (char)249;
 }
 
 std::string textChange(std::string message, std::string location = "") {
@@ -170,4 +170,8 @@ std::string removeCharacter(Character character) {
 	CHARACTERS.erase(character.ID);
 
 	return bundle;
+}
+
+std::string printStat(Character C, std::string stat) {
+	return str("STAT") + str(C.ID) + str(stat) + getStat(C, stat) + (char)249;
 }
