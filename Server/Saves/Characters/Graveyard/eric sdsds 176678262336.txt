@@ -1,0 +1,36 @@
+ID!!!eric sdsds 176678262336!!!
+USER!!!eric!!!
+LOOK!!!acfjbocdflcpalaiao!!!
+DEATH!!!!!!
+HP!!!19!
+X!!!0!
+Y!!!0!
+SX!!!0!
+SY!!!176!
+ARMOR!!!0!
+MAX_HP!!!30!
+TYPE!!!player!!!
+NAME!!!Sdsds!!!
+LOCATION!!!Tavern!!!
+TEAM!!!0!
+EFFECTS!!!
+STAMINA!!!20!
+DESCRIPTION!!!!!!
+TRADING!!!!!!
+LEVEL!!!2!
+XP!!!9!
+SP!!!1!
+GOLD!!!45!
+AP!!!6!
+BACKPACK!!!0!
+ENDED!!!0!
+ATTACKS!!!0!
+CASTS!!!0!
+X_PREFERENCE!!!0!
+Y_PREFERENCE!!!0!
+LEFT!!!dagger.9004!!!
+RIGHT!!!!!!
+HITS!!!0!	0!	
+MISSES!!!0!	0!	
+STATS!!!0!	0!	0!	0!	0!	0!	0!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.9004!!!ATTACKS!!!2!EQUIPPED!!!1!RUNES!!!	

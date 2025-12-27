@@ -68,6 +68,36 @@ std::string serialize(Account P) {
 	return data;
 }
 
+std::string getStat(Battle B, std::string stat) {
+	if (stat == "ID") {
+		return serialize(B.id);
+	}
+	if (stat == "ZONE") {
+		return serialize(B.zone);
+	}
+	if (stat == "TURN") {
+		return serialize(B.turn);
+	}
+	if (stat == "ROUND") {
+		return serialize(B.round);
+	}
+	if (stat == "DIFFICULTY") {
+		return serialize(B.difficulty);
+	}
+	if (stat == "CHARACTERS") {
+		return serialize(B.characters);
+	}
+	if (stat == "DEAD") {
+		return serialize(B.dead);
+	}
+	if (stat == "HAZARDS") {
+		return serialize(B.hazards);
+	}
+	if (stat == "LOOT") {
+		return serialize(B.loot);
+	}
+}
+
 std::string getStat(Character C, std::string stat) {
 	if (stat == "ID") {
 		return serialize(C.ID);
@@ -183,6 +213,10 @@ std::string statLine(Character C, std::string stat) {
 	return str(stat) + getStat(C, stat) + "\n";
 }
 
+std::string statLine(Battle B, std::string stat) {
+	return str(stat) + getStat(B, stat) + "\n";
+}
+
 std::string serialize(Character C) {
 	std::string data = "";
 	data += statLine(C, "ID");
@@ -227,80 +261,17 @@ std::string serialize(Character C) {
 	return data;
 }
 
-/*std::string serialize(Character C) {
-	std::string data = "";
-	data += addLine("ID", C.ID);
-	data += addLine("USER", C.USER);
-	data += addLine("LOOK", C.LOOK);
-	data += addLine("DEATH", C.DEATH);
-	data += addLine("HP", C.HP);
-	data += addLine("X", C.X);
-	data += addLine("Y", C.Y);
-	data += addLine("SX", C.SX);
-	data += addLine("SY", C.SY);
-	data += addLine("ARMOR", C.ARMOR);
-	data += addLine("MAX_HP", C.MAX_HP);
-	data += addLine("TYPE", C.TYPE);
-	data += addLine("NAME", C.NAME);
-	data += addLine("LOCATION", C.LOCATION);
-	data += addLine("TEAM", C.TEAM);
-	data += "EFFECTS!!!" + serialize(C.EFFECTS) + "\n";
-	if (C.TYPE != "player") {
-		return data;
-	}
-	data += addLine("STAMINA", C.STAMINA);
-	data += addLine("DESCRIPTION", C.DESCRIPTION);
-	data += addLine("TRADING", C.TRADING);
-	data += addLine("LEVEL", C.LEVEL);
-	data += addLine("XP", C.XP);
-	data += addLine("SP", C.SP);
-	data += addLine("GOLD", C.GOLD);
-	
-	data += addLine("AP", C.AP);
-	data += addLine("BACKPACK", C.BACKPACK);
-	data += addLine("ENDED", C.ENDED);
-	data += addLine("ATTACKS", C.ATTACKS);
-	data += addLine("CASTS", C.CASTS);
-	
-	data += addLine("X_PREFERENCE", C.X_PREFERENCE);
-	data += addLine("Y_PREFERENCE", C.Y_PREFERENCE);
-	data += addLine("LEFT", C.LEFT);
-	data += addLine("RIGHT", C.RIGHT);
-	data += addLine("HITS", C.HITS);
-	data += addLine("MISSES", C.MISSES);
-	data += addLine("STATS", C.STATS);
-	data += "INVENTORY!!!\n";
-	data += serialize(C.INVENTORY);
-	return data;
-}*/
-
 std::string serialize(Battle battle, bool saving = false) {
 	std::string data = "";
-	data += addLine("ID", battle.id);
-	data += addLine("ZONE", battle.zone);
-	data += addLine("TURN", battle.turn);
-	data += addLine("ROUND", battle.round);
-	data += addLine("DIFFICULTY", battle.difficulty);
-
-	data += "CHARACTERS!!!";
-	for (std::string id : battle.characters) {
-		data += str(id);
-	}
-
-	if (saving) {
-		data += "DEAD!!!";
-		for (std::string id : battle.dead) {
-			data += str(id);
-		}
-	}
-
-	data += "\n";
-	data += "HAZARDS!!!";
-	data += serialize(battle.hazards);
-
-	data += "\n";
-	data += "LOOT!!!";
-	data += serialize(battle.loot);
+	data += statLine(battle, "ID");
+	data += statLine(battle, "ZONE");
+	data += statLine(battle, "TURN");
+	data += statLine(battle, "ROUND");
+	data += statLine(battle, "DIFFICULTY");
+	data += statLine(battle, "CHARACTERS");
+	data += statLine(battle, "DEAD");
+	data += statLine(battle, "HAZARDS");
+	data += statLine(battle, "LOOT");
 	return data;
 }
 

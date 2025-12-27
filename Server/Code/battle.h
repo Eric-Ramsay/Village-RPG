@@ -34,9 +34,10 @@ std::string validateBattle(std::string battleId) {
 	if (numPlayers == 0) {
 		std::string filePath = "./Saves/Battles/" + BATTLES[battleId].id + ".txt";
 		std::remove(filePath.c_str());
-		for (std::string id : BATTLES[battleId].characters) {
+		for (std::string id : newCharacters) {
 			changes += removeCharacter(CHARACTERS[id]);
 		}
+		BATTLES.erase(battleId);
 	}
 	else {
 		BATTLES[battleId].characters = newCharacters;
@@ -148,14 +149,20 @@ std::string winBattle(Battle& battle) {
 
 	battle.dead = {};
 
-	changes += str("BATTLE_CHANGES") + str(battle.id) + str("LOOT") + serialize(battle.loot);
+	changes += printStat(battle, "LOOT");
 
 	return changes;
 }
 
 std::string startTurn(Battle& battle) {
 	std::string changes = "";
-	bool delta = false;
+
+	battle.turn = !battle.turn;
+	changes += printStat(battle, "TURN");
+	if (battle.turn == 0) {
+		battle.round++;
+		changes += printStat(battle, "ROUND");
+	}
 
 	std::vector<std::vector<Hazard>> hazards = {};
 	for (int i = 0; i < 12; i++) {
@@ -165,7 +172,7 @@ std::string startTurn(Battle& battle) {
 		}
 	}
 
-	if (battle.turn == 0 && battle.round > 0) {
+	if (battle.turn == 0 && battle.round > 0 && battle.hazards.size() > 0) {
 		for (int i = battle.hazards.size() - 1; i >= 0; i--) {
 			if (battle.hazards[i].duration > 0) {
 				hazards[battle.hazards[i].y][battle.hazards[i].x] = battle.hazards[i];
@@ -174,10 +181,10 @@ std::string startTurn(Battle& battle) {
 				battle.hazards[i].duration--;
 				if (battle.hazards[i].duration < 0) {
 					battle.hazards.erase(battle.hazards.begin() + i);
-					delta = true;
 				}
 			}
 		}
+		changes += printStat(battle, "HAZARDS");
 	}
 
 	// Handle Effects for team who's starting (battle.turn)
@@ -190,7 +197,7 @@ std::string startTurn(Battle& battle) {
 			Hazard hazard = hazards[C->Y][C->X];
 			Terrain terrain = TERRAIN[hazard.index];
 			if (terrain.damage > 0) {
-				changes += dealDamage(battle, Attack(TRUE_DMG, terrain.damage, terrain.damage, 100, 100), hazard.summoner, C->ID).changes;
+				changes += dealDamage(hazard.summoner, C->ID, T_Attack(TRUE_DMG, terrain.damage, terrain.damage)).changes;
 			}
 			for (Effect effect : terrain.effects) {
 				changes += addEffect(C->ID, hazard.summoner, effect.id, effect.turns, effect.stacks);
@@ -235,15 +242,10 @@ std::string startTurn(Battle& battle) {
 	}
 	saveBattle(battle);
 
-	if (delta) {
-		changes += addBundle("BATTLE", serialize(battle));
-	}
-
 	return changes;
 }
 
 void handleCombat(std::string id) {
-	bool delta = false;
 	std::string changes = validateBattle(id);
 	if (BATTLES.count(id) == 0 || BATTLES[id].round == 0) {
 		return;
@@ -264,13 +266,6 @@ void handleCombat(std::string id) {
 	}
 	else {
 		while (BATTLES.count(id) > 0 && turnCompleted(battle->characters, battle->turn)) {
-			delta = true;
-			battle->turn = !battle->turn;
-			if (battle->turn == 0) {
-				battle->round++;
-			}
-			//changes += addBundle("BATTLE_STAT", "ROUND", str(battle->round));
-			//changes += addBundle("BATTLE_STAT", "TURN", str(battle->round));
 			changes += startTurn(*battle);
 			saveBattle(*battle);
 			changes += validateBattle(id);

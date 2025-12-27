@@ -113,14 +113,6 @@ void saveBattle(Battle battle) {
 	//sendBattle(battle, battleIndices(battle));
 }
 
-void removeLoot(Battle& battle, std::string index) {
-	if (battle.loot.count(index) > 0) {
-		battle.loot.erase(index);
-		save(battle);
-		sendData("BATTLE", str(battle.id) + str("REMOVE_ITEM") + str(index));
-	}
-}
-
 std::string makeChange(Character& C, std::string type, std::string data) {
 	parseChange(C, type, data);
 	return str("STAT") + str(C.ID) + str(type) + data + (char)249;
@@ -128,7 +120,7 @@ std::string makeChange(Character& C, std::string type, std::string data) {
 
 std::string makeChange(Battle& battle, std::string type, std::string data) {
 	parseChange(battle, type, data);
-	return str("BATTLE_CHANGE") + str(battle.id) + str(type) + data + (char)249;
+	return str("BATTLE_STAT") + str(battle.id) + str(type) + data + (char)249;
 }
 
 std::string textChange(std::string message, std::string location = "") {
@@ -174,4 +166,8 @@ std::string removeCharacter(Character character) {
 
 std::string printStat(Character C, std::string stat) {
 	return str("STAT") + str(C.ID) + str(stat) + getStat(C, stat) + (char)249;
+}
+
+std::string printStat(Battle B, std::string stat) {
+	return str("BATTLE_STAT") + str(B.id) + str(stat) + getStat(B, stat) + (char)249;
 }

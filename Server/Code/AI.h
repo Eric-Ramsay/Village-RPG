@@ -1,11 +1,4 @@
-#pragma once\
-
-std::string Name(Character C) {
-	if (C.TYPE != "player") {
-		return "the " + C.NAME;
-	}
-	return pretty(C.NAME);
-}
+#pragma once
 
 std::vector<std::string> findTargets(int x, int y, int range, std::vector<std::string> potentialTargets) {
 	std::vector<std::string> targets = {};
@@ -17,24 +10,33 @@ std::vector<std::string> findTargets(int x, int y, int range, std::vector<std::s
 	return targets;
 }
 
-std::string moveInRange(Character* C, std::vector<std::string> enemies, int range, std::vector<std::vector<int>> movementCosts, bool retreat = false) {
+std::string moveInRange(Character* C, int range, bool maximizeRange = true) {
+	if (BATTLES.count(C->LOCATION) == 0) {
+		return "";
+	}
+	Battle battle = BATTLES[C->LOCATION];
+	std::vector<std::vector<int>> movementCosts = moveCosts(*C, battle);
 	std::string changes = "";
 	float minDist = 9999;
 	int minX = C->X;
 	int minY = C->Y;
-	for (std::string id : enemies) {
-		int x = CHARACTERS[id].X;
-		int y = CHARACTERS[id].Y;
-		int d = atkDist(C->X, C->Y, x, y);
-		if (d < minDist) {
-			minDist = d;
-			minX = x;
-			minY = y;
+	// Find closest target
+	for (std::string id : battle.characters) {
+		if (CHARACTERS[id].TEAM != C->TEAM) {
+			int x = CHARACTERS[id].X;
+			int y = CHARACTERS[id].Y;
+			int d = atkDist(C->X, C->Y, x, y);
+			if (d < minDist) {
+				minDist = d;
+				minX = x;
+				minY = y;
+			}
 		}
 	}
 
 	int startDist = atkDist(minX, minY, C->X, C->Y);
-	if ((!retreat && startDist < range) || startDist == range) {
+	if (startDist == range || (!maximizeRange && startDist < range)) {
+		// No need to move, character is already at or within desired range
 		return "";
 	}
 
@@ -55,26 +57,36 @@ std::string moveInRange(Character* C, std::vector<std::string> enemies, int rang
 			}
 		}
 	}
-	if (C->X != newX || C->X != newY) {
+	if (C->X != newX || C->Y != newY) {
 		C->X = newX;
 		C->Y = newY;
 		C->AP -= movementCosts[newY][newX];
-		changes += addBundle("STAT", str(C->ID) + str("X") + str(C->X));
-		changes += addBundle("STAT", str(C->ID) + str("Y") + str(C->Y));
+		changes += printStat(*C, "X");
+		changes += printStat(*C, "Y");
 	}
 	return changes;
 }
 
+Result attack(std::string attackerId, std::string targetId, Attack attack, std::string description) {
+	Result result;
+	std::string changes = addBundle("TEXT", str(CHARACTERS[attackerId].LOCATION) + "*RED*" + pretty(name(attackerId)) + " " + description + " " + name(CHARACTERS[targetId]));
+	result = dealDamage(attackerId, targetId, attack);
+	result.changes = changes + result.changes;
+	return result;
+}
+
+Result moveAttack(std::string id, int MP, int range, int damage, int hitChance, int pen, std::string description, int multiplier = 2) {
+
+}
+
 std::string enemyAttack(std::string enemyId, Battle battle) {
 	std::string changes = "";
-	std::string msg = "";
 	Character* C = &CHARACTERS[enemyId];
 
 	std::vector<std::string> allies;
 	std::vector<std::string> enemies;
 	
 	std::string eName = low(C->NAME);
-	std::vector<std::vector<int>> movementCosts = moveCosts(*C, battle);
 
 	for (std::string id : battle.characters) {
 		if (id != enemyId) {
@@ -87,31 +99,115 @@ std::string enemyAttack(std::string enemyId, Battle battle) {
 		}
 	}
 
-	/*
-	- Prefer not moving. Check if you can attack from where you are.
-	- If you can't, consider not attacking. Do you have any non-damaging abilities?
-	- Can you move in range of an enemy? If so, do so and attack.
-	- If not, move as close to the closest enemy as you can get.
-	*/
-
 	if (eName == "crazed wolf") {
 		// Damage doubles below half HP
 		// Has a strong bite attack when not moving, or a weaker nip attack when moving that afflicts bleeding.
 		std::vector<std::string> targets = findTargets(C->X, C->Y, 1, enemies);
 		if (targets.size() > 0) {
-			int index = rand() % targets.size();
-			Result result = dealDamage(battle, P_Attack(10, 16, 90), C->ID, CHARACTERS[enemies[index]].ID);
-			msg += "*RED*" + pretty(Name(*C)) + " bites savagely at " + pretty(CHARACTERS[enemies[index]].NAME);
-			if (result.damage > 0) {
-				msg += ", dealing *ORANGE*" + to_str(result.damage) + "*RED* damage!\n";
-			}
+			std::string targetId = targets[rand() % targets.size()];
+			Result result = attack(C->ID, targetId, P_Attack(10, 16, 90), "bites savagely at");
 			changes += result.changes;
 		}
 		else {
-			changes += moveInRange(C, enemies, 1, movementCosts, true);
+			changes += moveInRange(C, 1);
 		}
 	}
+	else if (eName == "giant amoeba") {
 
+	}
+	else if (eName == "goblin archer") {
+
+	}
+	else if (eName == "goblin swordsman") {
+
+	}
+	else if (eName == "goblin spearman") {
+
+	}
+	else if (eName == "slugbeast") {
+
+	}
+	else if (eName == "acidic slime") {
+
+	}
+	else if (eName == "skeletal spearman") {
+
+	}
+	else if (eName == "skeletal archer") {
+
+	}
+	else if (eName == "skeletal archer") {
+
+	}
+	else if (eName == "ogre") {
+
+	}
+	else if (eName == "swamp simian") {
+
+	}
+	else if (eName == "giant frog") {
+
+	}
+	else if (eName == "living vine") {
+
+	}
+	else if (eName == "flaming wisp") {
+
+	}
+	else if (eName == "caustic snail") {
+
+	}
+	else if (eName == "wisp knight") {
+
+	}
+	else if (eName == "giant spider") {
+
+	}
+	else if (eName == "lich") {
+
+	}
+	else if (eName == "floating spores") {
+
+	}
+	else if (eName == "toxic mushroom") {
+
+	}
+	else if (eName == "mushroom mage") {
+
+	}
+	else if (eName == "hungry ghoul") {
+
+	}
+	else if (eName == "imp") {
+
+	}
+	else if (eName == "apparition") {
+
+	}
+	else if (eName == "wandering moon") {
+
+	}
+	else if (eName == "bronze bellbeast") {
+
+	}
+	else if (eName == "witch") {
+
+	}
+	else if (eName == "scaled drake") {
+
+	}
+	else if (eName == "scoundrel") {
+
+	}
+	else if (eName == "cultist") {
+
+	}
+	else if (eName == "wild bear") {
+
+	}
+	else if (ename == "swamp mage") {
+
+	}
 
 	std::vector<std::string> playerIds = {};
 
@@ -124,18 +220,6 @@ std::string enemyAttack(std::string enemyId, Battle battle) {
 		if (CHARACTERS[id].TYPE == "player") {
 			playerIds.push_back(id);
 		}
-	}
-
-	/*std::string changes = str("STATS") + str(C->ID);
-	changes += addLine("X", C->X);
-	changes += addLine("Y", C->Y);
-	changes += addLine("HP", C->HP);
-	data += changes;
-	sendData("BUNDLE", data);
-	save(*C);*/
-
-	if (msg != "") {
-		changes += addBundle("TEXT", str(battle.id) + msg);
 	}
 
 	return changes;

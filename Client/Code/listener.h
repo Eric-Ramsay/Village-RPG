@@ -66,7 +66,7 @@ void process(std::string type, std::string data) {
 		if (C.USER == USERNAME) {
 			ID = C.ID;
 		}
-		if (C.ID == "" || C.NAME == "") {
+		if (C.ID == "") {
 			std::cout << "Weird Character Received" << std::endl;
 		}
 		CHARACTERS[C.ID] = C;
@@ -143,12 +143,8 @@ void process(std::string type, std::string data) {
 			parseChange(battle, type, str);
 		}
 		BATTLES[battle.id] = battle;
-		if (CHARACTERS.count(ID) > 0 && CHARACTERS[ID].LOCATION == battle.id) {
-			combatMenu.tabs[1] = "LOOT (" + to_str(BATTLES[battle.id].loot.size()) + ")";
-			measureTab(&combatMenu);
-		}
 	}
-	if (type == "BATTLE_CHANGE") {
+	if (type == "BATTLE_STAT") {
 		std::string id = readStr(data);
 		std::string stat = readStr(data);
 		parseChange(BATTLES[id], stat, data);

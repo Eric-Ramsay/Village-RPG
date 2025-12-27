@@ -189,7 +189,7 @@ std::vector<std::vector<PathTile>> createMap(Battle b) {
 			tiles[i].push_back(PathTile());
 			tiles[i][j].x = j;
 			tiles[i][j].y = i;
-			tiles[i][j].team = 0;
+			tiles[i][j].team = -1;
 		}
 	}
 
@@ -442,8 +442,11 @@ void parseChange(Battle& battle, std::string type, std::string data) {
 	}
 	else if (type == "CHARACTERS") {
 		battle.characters.clear();
-		while (data.length() > 0) {
-			battle.characters.push_back(readStr(data));
+		std::vector<std::string> lines = split(data, '\t');
+		for (std::string line : lines) {
+			if (line != "") {
+				battle.characters.push_back(readStr(line));
+			}
 		}
 	}
 	else if (type == "DEAD") {
@@ -616,6 +619,10 @@ std::string name(Character C, bool addThe = true) {
 
 std::string name(Character* C, bool addThe = true) {
 	return name(*C, addThe);
+}
+
+std::string name(std::string id, bool addThe = true) {
+	return name(CHARACTERS[id], addThe);
 }
 
 Character getCharacter(std::string id) {

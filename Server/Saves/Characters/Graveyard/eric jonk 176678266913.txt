@@ -1,8 +1,8 @@
-ID!!!eric martha 176646164871!!!
+ID!!!eric jonk 176678266913!!!
 USER!!!eric!!!
-LOOK!!!aegebmddfgecaebnam!!!
+LOOK!!!abccbdcbbcdpaeaaaj!!!
 DEATH!!!!!!
-HP!!!30!
+HP!!!20!
 X!!!5!
 Y!!!5!
 SX!!!0!
@@ -10,17 +10,17 @@ SY!!!176!
 ARMOR!!!0!
 MAX_HP!!!30!
 TYPE!!!player!!!
-NAME!!!Martha!!!
-LOCATION!!!Wilted Woods.4172!!!
+NAME!!!Jonk!!!
+LOCATION!!!Wilted Woods!!!
 TEAM!!!0!
 EFFECTS!!!
 STAMINA!!!20!
 DESCRIPTION!!!!!!
 TRADING!!!!!!
-LEVEL!!!2!
-XP!!!170!
-SP!!!1!
-GOLD!!!82!
+LEVEL!!!1!
+XP!!!54!
+SP!!!0!
+GOLD!!!42!
 AP!!!6!
 BACKPACK!!!0!
 ENDED!!!0!
@@ -28,9 +28,9 @@ ATTACKS!!!0!
 CASTS!!!0!
 X_PREFERENCE!!!0!
 Y_PREFERENCE!!!0!
-LEFT!!!dagger.70!!!
+LEFT!!!dagger.3836!!!
 RIGHT!!!!!!
 HITS!!!0!	0!	
 MISSES!!!0!	0!	
 STATS!!!0!	0!	0!	0!	0!	0!	0!	
-INVENTORY!!!ITEM!!!INDEX!!!dagger.70!!!ATTACKS!!!2!EQUIPPED!!!1!RUNES!!!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.3836!!!ATTACKS!!!2!EQUIPPED!!!1!RUNES!!!	

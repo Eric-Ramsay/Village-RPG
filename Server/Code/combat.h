@@ -32,13 +32,16 @@ int numStacks(Character C, std::string effectId) {
 	return -1;
 }
 
-Result takeDamage(Battle battle, Attack attack, std::string targetId) {
+Result takeDamage(std::string targetId, Attack attack) {
 	std::string msg = "";
 	Result result;
 	if (CHARACTERS.count(targetId) == 0) {
 		return result;
 	}
 	Character* target = &CHARACTERS[targetId];
+
+	Battle battle = BATTLES[target->LOCATION];
+
 	int hitValue = rand() % 100;
 	int dmg = attack.min;
 	if (attack.max > attack.min) {
@@ -64,16 +67,20 @@ Result takeDamage(Battle battle, Attack attack, std::string targetId) {
 	return result;
 }
 
-Result dealDamage(Battle battle, Attack attack, std::string attackerId, std::string targetId) {
+
+Result dealDamage(std::string attackerId, std::string targetId, Attack attack) {
 	std::string msg = "";
 	Result result;
 	if (CHARACTERS.count(attackerId) == 0) {
-		return takeDamage(battle, attack, targetId);
+		return takeDamage(targetId, attack);
 	}
 
 	if (CHARACTERS.count(targetId) == 0) {
 		return result;
 	}
+	
+	Battle battle = BATTLES[attackerId];
+
 	Character* attacker = &CHARACTERS[attackerId];
 	Character* target = &CHARACTERS[targetId];
 
@@ -87,11 +94,11 @@ Result dealDamage(Battle battle, Attack attack, std::string attackerId, std::str
 
 		result.damage = dmg;
 		result.changes += addBundle("STAT", str(targetId) + str("HP") + str(target->HP));
-		msg += "*ORANGE*" + pretty(name(attacker)) + " *RED*attacks " + name(target) + " for *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
+		msg += "*RED*" + pretty(name(target)) + " takes *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
 
 		if (target->HP <= 0) {
 			target->DEATH = pretty(name(attacker, false));
-			result.changes += addBundle("STAT", str(targetId) + str("DEATH") + str(target->DEATH));
+			result.changes += printStat(*target, "DEATH");
 			msg += "*RED*" + pretty(name(target)) + " is struck down!\n";
 		}
 	}

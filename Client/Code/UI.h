@@ -226,7 +226,12 @@ void DrawViewUI() {
 		// Viewing an Item
 		Item item = UI.viewedItem;
 		UI_Item baseItem = getItem(item.id);
-		std::string handleTip = "*BLACK*Right Click to Sell.";
+		bool owned = C.INVENTORY.count(item.index) > 0;
+
+		std::string handleTip = "*BLACK*";
+		if (owned) {
+			handleTip += "Right Click to sell.";
+		}
 
 		std::string equipStr = "";
 		if (C.LEFT == item.index || C.RIGHT == item.index) {
@@ -241,12 +246,16 @@ void DrawViewUI() {
 
 		if (baseItem.type == "weapon") {
 			handleTip += " Double-click to ";
-			if (equipStr != "") {
+			if (!owned) {
+				handleTip += "take.";
+			}
+			else if (equipStr != "") {
 				handleTip += "unequip.";
 			}
 			else {
 				handleTip += "equip.";
 			}
+
 			std::string text = "*ORANGE*" + pretty(item.id) + equipStr;
 			text += "*BLACK* | *TEAL*" + pretty(baseItem.subclass) + "*BLACK* | *PINK*" + to_str(1 + baseItem.twoHanded) + "H" + "*BLACK* | *YELLOW*" + baseItem.cost + "G";
 			Print(text, x, y);
@@ -697,6 +706,9 @@ void DrawBattle(Battle battle) {
 		movementCosts = moveCosts(getCharacter(ID), battle);
 	}
 
+	combatMenu.tabs[1] = "LOOT (" + to_str(battle.loot.size()) + ")";
+	measureTab(&combatMenu);
+
 	std::vector<std::vector<std::string>> characters = {};
 	std::vector<std::vector<Hazard>> hazards = {};
 
@@ -877,7 +889,7 @@ void DrawBattle(Battle battle) {
 		for (int i = startIndex; i < maxIndex; i++) {
 			Item item = items[i];
 			UI_Item baseItem = getItem(item.id);
-			std::string text = "*PINK*" + padNum(i) + "*GREY*) *TEAL*" + pretty(item.id);
+			std::string text = "*PINK*" + padNum((i + 1)) + "*GREY*) *TEAL*" + pretty(item.id);
 			int xPos = (x + 200);
 			int yPos = (y + 29 + 10 * (i - startIndex));
 			int w = measureText(text);

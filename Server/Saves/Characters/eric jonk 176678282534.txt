@@ -1,0 +1,36 @@
+ID!!!eric jonk 176678282534!!!
+USER!!!eric!!!
+LOOK!!!abccbdcbbcdpaeaaaj!!!
+DEATH!!!!!!
+HP!!!30!
+X!!!6!
+Y!!!10!
+SX!!!0!
+SY!!!176!
+ARMOR!!!0!
+MAX_HP!!!30!
+TYPE!!!player!!!
+NAME!!!Jonk!!!
+LOCATION!!!Wilted Woods.6512!!!
+TEAM!!!0!
+EFFECTS!!!
+STAMINA!!!20!
+DESCRIPTION!!!!!!
+TRADING!!!!!!
+LEVEL!!!5!
+XP!!!478!
+SP!!!4!
+GOLD!!!230!
+AP!!!6!
+BACKPACK!!!0!
+ENDED!!!0!
+ATTACKS!!!0!
+CASTS!!!0!
+X_PREFERENCE!!!0!
+Y_PREFERENCE!!!0!
+LEFT!!!dagger.8147!!!
+RIGHT!!!dagger.5566!!!
+HITS!!!0!	0!	
+MISSES!!!0!	0!	
+STATS!!!0!	0!	0!	0!	0!	0!	0!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.8147!!!ATTACKS!!!2!EQUIPPED!!!1!RUNES!!!	ITEM!!!INDEX!!!dagger.5566!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	

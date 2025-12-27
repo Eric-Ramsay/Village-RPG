@@ -169,7 +169,7 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 	C.INVENTORY[wepId].attacks--;
 	//sendItem(C.ID, C.INVENTORY[wepId]);
 
-	Result result = dealDamage(battle, item.attack, C.ID, target);
+	Result result = dealDamage(C.ID, target, item.attack);
 	sendData(result.changes);
 
 	handleCombat(battle.id);
@@ -395,6 +395,7 @@ std::string createCharacter(int playerIndex, std::string n, std::string look) {
 }
 
 std::string commandTake(int playerIndex, Character& C, std::vector<std::string> words) {
+	std::string changes = "";
 	std::string args = join(words);
 	if (BATTLES.count(C.LOCATION) == 0) {
 		return "*RED*You must be in combat to attack.";
@@ -423,10 +424,13 @@ std::string commandTake(int playerIndex, Character& C, std::vector<std::string> 
 	}
 
 	C.INVENTORY[index] = battle->loot[index];
-	removeLoot(*battle, index);
+	battle->loot.erase(index);
+	save(*battle);
+	
+	changes += printStat(*battle, "LOOT");
+	changes += printStat(C, "INVENTORY");
 
-	sendItem(C.ID, C.INVENTORY[index]);
-
+	sendData(changes);
 	return "";
 }
 
@@ -544,16 +548,14 @@ void command(std::string input, int playerIndex) {
 
 	if (keyword == "character") {
 		if (players[playerIndex].ID == "") {
-			if (words.size() == 0) {
-				msg = "*RED*Please enter a character name!";
+			std::string args = join(words);
+			words = split(args, '=');
+			if (words.size() == 2 && words[0] != "") {
+				id = createCharacter(playerIndex, words[0], words[1]);
+				players[playerIndex].ID = id;
 			}
 			else {
-				std::string args = join(words);
-				words = split(args, '=');
-				if (words.size() == 2) {
-					id = createCharacter(playerIndex, words[0], words[1]);
-					players[playerIndex].ID = id;
-				}
+				msg = "*RED*Please enter a character name!";
 			}
 		}
 	}
