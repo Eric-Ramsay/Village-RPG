@@ -108,10 +108,10 @@ void process(std::string type, std::string data) {
 		if (stat == "HP") {
 			Animation anim;
 			anim.type = "text";	
-			anim.position.x = CHARACTERS[id].X * 16 + 8;
-			anim.position.y = CHARACTERS[id].Y * 16 + 4;
-			anim.endPos.x = CHARACTERS[id].X * 16 + 8;
-			anim.endPos.y = CHARACTERS[id].Y * 16 - 8;
+			anim.position.x = battleX + CHARACTERS[id].X * 16 + 8;
+			anim.position.y = battleY + 20 + CHARACTERS[id].Y * 16 + 4;
+			anim.endPos.x = battleX + CHARACTERS[id].X * 16 + 8;
+			anim.endPos.y = battleY + 20 + CHARACTERS[id].Y * 16 - 8;
 			anim.endOpacity = 0;
 			anim.beginFade = 20;
 			anim.duration = 40;
