@@ -1,5 +1,36 @@
 #pragma once
 
+std::string summon(Battle& battle, std::string n, int x = 0, int y = 0, int team = 1, int hp = -1) {
+	std::string name = low(n);
+	if (ENEMIES.count(name) > 0) {
+		Character enemy = ENEMIES[name];
+		if (hp > 0) {
+			enemy.HP = hp;
+		}
+		std::string id = name + "." + battle.id + "." + to_str(random(10000));
+		enemy.ID = id;
+		enemy.X = x;
+		enemy.Y = y;
+		enemy.LOCATION = battle.id;
+		enemy.TEAM = team;
+		battle.characters.push_back(id);
+		CHARACTERS[id] = enemy;
+		save(enemy);
+		return addBundle("CHARACTER", serialize(enemy));
+	}
+	std::cout << "Couldn't summon enemy '" + name + "'!" << std::endl;
+	return "";
+	
+}
+
+std::string summon(Battle& battle, std::vector<Character>& enemyList, int team = 1, int hp = -1) {
+	std::string changes = "";
+	for (Character enemy : enemyList) {
+		changes += summon(battle, enemy.NAME, team);
+	}
+	return changes;
+}
+
 std::string addEffect(std::string target, std::string attacker, std::string id, int turns, int stacks = 1) {
 	UI_Effect effect = getEffect(id);
 	if (id == "" || CHARACTERS.count(target) == 0 || effect.name == "") {
@@ -32,9 +63,9 @@ int numStacks(Character C, std::string effectId) {
 	return -1;
 }
 
-Result takeDamage(std::string targetId, Attack attack) {
+DamageResult takeDamage(std::string targetId, Attack attack) {
 	std::string msg = "";
-	Result result;
+	DamageResult result;
 	if (CHARACTERS.count(targetId) == 0) {
 		return result;
 	}
@@ -42,10 +73,10 @@ Result takeDamage(std::string targetId, Attack attack) {
 
 	Battle battle = BATTLES[target->LOCATION];
 
-	int hitValue = rand() % 100;
+	int hitValue = random(100);
 	int dmg = attack.min;
 	if (attack.max > attack.min) {
-		dmg = attack.min + rand() % (attack.max - attack.min);
+		dmg = random(attack.min, attack.max);
 	}
 	if (hitValue < attack.hitChance) {
 		target->HP -= dmg;
@@ -68,9 +99,9 @@ Result takeDamage(std::string targetId, Attack attack) {
 }
 
 
-Result dealDamage(std::string attackerId, std::string targetId, Attack attack) {
+DamageResult dealDamage(std::string attackerId, std::string targetId, Attack attack) {
 	std::string msg = "";
-	Result result;
+	DamageResult result;
 	if (CHARACTERS.count(attackerId) == 0) {
 		return takeDamage(targetId, attack);
 	}
@@ -78,16 +109,14 @@ Result dealDamage(std::string attackerId, std::string targetId, Attack attack) {
 	if (CHARACTERS.count(targetId) == 0) {
 		return result;
 	}
-	
-	Battle battle = BATTLES[attackerId];
 
 	Character* attacker = &CHARACTERS[attackerId];
 	Character* target = &CHARACTERS[targetId];
 
-	int hitValue = rand() % 100;
+	int hitValue = random(100);
 	int dmg = attack.min;
 	if (attack.max > attack.min) {
-		dmg = attack.min + rand() % (attack.max - attack.min);
+		dmg = random(attack.min, attack.max);
 	}
 	if (hitValue < attack.hitChance) {
 		target->HP -= dmg;
@@ -107,6 +136,7 @@ Result dealDamage(std::string attackerId, std::string targetId, Attack attack) {
 	}
 
 	if (msg != "") {
+		Battle battle = BATTLES[attacker->LOCATION];
 		result.changes += addBundle("TEXT", str(battle.id) + msg);
 	}
 

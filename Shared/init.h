@@ -137,7 +137,7 @@ void initTerrain() {
 	addTerrain("Tree", 999, 25);
 	addTerrain("Tree", 999, 25);
 	addTerrain("Web", 6, 8, 0, { Effect("rooted", "", 1)});
-	addTerrain("Water", 4, 8, 4, { Effect("rooted", "", 1), Effect("poisoned", "", 3, 3) });
+	addTerrain("Water", 4);
 	addTerrain("Slime", 4, 0, 0, { Effect("slowed", "", 3)});
 	addTerrain("Acid", 2, 0, 5);
 
@@ -151,8 +151,8 @@ void initTerrain() {
 void initEnemies() {
 	std::vector<Character> enemies = {};
 	//Character Enemy(std::string name, int hp, std::vector<int> armor, int difficulty, std::vector<int> zones, int AP, std::string type, std::string desc)
-	enemies.push_back(Character("Crazed Wolf", 40, 2, 40, { 2 }, 3, "animal", "A mangy wolf, foaming at its mouth and snapping viciously."));
-	//enemies.push_back(Character("Giant Amoeba",  40, 2, 40, { 2 }, 3, "animal", ""));
+	enemies.push_back(Character("Crazed Wolf", 40, 10, 40, { 2 }, 3, "animal", "A mangy wolf, foaming at its mouth and snapping viciously."));
+	enemies.push_back(Character("Giant Amoeba",  40, 6, 40, { 2 }, 3, "animal", "A dim creature, slow, yet strong. It makes its way cautiously about the world."));
 	//enemies.push_back(Character("Slugbeast",  40, 2, 40, { 2 }, 3, "animal", ""));
 	//enemies.push_back(Character("Goblin Archer",  40, 2, 40, { 2 }, 3, "animal", ""));
 	//enemies.push_back(Character("Goblin Swordsman",  40, 2, 40, { 2 }, 3, "animal", ""));

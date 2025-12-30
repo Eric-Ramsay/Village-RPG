@@ -8,6 +8,7 @@
 #include <deque>
 #include <string>
 #include <iostream>
+#include <random>
 #include <fstream>
 #include <sstream>
 #include <WS2tcpip.h>
@@ -25,6 +26,7 @@ namespace Gdiplus {
 #include "miniaudio.h"
 #include "..\..\Shared\textFunctions.h"
 #include "..\..\Shared\sharedStructures.h"
+#include "enums.h"
 #include "structures.h"
 #include "globals.h"
 #include "..\..\Shared\sharedFunctions.h"
@@ -78,8 +80,6 @@ int main()
 	initTabs();
 	initScrollbars();
 
-	srand(time(NULL));
-	std::cout << rand() % 100 << std::endl;
 	init();
 	initToolTips();
 
@@ -292,6 +292,7 @@ int main()
 			}
 		}
 		if (UI.inGame) {
+			Sleep(1);
 			if (updateFPS) {
 				FPS = 1.f / clock.getElapsedTime().asSeconds();
 				updateFPS = false;
@@ -337,22 +338,22 @@ int main()
 					holdingBackspace = 0;
 				}
 
-				if (animations.size() > 0) {
-					animations[0].timePassed++;
-					if (animations[0].timePassed >= animations[0].duration) {
+				for (int i = 0; i < animations.size(); i++) {
+					animations[i].timePassed++;
+					if (animations[i].timePassed >= animations[i].duration) {
 						animations.pop_front();
 					}
 					else {
-						float x = animations[0].position.x;
-						float y = animations[0].position.y;
-						float endX = animations[0].endPos.x;
-						float endY = animations[0].endPos.y;
-						int timeRemaining = (animations[0].duration - animations[0].timePassed);
-						animations[0].position.x += (endX - x) / timeRemaining;
-						animations[0].position.y += (endY - y) / timeRemaining;
+						float x = animations[i].position.x;
+						float y = animations[i].position.y;
+						float endX = animations[i].endPos.x;
+						float endY = animations[i].endPos.y;
+						int timeRemaining = (animations[i].duration - animations[i].timePassed);
+						animations[i].position.x += (endX - x) / timeRemaining;
+						animations[i].position.y += (endY - y) / timeRemaining;
 
-						if (animations[0].timePassed >= animations[0].beginFade) {
-							animations[0].opacity += (animations[0].endOpacity - animations[0].opacity) / timeRemaining;
+						if (animations[i].timePassed >= animations[i].beginFade) {
+							animations[i].opacity += (animations[i].endOpacity - animations[i].opacity) / timeRemaining;
 						}
 					}
 				}
@@ -377,7 +378,7 @@ int main()
 				UI.tooltip = "";
 				DrawUI();
 
-				CPrint(to_str((int)FPS), WIDTH / 2, 1);
+				Print(to_str((int)FPS), 2, 1);
 			}
 			else {
 				DrawLogs();

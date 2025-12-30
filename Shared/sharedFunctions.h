@@ -45,7 +45,15 @@ int MaxHP(Character C) {
 	return C.MAX_HP + 10 * C.STATS[VIT];
 }
 
-int MaxArmor(Character C) {
+int Defense(Character C) {
+	int armor = 0;
+	for (auto item : C.INVENTORY) {
+
+	}
+	return armor;
+}
+
+int Armor(Character C) {
 	int armor = 0;
 	for (auto item : C.INVENTORY) {
 
@@ -165,8 +173,14 @@ int w_range(Character C, Item item) {
 }
 
 
+enum TileState {
+	UNEXPLORED,
+	OPEN,
+	CLOSED
+};
+
 struct PathTile {
-	std::string state = "unexplored";
+	TileState state = UNEXPLORED;
 	int x = 0;
 	int y = 0;
 	int baseCost = 2;
@@ -177,6 +191,7 @@ struct PathTile {
 	PathTile(int x1, int y1) {
 		x = x1;
 		y = y1;
+		team = -1;
 	}
 };
 
@@ -186,10 +201,7 @@ std::vector<std::vector<PathTile>> createMap(Battle b) {
 	for (int i = 0; i < 12; i++) {
 		tiles.push_back(std::vector<PathTile>());
 		for (int j = 0; j < 12; j++) {
-			tiles[i].push_back(PathTile());
-			tiles[i][j].x = j;
-			tiles[i][j].y = i;
-			tiles[i][j].team = -1;
+			tiles[i].push_back(PathTile(j, i));
 		}
 	}
 
@@ -199,61 +211,70 @@ std::vector<std::vector<PathTile>> createMap(Battle b) {
 	}
 
 	for (std::string id : b.characters) {
-		Character C = CHARACTERS[id];
-		tiles[C.Y][C.X].canLand = false;
-		tiles[C.Y][C.X].team = C.TEAM;
+		Character* C = &CHARACTERS[id];
+		tiles[C->Y][C->X].canLand = false;
+		tiles[C->Y][C->X].team = C->TEAM;
 	}
-
 
 	return tiles;
 }
 
 std::vector<std::vector<int>> moveCosts(Character C, Battle battle) {
+	std::vector<std::vector<int>> costs = std::vector<std::vector<int>>(12, std::vector<int>(12));
 	if (battle.round == 0) {
-		return std::vector<std::vector<int>> (12, std::vector<int>(12));
+		return costs;
 	}
 	int team = C.TEAM;
 	std::vector<std::vector<PathTile>> map = createMap(battle);
-	std::vector<Spot> open = { Spot(C.X, C.Y) };
-	while (open.size() > 0) {
-		Spot current = open.back();
-		map[current.y][current.x].state = "closed";
-		open.pop_back();
-		int currentCost = map[current.y][current.x].cost;
+	map[C.Y][C.X].state = OPEN;
+	bool done = false;
+	int currentX = C.X;
+	int currentY = C.Y;
+	do {
+		int currentCost = map[currentY][currentX].cost;
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
 				// If tile hasn't been explored yet, or the cost from this point is cheaper than the previously found cost, add the tile to the open list.
-				int x = min(11, max(current.x + j, 0));
-				int y = min(11, max(current.y + i, 0));
-				int baseCost = map[y][x].baseCost;
-				if (map[y][x].team > -1 && map[y][x].team != team) {
-					baseCost += 4;
-				}
-				if (i != 0 && j != 0) {
-					baseCost *= 1.5;
-				}
-				int cost = currentCost + baseCost;
-				PathTile* tile = &map[y][x];
-				if (tile->state == "unexplored" || cost < tile->cost) {
-					tile->cost = cost;
-					if (tile->state != "open") {
-						tile->state = "open";
-						open.push_back(Spot(x, y));
+				int x = currentX + j;
+				int y = currentY + i;
+				if (x >= 0 && x < 12 && y >= 0 && y < 12) {
+					PathTile* tile = &map[y][x];
+					int cost = tile->baseCost;
+					if (tile->team > -1 && tile->team != team) {
+						cost += 4;
+					}
+					if (i != 0 && j != 0) {
+						cost *= 1.5;
+					}
+					cost += currentCost;
+					if (tile->state == UNEXPLORED || cost < tile->cost) {
+						tile->cost = cost;
+						tile->state = OPEN;
 					}
 				}
 			}
 		}
-	}
-	std::vector<std::vector<int>> costs = {};
-	
+		currentX = -1;
+		currentY = -1;
+		for (int i = 0; i < 12; i++) {
+			for (int j = 0; j < 12; j++) {
+				if (map[i][j].state == OPEN) {
+					currentX = j;
+					currentY = i;
+					map[i][j].state = CLOSED;
+					i = 12; j = 12;
+				}
+			}
+		}
+	} while (currentX != -1 && currentY != -1);
+
 	for (int i = 0; i < 12; i++) {
-		costs.push_back(std::vector<int>());
 		for (int j = 0; j < 12; j++) {
 			int cost = map[i][j].cost;
 			if (!map[i][j].canLand) {
 				cost = 999;
 			}
-			costs[i].push_back(cost);
+			costs[i][j] = cost;
 		}
 	}
 	return costs;
@@ -334,7 +355,11 @@ void parseChange(Character& character, std::string type, std::string data) {
 		character.ARMOR = readInt(data);
 	}
 	else if (type == "STATS") {
+		std::string backup = data;
 		character.STATS = readInts(data);
+		if (character.STATS.size() < 6) {
+			std::cout << "yo wtf" << std::endl;
+		}
 	}
 	else if (type == "X") {
 		character.X = readInt(data);
@@ -652,4 +677,8 @@ int nextMessage(std::vector<Message>& msgs) {
 		msgs.push_back(m);
 	}
 	return msgIndex;
+}
+
+int safeC(int a, int b) {
+	return (a % b + b) % b;
 }

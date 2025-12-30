@@ -63,6 +63,9 @@
     <ClInclude Include="Code\UI_Elements.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Code\enums.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Code\shader.frag">

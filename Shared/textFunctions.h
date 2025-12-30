@@ -247,9 +247,6 @@ std::string addLine(std::string stat, std::string value) {
 std::string addLine(std::string stat, int value) {
 	return str(stat) + str(value) + "\n";
 }
-std::string addLine(std::string stat, std::vector<int> value) {
-	return str(stat) + str(value) + "\n";
-}
 
 std::string addBundle(std::string type, std::string data) {
 	return str(type) + data + (char)249;

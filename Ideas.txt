@@ -5,6 +5,8 @@
 
 DEF STAT gives +2 / +2 armor per point
 
+Rune idea: Steal HP of enemies within 1 tile of you
+
 Trait/Achievement Ideas
 -----------------------
 Each turn, heal the lowest HP ally within 2 tiles 10% of your Max HP.
@@ -39,10 +41,6 @@ Thief - Rob the fat merchant in the Wilted Woods - When you buy something from t
 
 
 
-1. Player tracks all battles
-	- Same as characters
-	- Server sends all battle info to all clients
-
 2. Animation work
 	- Battle/Character used in UI is a copy, updated by animation queue.
 	- Animation queue
@@ -60,7 +58,7 @@ Thief - Rob the fat merchant in the Wilted Woods - When you buy something from t
 5. Weapons
 	- Mostly just copy Discord version
 	
-6. Phys + Armor Runes
+6. Weapon + Armor Runes
 	- Handle in Attack, Mitigation functions
 	- Add enchanting to UI
 	- Show runes in UI

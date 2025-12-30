@@ -1,16 +1,37 @@
 #pragma once
 
-std::vector<std::string> findTargets(int x, int y, int range, std::vector<std::string> potentialTargets) {
-	std::vector<std::string> targets = {};
+TargetResult findTargets(int team, int x, int y, int range, std::vector<std::string> potentialTargets) {
+	TargetResult response;
+	int maxDist = 0;
+	int minDist = 999999;
+	int minHP = 999999;
+	int maxHP = 0;
 	for (std::string id : potentialTargets) {
-		if (atkDist(x, y, CHARACTERS[id].X, CHARACTERS[id].Y) <= range) {
-			targets.push_back(id);
+		Character* target = &CHARACTERS[id];
+		if (target->TEAM != team) {
+			int d = atkDist(x, y, target->X, target->Y);
+			if (d <= range) {
+				if (d < minDist) {
+					response.closest = id;
+				}
+				if (d > maxDist) {
+					response.farthest = id;
+				}
+				if (target->HP > maxHP) {
+					response.strongest = id;
+				}
+				if (target->HP < minHP) {
+					response.weakest = id;
+				}
+				response.targets.push_back(id);
+			}
 		}
 	}
-	return targets;
+	return response;
 }
 
-std::string moveInRange(Character* C, int range, bool maximizeRange = true) {
+std::string moveInRange(std::string id, int range, bool maximizeRange = true) {
+	Character* C = &CHARACTERS[id];
 	if (BATTLES.count(C->LOCATION) == 0) {
 		return "";
 	}
@@ -67,28 +88,73 @@ std::string moveInRange(Character* C, int range, bool maximizeRange = true) {
 	return changes;
 }
 
-Result attack(std::string attackerId, std::string targetId, Attack attack, std::string description) {
-	Result result;
+DamageResult attack(std::string attackerId, std::string targetId, Attack attack, std::string description) {
+	DamageResult result;
 	std::string changes = addBundle("TEXT", str(CHARACTERS[attackerId].LOCATION) + "*RED*" + pretty(name(attackerId)) + " " + description + " " + name(CHARACTERS[targetId]));
 	result = dealDamage(attackerId, targetId, attack);
 	result.changes = changes + result.changes;
 	return result;
 }
 
-Result moveAttack(std::string id, int MP, int range, int damage, int hitChance, int pen, std::string description, int multiplier = 2) {
+enum Target {
+	RANDOM,
+	WEAKEST,
+	STRONGEST,
+	CLOSEST,
+	FARTHEST
+};
 
+DamageResult moveAttack(std::string id, Attack attack, int range, std::string description, int multiplier = 2, bool maximizeRange = true, Target targetType = RANDOM, bool moveAndAttack = true) {
+	Character* C = &CHARACTERS[id];
+	Battle* battle = &BATTLES[C->LOCATION];
+	std::vector<std::string> enemies;
+
+	std::string changes = "";
+
+	bool moved = false;
+	TargetResult result = findTargets(C->TEAM, C->X, C->Y, range, battle->characters);
+	if (result.targets.size() == 0) {
+		moved = true;
+		changes += moveInRange(id, range, maximizeRange);
+		result = findTargets(C->TEAM, C->X, C->Y, range, battle->characters);
+	}
+	if (result.targets.size() > 0 && (!moved || moveAndAttack)) {
+		std::string targetId = result.targets[random(result.targets.size())];
+		if (targetType == WEAKEST) {
+			targetId = result.weakest;
+		}
+		else if (targetType == STRONGEST) {
+			targetId = result.strongest;
+		}
+		else if (targetType == CLOSEST) {
+			targetId = result.closest;
+		}
+		else if (targetType == FARTHEST) {
+			targetId = result.farthest;
+		}
+		if (!moved) {
+			attack.min *= multiplier;
+			attack.max *= multiplier;
+		}
+		changes += addBundle("TEXT", str(C->LOCATION) + "*RED*" + pretty(name(id)) + " " + description + " " + name(targetId));
+		DamageResult dmgResult = dealDamage(id, targetId, attack);
+		dmgResult.changes = changes + dmgResult.changes;
+		return dmgResult;
+	}
+	return DamageResult(changes);
 }
 
-std::string enemyAttack(std::string enemyId, Battle battle) {
+std::string enemyAttack(std::string enemyId) {
 	std::string changes = "";
 	Character* C = &CHARACTERS[enemyId];
+	Battle* battle = &BATTLES[C->LOCATION];
 
 	std::vector<std::string> allies;
 	std::vector<std::string> enemies;
 	
 	std::string eName = low(C->NAME);
 
-	for (std::string id : battle.characters) {
+	for (std::string id : battle->characters) {
 		if (id != enemyId) {
 			if (CHARACTERS[id].TEAM == C->TEAM) {
 				allies.push_back(id);
@@ -100,20 +166,41 @@ std::string enemyAttack(std::string enemyId, Battle battle) {
 	}
 
 	if (eName == "crazed wolf") {
-		// Damage doubles below half HP
-		// Has a strong bite attack when not moving, or a weaker nip attack when moving that afflicts bleeding.
-		std::vector<std::string> targets = findTargets(C->X, C->Y, 1, enemies);
-		if (targets.size() > 0) {
-			std::string targetId = targets[rand() % targets.size()];
-			Result result = attack(C->ID, targetId, P_Attack(10, 16, 90), "bites savagely at");
-			changes += result.changes;
+		std::string description = "bites at";
+		Attack attack(2, 4, 0, 90);
+		if (C->HP < MaxHP(*C) / 2) {
+			attack.min *= 2;
+			attack.max	 *= 2;
+			description = "bites savagely at";
 		}
-		else {
-			changes += moveInRange(C, 1);
-		}
+		changes += moveAttack(C->ID, attack, 1, description, 3).changes;
 	}
 	else if (eName == "giant amoeba") {
+		std::string description = "bumps into";
+		Attack attack(1, 2, 0, 90);
+		changes += moveAttack(C->ID, attack, 1, description, 2).changes;
+		std::vector<std::vector<int>> movementCosts = moveCosts(*C, *battle);
 
+		if (C->HP > 5) {
+			for (int i = -1; i < 2; i++) {
+				for (int j = -1; j < 2; j++) {
+					if (i != 0 || j != 0) {
+						if (random(16) == 0) {
+							int x = C->X + j;
+							int y = C->Y + i;
+							if (x >= 0 && y >= 0 && x < 12 && y < 12) {
+								if (movementCosts[y][x] < 12) {
+									changes += summon(*battle, "giant amoeba", x, y, C->TEAM, C->HP);
+									C->HP -= 5;
+									changes += printStat(*C, "HP");
+									i = 2; j = 2;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	else if (eName == "goblin archer") {
 
@@ -205,7 +292,7 @@ std::string enemyAttack(std::string enemyId, Battle battle) {
 	else if (eName == "wild bear") {
 
 	}
-	else if (ename == "swamp mage") {
+	else if (eName == "swamp mage") {
 
 	}
 

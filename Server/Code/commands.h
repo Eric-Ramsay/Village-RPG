@@ -70,7 +70,7 @@ std::string commandDelve(int playerIndex, Character& C, std::vector<std::string>
 		}
 	}
 	if (id == "") {
-		id = C.LOCATION + "." + to_str(rand() % 9999);
+		id = C.LOCATION + "." + to_str(random(10000));
 		BATTLES[id] = Battle(id, C.LOCATION);
 	}
 	setStat(C, "LOCATION", id);
@@ -167,9 +167,11 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 
 	C.AP -= item.AP;
 	C.INVENTORY[wepId].attacks--;
-	//sendItem(C.ID, C.INVENTORY[wepId]);
 
-	Result result = dealDamage(C.ID, target, item.attack);
+	DamageResult result = dealDamage(C.ID, target, item.attack);
+
+	result.changes += printStat(C, "AP");
+
 	sendData(result.changes);
 
 	handleCombat(battle.id);
@@ -365,7 +367,7 @@ std::string commandBuy(int playerIndex, Character& C, std::vector<std::string> w
 std::string createCharacter(int playerIndex, std::string n, std::string look) {
 	std::time_t t = std::time(0);
 	Character newCharacter;
-	std::string id = players[playerIndex].USERNAME + " " + n + " " + to_str(t) + to_str(rand() % 99);
+	std::string id = players[playerIndex].USERNAME + " " + n + " " + to_str(t) + to_str(random(100));
 
 	std::vector<std::string> nameArgs = split(n);
 	for (int i = 0; i < nameArgs.size(); i++) {
@@ -443,6 +445,7 @@ void commandTrade(int playerIndex, Character& C, std::string id) {
 }
 
 std::string commandLevel(int playerIndex, Character& C, std::string stat) {
+	std::string changes = "";
 	if (C.SP == 0) {
 		return "*RED*You don't have any SP";
 	}
@@ -459,26 +462,24 @@ std::string commandLevel(int playerIndex, Character& C, std::string stat) {
 	if (C.STATS[index] == 99 || (index == AVD && C.STATS[AVD] >= 10)) {
 		return "*RED*You can't increase this stat any further.\n";
 	}
-	std::string changes = str(C.ID);
 
 	C.STATS[index]++;
-	changes += addLine("STATS", C.STATS);
 	C.SP--;
-	changes += addLine("SP", C.SP);
 	if (index == VIT) {
 		C.HP += 10;
-		changes += addLine("HP", C.HP);
+		changes += printStat(C, "HP");
 	}
 	if (index == END) {
 		C.STAMINA += 10;
-		changes += addLine("STAMINA", C.STAMINA);
+		changes += printStat(C, "STAMINA");
 	}
 	if (index == DEX) {
 		C.AP += 3;
-		changes += addLine("AP", C.AP);
+		changes += printStat(C, "AP");
 	}
-
-	sendData("STATS", changes);
+	changes += printStat(C, "SP");
+	changes += printStat(C, "STATS");
+	sendData(changes);
 	return "*TEAL*You increased your *BLUE*" + stats[index] + "*TEAL* stat to *GREY*" + C.STATS[index] + "*TEAL*";
 }
 
@@ -503,7 +504,7 @@ std::string commandSleep(int playerIndex, Character& C) {
 			};
 			setStat(C, "GOLD", C.GOLD - 5);
 			setStat(C, "HP", MaxHP(C));
-			return "*GREEN*You pay five gold to sleep at the tavern. *GREY*\n" + dialogues[rand() % dialogues.size()] + "\n";
+			return "*GREEN*You pay five gold to sleep at the tavern. *GREY*\n" + dialogues[random(dialogues.size())] + "\n";
 		}
 		return "*RED*You can't afford to rent a room here!\n";
 	}

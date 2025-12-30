@@ -72,8 +72,18 @@ bool updateMovement = true;
 
 std::vector<Scrollbar*> scrollbars = {};
 Scrollbar tradeBar(10, 100);
-Scrollbar logBar(7, 97, true);
+Scrollbar logBar(6, 83, true);
 Scrollbar graveBar(8, 240);
 Scrollbar lootBar(17, 170);
 
+Scrollbar enemyBar(5, 124);
+Scrollbar allyBar(3, 74);
+
 int numMessages = 0;
+
+
+int battleX = 224;
+int battleY = 1;
+
+int battleMenuX = 6;
+int battleMenuY = 4;

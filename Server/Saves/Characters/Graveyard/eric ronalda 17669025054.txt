@@ -1,0 +1,36 @@
+ID!!!eric ronalda 17669025054!!!
+USER!!!eric!!!
+LOOK!!!adegakbnejcdaabbai!!!
+DEATH!!!Suicide!!!
+HP!!!60!
+X!!!3!
+Y!!!10!
+SX!!!0!
+SY!!!176!
+ARMOR!!!0!
+MAX_HP!!!30!
+TYPE!!!player!!!
+NAME!!!Ronalda!!!
+LOCATION!!!Acrid Swamp.8220!!!
+TEAM!!!0!
+EFFECTS!!!
+STAMINA!!!20!
+DESCRIPTION!!!!!!
+TRADING!!!!!!
+LEVEL!!!192!
+XP!!!6454!
+SP!!!183!
+GOLD!!!2844!
+AP!!!10!
+BACKPACK!!!0!
+ENDED!!!1!
+ATTACKS!!!0!
+CASTS!!!0!
+X_PREFERENCE!!!0!
+Y_PREFERENCE!!!0!
+LEFT!!!dagger.64352!!!
+RIGHT!!!dagger.68113!!!
+HITS!!!0!	0!	
+MISSES!!!0!	0!	
+STATS!!!3!	0!	1!	0!	3!	1!	0!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.64352!!!ATTACKS!!!1!EQUIPPED!!!1!RUNES!!!	ITEM!!!INDEX!!!dagger.68113!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	

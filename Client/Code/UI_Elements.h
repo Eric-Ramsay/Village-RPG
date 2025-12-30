@@ -119,6 +119,8 @@ void initScrollbars() {
 	scrollbars.push_back(&logBar);
 	scrollbars.push_back(&graveBar);
 	scrollbars.push_back(&lootBar);
+	scrollbars.push_back(&allyBar);
+	scrollbars.push_back(&enemyBar);
 	logBar.orbPos = logBar.height - 24;
 }
 
@@ -176,6 +178,7 @@ void initColors() {
 	COLORS["raindrop"] = sf::Color(70, 130, 125);
 	COLORS["goblin"] = sf::Color(100, 150, 50);
 	COLORS["dark"] = sf::Color(10, 20, 30);
+	COLORS["background"] = sf::Color(0, 5, 15);
 
 	COLORS["yellow"] = sf::Color(180, 140, 0);
 	COLORS["red"] = sf::Color(220, 50, 45);
@@ -285,6 +288,10 @@ Box DrawSection(int x, int y, int w, int h, std::string border = "grey", std::st
 	fillRect(x, y, w, h, getColor(border));
 	fillRect(x + 1, y + 1, w - 2, h - 2, getColor(inside));
 	return Box(x, y, w, h);
+}
+
+Box DrawSymbol(SYMBOL symbol, int x, int y, std::string color) {
+	return Draw(8 * symbol, 58, 7, 7, x, y, 1, getColor(color));
 }
 
 void DrawCharacter(int x, int y, std::vector<int> styles, std::vector<int> colors, int scale = 1) {

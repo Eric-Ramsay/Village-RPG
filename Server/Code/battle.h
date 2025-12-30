@@ -74,7 +74,7 @@ std::string winBattle(Battle& battle) {
 			// Dead Enemy - Give out Loot
 			std::string id = splitId[0];
 			for (Drop drop : ENEMIES[id].LOOT) {
-				int chance = rand() % 100;
+				int chance = random(100);
 				if (chance < drop.dropChance) {
 					UI_Item item = getItem(drop.item);
 					dropList.push_back(item.id);
@@ -91,7 +91,7 @@ std::string winBattle(Battle& battle) {
 				if (item.second.equipped) {
 					dropChance *= 2;
 				}
-				if (rand() % 100 < dropChance) {
+				if (random(100) < dropChance) {
 					battle.loot[item.second.index] = item.second;
 				}
 			}
@@ -99,8 +99,8 @@ std::string winBattle(Battle& battle) {
 	}
 
 	for (Drop drop : zoneLoot[getZoneIndex(battle.zone)]) {
-		int chance = rand() % 100;
-		if (chance < drop.dropChance) {
+		int chance = random(100);
+		if (chance <= drop.dropChance) {
 			UI_Item item = getItem(drop.item);
 			dropList.push_back(item.id);
 			lootValue += item.cost;
@@ -108,7 +108,7 @@ std::string winBattle(Battle& battle) {
 	}
 
 	while (lootValue < lootMax) {
-		int index = rand() % genericLoot.size();
+		int index = random(genericLoot.size());
 		dropList.push_back(genericLoot[index].id);
 		lootValue += genericLoot[index].cost;
 	}
@@ -197,7 +197,7 @@ std::string startTurn(Battle& battle) {
 			Hazard hazard = hazards[C->Y][C->X];
 			Terrain terrain = TERRAIN[hazard.index];
 			if (terrain.damage > 0) {
-				changes += dealDamage(hazard.summoner, C->ID, T_Attack(TRUE_DMG, terrain.damage, terrain.damage)).changes;
+				changes += dealDamage(hazard.summoner, C->ID, Attack(terrain.damage, terrain.damage)).changes;
 			}
 			for (Effect effect : terrain.effects) {
 				changes += addEffect(C->ID, hazard.summoner, effect.id, effect.turns, effect.stacks);
@@ -236,10 +236,13 @@ std::string startTurn(Battle& battle) {
 		}
 		else {
 			C->AP = 12;
-			changes += enemyAttack(C->ID, battle);
+			changes += enemyAttack(C->ID);
 			C->ENDED = true;
 		}
 	}
+
+	changes += printStat(battle, "CHARACTERS");
+
 	saveBattle(battle);
 
 	return changes;
@@ -276,35 +279,6 @@ void handleCombat(std::string id) {
 	}
 }
 
-void summon(Battle& battle, Character& enemy, int x = 0, int y = 0, int team = 1) {
-	std::string id = enemy.NAME + "." + battle.id + "." + to_str(rand() % 9999);
-	enemy.ID = id;
-	enemy.X = x;
-	enemy.Y = y;
-	enemy.LOCATION = battle.id;
-	enemy.TEAM = team;
-	battle.characters.push_back(id);
-	CHARACTERS[id] = enemy;
-	//sendCharacter(enemy);
-	save(enemy);
-}
-
-void summon(Battle& battle, std::vector<Character>& enemyList, int team = 1) {
-	for (Character enemy : enemyList) {
-		summon(battle, enemy, team);
-	}
-}
-
-void summon(Battle& battle, std::string name, int team = 1) {
-	for (auto enemy : ENEMIES) {
-		if (low(enemy.second.NAME) == low(name)) {
-			summon(battle, enemy.second, team);
-			return;
-		}
-	}
-	std::cout << "Couldn't summon enemy '" + name + "'!" << std::endl;
-}
-
 void addRiver(Battle& battle) {
 	// Make a river:
 	int x = 0;
@@ -316,15 +290,14 @@ void addRiver(Battle& battle) {
 	// 1 - Left
 	// 2 - Down
 	// 3 - Right
-	battle.hazards = {};
-	if (rand() % 2 == 0) {
+	if (random(2) == 0) {
 		x = 11;
-		y = 1 + rand() % 10;
+		y = 1 + random(10);
 		bannedDir = 3;
 		dir = 1;
 	}
 	else {
-		x = 1 + rand() % 10;
+		x = 1 + random(10);
 		y = 11;
 		bannedDir = 2;
 		dir = 0;
@@ -351,18 +324,17 @@ void addRiver(Battle& battle) {
 			run = (x >= 0 && y >= 0 & x < 12 && y < 12);
 		}
 		do {
-			dir = rand() % 4;
+			dir = random(4);
 			std::cout << dir << std::endl;
 		} while (dir == lastDir || dir == bannedDir);
 	}
 }
 
-void addTrees(Battle& battle) {
-	int numTrees = 6;
+void addTrees(Battle& battle, int numTrees = 6) {
 	while (numTrees > 0) {
-		int treeIndex = 1 + rand() % 3;
-		int x = rand() % 12;
-		int y = rand() % 12;
+		int treeIndex = 1 + random(3);
+		int x = random(12);
+		int y = random(12);
 		bool found = false;
 		for (Hazard hazard : battle.hazards) {
 			if (hazard.x == x && hazard.y == y) {
@@ -371,7 +343,7 @@ void addTrees(Battle& battle) {
 			}
 		}
 		if (!found) {
-			battle.hazards.push_back(Hazard(treeIndex, x, y, 3));
+			battle.hazards.push_back(Hazard(treeIndex, x, y));
 			numTrees--;
 		}
 	}
@@ -410,7 +382,7 @@ void startBattle(Battle& battle) {
 	}
 
 	while (validEnemies.size() > 0 && rating > 0) {
-		int index = rand() % validEnemies.size();
+		int index = random(validEnemies.size());
 
 		enemies.push_back(validEnemies[index]);
 		rating -= validEnemies[index].LEVEL;
@@ -427,12 +399,21 @@ void startBattle(Battle& battle) {
 	for (Character enemy : enemies) {
 		int x = rand() % 12;
 		int y = rand() % 2;
-		summon(battle, enemy, x, y);
-		bundle += addBundle("CHARACTER", serialize(enemy));
+		bundle += summon(battle, enemy.NAME, x, y);
 	}
 
-	addRiver(battle);
-	addTrees(battle);
+	battle.hazards = {};
+
+	int trees = 6;
+	if (low(battle.zone) == "wilted woods") {
+		trees = 16;
+		addRiver(battle);
+	}
+	else if (low(battle.zone) == "acrid swamp") {
+		addRiver(battle);
+		addRiver(battle);
+	}
+	addTrees(battle, trees);
 
 	bundle += addBundle("BATTLE", serialize(battle));
 

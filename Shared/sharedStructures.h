@@ -1,18 +1,23 @@
 #pragma once
-enum TYPE {
-	PHYSICAL,
-	MAGICAL,
-	TRUE_DMG
-};
+
+int random(int min, int max) {
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> distrib(min, max);
+
+	return distrib(gen);
+}
+
+int random(int max) {
+	return random(0, max - 1);
+}
 
 struct Attack {
-	TYPE type;
 	int min;
 	int max;
 	int pen;
 	int hitChance;
-	Attack(TYPE t, int mn, int mx, int p, int c) {
-		type = t;
+	Attack(int mn, int mx, int p = 100, int c = 100) {
 		min = mn;
 		max = mx;
 		pen = p;
@@ -29,19 +34,6 @@ struct Spot {
 		y = y1;
 	}
 };
-
-
-Attack P_Attack(int min, int max, int hitChance, int pen = 0) {
-	return Attack(PHYSICAL, min, max, pen, hitChance);
-}
-
-Attack M_Attack(int min, int max, int hitChance = 100, int pen = 0) {
-	return Attack(MAGICAL, min, max, hitChance, pen);
-}
-
-Attack T_Attack(int min, int max, int hitChance = 100, int pen = 100) {
-	return Attack(TRUE_DMG, min, max, hitChance, pen);
-}
 
 struct Message {
 	std::vector<int> players = {};
@@ -105,7 +97,7 @@ struct UI_Item {
 		description = desc;
 		twoHanded = twoH;
 		attacks = atks;
-		attack = P_Attack(min, max, chance, pen);
+		attack = Attack(min, max, pen, chance);
 		AP = ap;
 		range = rng;
 		rarity = rare;
@@ -134,7 +126,7 @@ struct Item {
 	int attacks = 0;
 	Item(std::string id1 = "") {
 		id = id1;
-		index = id1 + "." + rand() % 9999;
+		index = id1 + "." + random(99999);
 	}
 };
 
@@ -281,17 +273,18 @@ struct Character {
 
 	Character() {}
 
-	Character(std::string name, int hp, int def, int difficulty, std::vector<int> zones, int moves, std::string type, std::string desc)
+	Character(std::string name, int hp, int ap, int difficulty, std::vector<int> zones, int moves, std::string type, std::string desc)
 	{
 		NAME = name;
 		ID = name;
+		HP = hp;
 		MAX_HP = hp;
-		STATS[DEF] = def;
 		LEVEL = difficulty;
 		ZONES = zones;
 		MOVES = moves;
 		TYPE = type;
 		DESCRIPTION = desc;
+		AP = ap;
 	}
 };
 

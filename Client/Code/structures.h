@@ -36,21 +36,6 @@ struct AmbientSound {
 	float target = 0;
 };
 
-enum LOGIN {
-	CHOOSE,
-	REGISTER_USERNAME,
-	REGISTER_PASSWORD,
-	LOGIN_USERNAME,
-	LOGIN_PASSWORD,
-	COMPLETED
-};
-
-enum ALIGN {
-	LEFT,
-	CENTER,
-	RIGHT
-};
-
 struct TextSegment {
 	std::string color = "";
 	std::string text = "";
@@ -154,8 +139,8 @@ struct Scrollbar {
 	bool visible = true;
 	bool inverse = false;
 
-	Scrollbar(int visible, int h, bool inv = false) {
-		visibleAtOnce = visible;
+	Scrollbar(int v, int h, bool inv = false) {
+		visibleAtOnce = v;
 		height = h;
 		inverse = inv;
 	}
@@ -220,7 +205,5 @@ struct Animation {
 
 	Animation() {}
 };
-
-
 
 

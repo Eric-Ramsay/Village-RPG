@@ -207,10 +207,10 @@ Box Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1
 		if (align == CENTER || align == RIGHT) {
 			int len = measureText(lines[i]);
 			if (align == CENTER) {
-				drawX -= measureText(lines[i]) / 2;
+				drawX -= len / 2;
 			}
 			else {
-				drawX -= measureText(lines[i]);
+				drawX -= len;
 			}
 		}
 		if (drawX < box.x) {
@@ -287,20 +287,20 @@ void RPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale =
 	Print(text, dX, dY, maxLength, scale, RIGHT, opacity);
 }
 
-std::string DrawBar(int val, int max, int size, std::string color, bool drawNum = true, std::string braceColor = "*GREY*") {
+std::string DrawBar(int val, int max, int size, std::string color, bool drawNum = true, std::string braceColor = "*GREY*", std::string dashColor = "*BLACK*", bool dashes = true) {
 	std::string str = braceColor + "[" + color;
 	int threshold = size;
 	if (max > 0) {
 		threshold = (size * val) / max;
 	}
 	for (int i = 0; i < size; i++) {
-		if (i < threshold) {
+		if (i == threshold) {
+			str += dashColor;
+		}
+		if (i < threshold || !dashes) {
 			str += "\1";
 		}
 		else {
-			if (i == threshold) {
-				str += "*BLACK*";
-			}
 			str += "-";
 		}
 	}

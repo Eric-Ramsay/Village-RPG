@@ -1,0 +1,36 @@
+ID!!!eric monkey 17669017355!!!
+USER!!!eric!!!
+LOOK!!!aebdbkagapdkafamag!!!
+DEATH!!!Giant Amoeba!!!
+HP!!!-2!
+X!!!11!
+Y!!!3!
+SX!!!0!
+SY!!!176!
+ARMOR!!!0!
+MAX_HP!!!30!
+TYPE!!!player!!!
+NAME!!!Monkey!!!
+LOCATION!!!Wilted Woods.6590!!!
+TEAM!!!0!
+EFFECTS!!!
+STAMINA!!!0!
+DESCRIPTION!!!!!!
+TRADING!!!!!!
+LEVEL!!!3!
+XP!!!273!
+SP!!!2!
+GOLD!!!121!
+AP!!!1!
+BACKPACK!!!0!
+ENDED!!!1!
+ATTACKS!!!0!
+CASTS!!!0!
+X_PREFERENCE!!!0!
+Y_PREFERENCE!!!0!
+LEFT!!!dagger.65623!!!
+RIGHT!!!!!!
+HITS!!!0!	0!	
+MISSES!!!0!	0!	
+STATS!!!0!	0!	0!	0!	0!	0!	0!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.65623!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!	

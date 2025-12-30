@@ -28,7 +28,21 @@ struct Account {
 	}
 };
 
-struct Result {
+struct DamageResult {
 	std::string changes = "";
 	int damage = 0;
+	DamageResult(std::string c = "", int dmg = 0) {
+		changes = c;
+		damage = dmg;
+	}
+};
+
+struct TargetResult {
+	std::string closest = "";
+	std::string farthest = "";
+	std::string strongest = "";
+	std::string weakest = "";
+	std::vector<std::string> targets = {};
+
+	TargetResult() {}
 };

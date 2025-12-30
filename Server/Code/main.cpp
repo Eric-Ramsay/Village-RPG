@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <time.h> 
 #include <iostream>
+#include <random>
 #include <thread>
 #include <string>
 #include <sstream>
@@ -168,8 +169,6 @@ void Input() {
 
 int main() {
 	std::cout << "Initializing Server. . ." << std::endl;
-	srand(time(NULL));
-	rand() % 9999;
 
 	WSADATA wsData;
 	WORD ver = MAKEWORD(2, 2);
@@ -226,8 +225,11 @@ int main() {
 		std::string path = entry.path().string();
 		if (!entry.is_directory()) {
 			Character character = load<Character>(path);
-			if (character.ID != "") {
+			if (character.ID != "" && character.X >= 0 && character.Y >= 0 && character.X < 12 && character.Y < 12 && BATTLES.count(character.LOCATION) > 0) {
 				CHARACTERS[character.ID] = character;
+			}
+			else if (character.TYPE != "player") {
+				std::remove(path.c_str());
 			}
 		}
 	}

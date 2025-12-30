@@ -158,6 +158,7 @@
     <ClInclude Include="..\Shared\textFunctions.h" />
     <ClInclude Include="Code\audio.h" />
     <ClInclude Include="Code\draw.h" />
+    <ClInclude Include="Code\enums.h" />
     <ClInclude Include="Code\globals.h" />
     <ClInclude Include="Code\listener.h" />
     <ClInclude Include="Code\miniaudio.h" />
