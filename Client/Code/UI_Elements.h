@@ -97,9 +97,10 @@ void handleLoginInput(std::string input) {
 
 void measureTab(Tab* tab) {
 	tab->totalSize = 0;
+	tab->tabSizes = {};
 	for (int i = 0; i < tab->tabs.size(); i++) {
 		int len = measureText(tab->tabs[i]) + 8;
-		tab->tabSizes[i] = len;
+		tab->tabSizes.push_back(len);
 		tab->totalSize += len;
 	}
 }
@@ -108,6 +109,7 @@ void initTabs() {
 	tabList.push_back(&playerMenu);
 	tabList.push_back(&combatMenu);
 	tabList.push_back(&viewMenu);
+	tabList.push_back(&tradeMenu);
 
 	for (int i = 0; i < tabList.size(); i++) {
 		measureTab(tabList[i]);

@@ -38,7 +38,7 @@ Spells AP costs are doubled, but replaced by Stamina.
 Start with +2 Casts and +4 Spell Slots (base is 1 & 1)
 
 Thief - Rob the fat merchant in the Wilted Woods - When you buy something from the store, you have a 10% chance to keep your gold.
-
+Backstabber - ? - the first attack of each turn has its damage increased by your AVD stat
 
 
 2. Animation work
@@ -51,8 +51,6 @@ Thief - Rob the fat merchant in the Wilted Woods - When you buy something from t
 	- Implement new enemies, using effects + hazards
 	
 4. Armor
-	- Armor UI for players & enemies
-	- Handle mitigation in dealDamage function
 	- Update def function to account for player armor
 	
 5. Weapons
@@ -157,15 +155,15 @@ T3 - Heavy Gambeson
 Light Armor - Armor + Offensive Bonuses
 -----------
 T1 - Stylish Shirt
- - 10 Armor
+ - +10 HP
  
 T2 - Studded Cloak
- - 20 Armor
+ - +20 HP
  - 2 Damage Reduction
  - +3 AP
  
 T3 - Silk Armor
- - 30 Armor
+ - +30 HP
  - 4 Damage Reduction
  - +6 AP
  

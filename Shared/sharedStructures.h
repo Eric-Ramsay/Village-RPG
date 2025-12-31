@@ -66,6 +66,7 @@ enum WEAPON_CLASS {
 
 struct UI_Item {
 	std::string id = "";
+	std::string name = "";
 	std::string type = "";
 	std::string description = "";
 	int cost = 0;
@@ -81,17 +82,17 @@ struct UI_Item {
 	std::string subclass;
 
 	// Armor Stats
-	int def = 0;
+	int defense = 0;
 	int armor = 0;
 	int HP = 0;
 	int stamina = 0;
-	int mitigation = 0;
 
 
 	//WEAPON NAME, Name	Class, 	Description,  #Atks	Value 	Chance 	MinDmg 	MaxDmg 	Pen% 	AP 		Range	Rare?
-	UI_Item(std::string name, int value, std::string wepType, std::string desc, bool twoH, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
+	UI_Item(std::string n, int value, std::string wepType, std::string desc, bool twoH, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
 		type = "weapon";
-		id = low(name);
+		id = low(n);
+		name = n;
 		cost = value;
 		subclass = wepType;
 		description = desc;
@@ -103,15 +104,15 @@ struct UI_Item {
 		rarity = rare;
 	}
 
-	UI_Item(std::string name, std::string desc, int value, int arm, int defense = 0, int stam = 0, int miti = 0, int hp = 0, int ap = 0) {
+	UI_Item(std::string n, int value, int d, int a, int hp, std::string desc, int stam = 0, int ap = 0) {
 		type = "armor";
-		id = low(name);
+		id = low(n);
+		name = n;
 		description = desc;
 		cost = value;
-		armor = arm;
-		def = defense;
+		armor = a;
+		defense = d;
 		stamina = stam;
-		mitigation = miti;
 		HP = hp;
 		AP = ap;
 	}
@@ -213,8 +214,12 @@ struct Drop {
 	int dropChance;
 };
 
-// (Bad) Idea: Overload the equal operator to send data to call sendData
-// You can('t) use the preprocessor # operator to get a variable name, then uppercase it
+enum ZONE {
+	HAUNTED_CRYPTS,
+	ACRID_SWAMP,
+	WILTED_WOODS
+};
+
 struct Character {
 	std::string USER = "";
 	std::string ID = "";
@@ -226,7 +231,6 @@ struct Character {
 	std::string TRADING = "";
 
 	int HP = 30;
-	int ARMOR = 0;
 
 	int X = 0;
 	int Y = 0;
@@ -266,25 +270,25 @@ struct Character {
 
 	// Enemy Stats
 	int MAX_HP = 30;
+	int DEFENSE = 0;
+	int ARMOR = 0;
 	int PHASE = 0;
-	int MOVES = 0;
 	std::vector<int> ZONES;
 	std::vector<Drop> LOOT;
 
 	Character() {}
 
-	Character(std::string name, int hp, int ap, int difficulty, std::vector<int> zones, int moves, std::string type, std::string desc)
+	Character(std::string name, int rating, std::vector<int> zones, std::string type, int hp, int def, int arm, std::string desc)
 	{
 		NAME = name;
 		ID = name;
-		HP = hp;
-		MAX_HP = hp;
-		LEVEL = difficulty;
+		LEVEL = rating;
 		ZONES = zones;
-		MOVES = moves;
 		TYPE = type;
+		MAX_HP = hp;
+		DEFENSE = def;
+		ARMOR = arm;
 		DESCRIPTION = desc;
-		AP = ap;
 	}
 };
 
@@ -301,12 +305,6 @@ struct Hazard {
 		duration = d;
 		summoner = s;
 	}
-};
-
-enum ZONE {
-	HauntedCrypts,
-	AcridSwamp,
-	WiltedWoods
 };
 
 struct Battle {

@@ -148,11 +148,11 @@ void initTerrain() {
 	}
 }
 
+
 void initEnemies() {
 	std::vector<Character> enemies = {};
-	//Character Enemy(std::string name, int hp, std::vector<int> armor, int difficulty, std::vector<int> zones, int AP, std::string type, std::string desc)
-	enemies.push_back(Character("Crazed Wolf", 40, 10, 40, { 2 }, 3, "animal", "A mangy wolf, foaming at its mouth and snapping viciously."));
-	enemies.push_back(Character("Giant Amoeba",  40, 6, 40, { 2 }, 3, "animal", "A dim creature, slow, yet strong. It makes its way cautiously about the world."));
+	enemies.push_back(Character("Crazed Wolf", 30, { WILTED_WOODS }, "animal", 30, 2, 50, "A mangy wolf, foaming at its mouth and snapping viciously."));
+	enemies.push_back(Character("Giant Amoeba", 30, { ACRID_SWAMP, WILTED_WOODS }, "animal", 45, 0, 0, "A dim creature, slow, yet strong. It makes its way cautiously about the world."));
 	//enemies.push_back(Character("Slugbeast",  40, 2, 40, { 2 }, 3, "animal", ""));
 	//enemies.push_back(Character("Goblin Archer",  40, 2, 40, { 2 }, 3, "animal", ""));
 	//enemies.push_back(Character("Goblin Swordsman",  40, 2, 40, { 2 }, 3, "animal", ""));
@@ -174,12 +174,39 @@ UI_Item TwoH(std::string n, int v, std::string wepType, std::string d, int atks,
 	return UI_Item(n, v, wepType, d, true, atks, chance, min, max, pen, ap, rng, rare);
 }
 
-void initItems() {	//	 Name		G		Type		Description												#	%		Min		Max		Pen		AP		Range
+void initWeapons() {	//	 Name		G		Type		Description												#	%		Min		Max		Pen		AP		Range
 	ITEMS["dagger"] = OneH("Dagger", 25, "blade", "A simple dagger, lightweight and easy to use.", 3, 100, 200, 400, 0, 1, 1);
 	ITEMS["longbow"] = TwoH("Longbow", 50, "ranged", "A powerful bow thats almost as tall as its user.", 1, 80, 108, 114, 20, 6, 6);
 
 	genericLoot.push_back(ITEMS["longbow"]);
 	genericLoot.push_back(ITEMS["dagger"]);
+}
+
+UI_Item armor(std::string n, int v, int def, int arm, int hp, std::string desc, int stam = 0, int ap = 0) {
+	return UI_Item(n, v, def, arm, hp, desc, stam, ap);
+}
+
+void initArmor() {
+	//std::string name, int value, int defense, int armor, int hp = 0, int stam = 0, int ap = 0, std::string desc
+	
+	// Tier 1 Armor
+	ITEMS["stylish shirt"] = armor("Stylish Shirt", 25, 0, 0, 10, "");
+	ITEMS["padded coat"] = armor("Padded Coat", 25, 3, 0, 5, "", -5);
+	ITEMS["crude cuirass"] = armor("Crude Cuirass", 25, 3, 10, 0, "", -10);
+
+	// Tier 2 Armor
+	ITEMS["studded cloak"] = armor("Studded Cloak", 60, 2, 0, 20, "", 0, 3);
+	ITEMS["quilted armor"] = armor("Quilted Armor", 60, 6, 0, 15, "", -10);
+	ITEMS["lamellar armor"] = armor("Lamellar Armor", 60, 4, 25, 0, "", -20);
+
+	// Tier 3 Armor
+	ITEMS["silk armor"] = armor("Silk Armor", 150, 6, 0, 20, "", 6);
+	ITEMS["duelist's doublet"] = armor("Duelist's Doublet", 150, 4, 0, 25, "", 3);
+	ITEMS["cloak of the caster"] = armor("Cloak of the Caster", 150, 4, 0, 25, "", 3);
+	ITEMS["mail hauberk"] = armor("Mail Hauberk", 150, 10, 10, 15, "", -20);
+	ITEMS["heavy gambeson"] = armor("Heavy Gambeson", 150, 8, 0, 40, "", -20);
+	ITEMS["coat of plates"] = armor("Coat of Plates", 150, 8, 30, 20, "", -30);
+	ITEMS["plate armor"] = armor("Plate Armor", 150, 5, 50, 0, "", -30);
 }
 
 void initPeople() {
@@ -323,25 +350,27 @@ void initPeople() {
 	// Items
 	Clyde.ITEMS = {
 		"dagger",
-		"longbow",
-		"dagger",
-		"longbow",
-		"dagger",
-		"longbow",
-		"dagger",
-		"longbow",
-		"dagger",
-		"longbow",
-		"dagger",
-		"longbow",
-		"dagger",
-		"dagger",
-		"longbow",
-		"dagger",
-		"longbow",
-		"dagger",
-		"longbow",
 		"longbow"
+	};
+
+	Florence.ITEMS = {
+		"stylish shirt",
+		"studded cloak",
+		"quilted armor",
+		"padded coat",
+		"duelist's doublet",
+		"cloak of the caster"
+		"silk armor"
+	};
+
+	Kobos.ITEMS = {
+		"dagger",
+		"crude cuirass",
+		"lamellar armor",
+		"mail hauberk",
+		"heavy gambeson",
+		"coat of plates",
+		"plate armor"
 	};
 
 	//M		F		M		 M		M		M		F		F		F		F		F		F	     M		NB		   M
@@ -354,7 +383,8 @@ void initPeople() {
 
 void init() {
 	initLocations();
-	initItems();
+	initWeapons();
+	initArmor();
 	initEnemies();
 	initPeople();
 	initEffects();

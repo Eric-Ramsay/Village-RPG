@@ -46,7 +46,7 @@ int MaxHP(Character C) {
 }
 
 int Defense(Character C) {
-	int armor = 0;
+	int armor = C.DEFENSE;
 	for (auto item : C.INVENTORY) {
 
 	}
@@ -54,7 +54,7 @@ int Defense(Character C) {
 }
 
 int Armor(Character C) {
-	int armor = 0;
+	int armor = C.ARMOR;
 	for (auto item : C.INVENTORY) {
 
 	}
@@ -338,6 +338,12 @@ void parseChange(Character& character, std::string type, std::string data) {
 	}
 	else if (type == "MAX_HP") {
 		character.MAX_HP = readInt(data);
+	}
+	else if (type == "ARMOR") {
+		character.ARMOR = readInt(data);
+	}
+	else if (type == "DEFENSE") {
+		character.DEFENSE = readInt(data);
 	}
 	else if (type == "STAMINA") {
 		character.STAMINA = readInt(data);

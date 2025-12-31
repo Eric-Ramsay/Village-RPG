@@ -30,7 +30,7 @@ TargetResult findTargets(int team, int x, int y, int range, std::vector<std::str
 	return response;
 }
 
-std::string moveInRange(std::string id, int range, bool maximizeRange = true) {
+std::string moveInRange(std::string id, int movementRange, int attackRange, bool maximizeRange = true) {
 	Character* C = &CHARACTERS[id];
 	if (BATTLES.count(C->LOCATION) == 0) {
 		return "";
@@ -56,7 +56,7 @@ std::string moveInRange(std::string id, int range, bool maximizeRange = true) {
 	}
 
 	int startDist = atkDist(minX, minY, C->X, C->Y);
-	if (startDist == range || (!maximizeRange && startDist < range)) {
+	if (startDist == attackRange || (!maximizeRange && startDist < attackRange)) {
 		// No need to move, character is already at or within desired range
 		return "";
 	}
@@ -67,8 +67,8 @@ std::string moveInRange(std::string id, int range, bool maximizeRange = true) {
 	int moveCost = 999;
 	for (int i = 0; i < movementCosts.size(); i++) {
 		for (int j = 0; j < movementCosts.size(); j++) {
-			if (movementCosts[i][j] <= C->AP) {
-				int d = abs(atkDist(minX, minY, j, i) - range);
+			if (movementCosts[i][j] <= movementRange) {
+				int d = abs(atkDist(minX, minY, j, i) - attackRange);
 				if (d < minDist || (d == minDist && movementCosts[i][j] < moveCost)) {
 					moveCost = movementCosts[i][j];
 					minDist = d;
@@ -81,7 +81,6 @@ std::string moveInRange(std::string id, int range, bool maximizeRange = true) {
 	if (C->X != newX || C->Y != newY) {
 		C->X = newX;
 		C->Y = newY;
-		C->AP -= movementCosts[newY][newX];
 		changes += printStat(*C, "X");
 		changes += printStat(*C, "Y");
 	}
@@ -104,7 +103,7 @@ enum Target {
 	FARTHEST
 };
 
-DamageResult moveAttack(std::string id, Attack attack, int range, std::string description, int multiplier = 2, bool maximizeRange = true, Target targetType = RANDOM, bool moveAndAttack = true) {
+DamageResult moveAttack(std::string id, Attack attack, int movementRange, int attackRange, std::string description, int multiplier = 2, bool maximizeRange = true, Target targetType = RANDOM, bool moveAndAttack = true) {
 	Character* C = &CHARACTERS[id];
 	Battle* battle = &BATTLES[C->LOCATION];
 	std::vector<std::string> enemies;
@@ -112,11 +111,11 @@ DamageResult moveAttack(std::string id, Attack attack, int range, std::string de
 	std::string changes = "";
 
 	bool moved = false;
-	TargetResult result = findTargets(C->TEAM, C->X, C->Y, range, battle->characters);
+	TargetResult result = findTargets(C->TEAM, C->X, C->Y, attackRange, battle->characters);
 	if (result.targets.size() == 0) {
 		moved = true;
-		changes += moveInRange(id, range, maximizeRange);
-		result = findTargets(C->TEAM, C->X, C->Y, range, battle->characters);
+		changes += moveInRange(id, movementRange, attackRange, maximizeRange);
+		result = findTargets(C->TEAM, C->X, C->Y, attackRange, battle->characters);
 	}
 	if (result.targets.size() > 0 && (!moved || moveAndAttack)) {
 		std::string targetId = result.targets[random(result.targets.size())];
@@ -173,12 +172,12 @@ std::string enemyAttack(std::string enemyId) {
 			attack.max	 *= 2;
 			description = "bites savagely at";
 		}
-		changes += moveAttack(C->ID, attack, 1, description, 3).changes;
+		changes += moveAttack(C->ID, attack, 12, 1, description, 3).changes;
 	}
 	else if (eName == "giant amoeba") {
 		std::string description = "bumps into";
 		Attack attack(1, 2, 0, 90);
-		changes += moveAttack(C->ID, attack, 1, description, 2).changes;
+		changes += moveAttack(C->ID, attack, 6, 1, description, 2).changes;
 		std::vector<std::vector<int>> movementCosts = moveCosts(*C, *battle);
 
 		if (C->HP > 5) {

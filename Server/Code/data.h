@@ -129,6 +129,9 @@ std::string getStat(Character C, std::string stat) {
 	if (stat == "ARMOR") {
 		return serialize(C.ARMOR);
 	}
+	if (stat == "DEFENSE") {
+		return serialize(C.DEFENSE);
+	}
 	if (stat == "MAX_HP") {
 		return serialize(C.MAX_HP);
 	}
@@ -220,15 +223,13 @@ std::string statLine(Battle B, std::string stat) {
 std::string serialize(Character C) {
 	std::string data = "";
 	data += statLine(C, "ID");
-	data += statLine(C, "USER");
-	data += statLine(C, "LOOK");
-	data += statLine(C, "DEATH");
 	data += statLine(C, "HP");
 	data += statLine(C, "X");
 	data += statLine(C, "Y");
 	data += statLine(C, "SX");
 	data += statLine(C, "SY");
 	data += statLine(C, "ARMOR");
+	data += statLine(C, "DEFENSE");
 	data += statLine(C, "MAX_HP");
 	data += statLine(C, "TYPE");
 	data += statLine(C, "NAME");
@@ -238,6 +239,9 @@ std::string serialize(Character C) {
 	if (C.TYPE != "player") {
 		return data;
 	}
+	data += statLine(C, "USER");
+	data += statLine(C, "LOOK");
+	data += statLine(C, "DEATH");
 	data += statLine(C, "STAMINA");
 	data += statLine(C, "DESCRIPTION");
 	data += statLine(C, "TRADING");

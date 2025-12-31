@@ -7,6 +7,9 @@ std::string summon(Battle& battle, std::string n, int x = 0, int y = 0, int team
 		if (hp > 0) {
 			enemy.HP = hp;
 		}
+		else {
+			enemy.HP = enemy.MAX_HP;
+		}
 		std::string id = name + "." + battle.id + "." + to_str(random(10000));
 		enemy.ID = id;
 		enemy.X = x;
@@ -99,6 +102,30 @@ DamageResult takeDamage(std::string targetId, Attack attack) {
 }
 
 
+int mitigate(Character* target, int dmg, int pen) {
+	if (dmg < 1) {
+		return dmg;
+	}
+	int armor = Armor(*target);
+	int defense = Defense(*target);
+
+	float percentMitigation = (100.0 - (max(0, armor - pen))) / 100.0;
+
+	dmg *= percentMitigation;
+	dmg -= defense;
+	
+	if (dmg < 1) {
+		dmg = 1;
+	}
+
+	int dodgeChance = min(50, target->STATS[AVD] * 5);
+	if (random(100) < dodgeChance) {
+		dmg = 0;
+	}
+
+	return dmg;
+}
+
 DamageResult dealDamage(std::string attackerId, std::string targetId, Attack attack) {
 	std::string msg = "";
 	DamageResult result;
@@ -119,6 +146,7 @@ DamageResult dealDamage(std::string attackerId, std::string targetId, Attack att
 		dmg = random(attack.min, attack.max);
 	}
 	if (hitValue < attack.hitChance) {
+		dmg = mitigate(target, dmg, attack.pen);
 		target->HP -= dmg;
 
 		result.damage = dmg;

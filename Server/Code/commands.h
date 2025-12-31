@@ -217,7 +217,8 @@ std::string commandRemove(int playerIndex, Character& C, std::vector<std::string
 			changes += addLine("RIGHT", "");
 		}
 		sendData("STATS", changes);
-		return "You unequip the *GREEN*" + pretty(C.INVENTORY[id].id);
+		UI_Item item = getItem(C.INVENTORY[id].id);
+		return "You unequip the *GREEN*" + item.name;
 	}
 	return "*RED*Unable to equip '" + args + "'";
 }
@@ -262,6 +263,7 @@ std::string commandHaircut(int playerIndex, Character& C, std::vector<std::strin
 std::string commandEquip(int playerIndex, Character& C, std::vector<std::string> words) {
 	std::string args = join(words);
 	std::vector<std::string> ids = findItem(args, C.INVENTORY);
+	std::string changes = str(C.ID);
 	for (std::string id : ids) {
 		if (!C.INVENTORY[id].equipped) {
 			UI_Item item = getItem(C.INVENTORY[id].id);
@@ -271,11 +273,15 @@ std::string commandEquip(int playerIndex, Character& C, std::vector<std::string>
 					std::string compType = getItem(compItem.second.id).type;
 					if (type == "armor" && compType == "armor") {
 						C.INVENTORY[compItem.first].equipped = false;
+						changes += addLine("DEQUIP", compItem.first);
 					}
 				}
+				C.INVENTORY[id].equipped = true;
+				changes += addLine("EQUIP", id);
+				sendData("STATS", changes);
+				return "You equip the *GREEN*" + item.name;
 			}
 			else if (type == "weapon" || type == "staff") {
-				std::string changes = str(C.ID);
 				bool twoHanded = item.twoHanded;
 				if (C.INVENTORY.count(C.LEFT) > 0) {
 					UI_Item right = getItem(C.INVENTORY[C.LEFT].id);
@@ -318,7 +324,7 @@ std::string commandEquip(int playerIndex, Character& C, std::vector<std::string>
 				changes += addLine("RIGHT", C.RIGHT);
 				changes += addLine("EQUIP", id);
 				sendData("STATS", changes);
-				return "You equip the *GREEN*" + item.id;
+				return "You equip the *GREEN*" + item.name;
 			}
 			else {
 				return "*RED*You can't equip that.";

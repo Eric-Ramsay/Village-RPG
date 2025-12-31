@@ -172,6 +172,8 @@ void DrawHaircut() {
 void DrawTrade() {
 	int x = 5;
 	int y = 10;
+	int w = 420;
+	
 	if (CHARACTERS.count(ID) == 0) {
 		return;
 	}
@@ -187,17 +189,28 @@ void DrawTrade() {
 	Print(text, x, y, 420);
 
 	y = 110;
-	Print("*YELLOW*" + to_str(npc.ITEMS.size()) + " Items for Sale", x, y);
+	std::unordered_map<std::string, std::vector<std::string>> itemTypes = {};
+	for (std::string itemId : npc.ITEMS) {
+		UI_Item item = getItem(itemId);
+		itemTypes[item.type].push_back(item.id);
+	}
 
-	y = 120;
+	tradeMenu.tabs = {};
+	for (auto type : itemTypes) {
+		tradeMenu.tabs.push_back(pretty(type.first));
+	}
+	measureTab(&tradeMenu);
+	DrawTabs(tradeMenu, x + w / 2, y);
 
+	std::string tab = low(tradeMenu.tabs[tradeMenu.index]);
+
+	y = 130;
 	int startIndex;
 	int maxIndex;
-	setScrollBar(tradeBar, x + 250, y, npc.ITEMS.size(), startIndex, maxIndex);
-
+	setScrollBar(tradeBar, x + w - 30, y, itemTypes[tab].size(), startIndex, maxIndex);
 	for (int i = startIndex; i < maxIndex; i++) {
-		UI_Item item = getItem(npc.ITEMS[i]);
-		Box box = Print("*PINK*" + padNum(i + 1) + "*GREY*) " + pretty(item.id), x, y + 10 * (i - startIndex), 420);
+		UI_Item item = getItem(itemTypes[tab][i]);
+		Box box = Print("*PINK*" + padNum(i + 1) + "*GREY*) " + item.name, x, y + 10 * (i - startIndex), 420);
 		if (mRange(box)) {
 			if (UI.doubleClicked) {
 				sendData("COMMAND", "buy " + item.id);
@@ -256,7 +269,7 @@ void DrawViewUI() {
 				handleTip += "equip";
 			}
 
-			std::string text = "*ORANGE*" + pretty(item.id) + equipStr;
+			std::string text = "*ORANGE*" + pretty(baseItem.name) + equipStr;
 			text += "*BLACK* | *TEAL*" + pretty(baseItem.subclass) + "*BLACK* | *PINK*" + to_str(1 + baseItem.twoHanded) + "H" + "*BLACK* | *YELLOW*" + baseItem.cost + "G";
 			Print(text, x, y);
 
@@ -453,6 +466,7 @@ void DrawCharacterUI(std::string id) {
 	if (playerMenu.index == 0) {
 		int itemCount = 0;
 		for (auto item : C.INVENTORY) {
+			UI_Item baseItem = getItem(item.second.id);
 			int xPos = x;
 			int yPos = y + 10 * itemCount;
 			itemCount++;
@@ -462,7 +476,7 @@ void DrawCharacterUI(std::string id) {
 				color = "*TEAL*";
 				command = "REMOVE";
 			}
-			std::string str = accentOne + padNum(itemCount) + "*GREY*) " + color + pretty(item.second.id);
+			std::string str = accentOne + padNum(itemCount) + "*GREY*) " + color + baseItem.name;
 			Print(str, xPos, yPos);
 			int len = measureText(str);
 			if (range(UI.mX, UI.mY, xPos, yPos, len, 9)) {
@@ -478,7 +492,6 @@ void DrawCharacterUI(std::string id) {
 				}
 			}
 
-			UI_Item baseItem = getItem(item.second.id);
 			if (baseItem.type == "weapon" || baseItem.type == "staff") {
 				xPos += 100;
 				std::string postText = "*RED*x" + to_str(baseItem.attacks - item.second.attacks);
@@ -953,7 +966,7 @@ void DrawBattle(Battle battle) {
 		for (int i = startIndex; i < maxIndex; i++) {
 			Item item = items[i];
 			UI_Item baseItem = getItem(item.id);
-			std::string text = "*PINK*" + padNum((i + 1)) + "*GREY*) *TEAL*" + pretty(item.id);
+			std::string text = "*PINK*" + padNum((i + 1)) + "*GREY*) *TEAL*" + pretty(baseItem.name);
 			int xPos = x;
 			int yPos = (y + 29 + 10 * (i - startIndex));
 			int w = measureText(text);

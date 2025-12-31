@@ -62,6 +62,7 @@ std::vector<Tab*> tabList = {};
 Tab playerMenu({ "INV", "EFFECTS", "MAGIC", "DESC", "TRAITS"});
 Tab combatMenu({ "BATTLE", "LOOT" });
 Tab viewMenu({ "DESCRIPTION", "RUNES" });
+Tab tradeMenu({ "" });
 
 std::unordered_map<std::string, Tooltip> TOOLTIPS = {};
 

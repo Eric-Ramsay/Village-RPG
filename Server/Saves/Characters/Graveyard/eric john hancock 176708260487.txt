@@ -1,29 +1,30 @@
 ID!!!eric john hancock 176708260487!!!
-USER!!!eric!!!
-LOOK!!!acgfblckeedibjacaq!!!
-DEATH!!!!!!
-HP!!!28!
-X!!!6!
+HP!!!0!
+X!!!5!
 Y!!!8!
 SX!!!0!
 SY!!!176!
 ARMOR!!!0!
+DEFENSE!!!0!
 MAX_HP!!!30!
 TYPE!!!player!!!
 NAME!!!John Hancock!!!
 LOCATION!!!Wilted Woods.5747!!!
 TEAM!!!0!
 EFFECTS!!!
+USER!!!eric!!!
+LOOK!!!acgfblckeedibjacaq!!!
+DEATH!!!Crazed Wolf!!!
 STAMINA!!!20!
 DESCRIPTION!!!!!!
 TRADING!!!!!!
-LEVEL!!!2!
-XP!!!8!
-SP!!!1!
-GOLD!!!54!
+LEVEL!!!3!
+XP!!!51!
+SP!!!2!
+GOLD!!!96!
 AP!!!6!
 BACKPACK!!!0!
-ENDED!!!0!
+ENDED!!!1!
 ATTACKS!!!0!
 CASTS!!!0!
 X_PREFERENCE!!!0!
@@ -33,4 +34,4 @@ RIGHT!!!!!!
 HITS!!!0!	0!	
 MISSES!!!0!	0!	
 STATS!!!0!	0!	0!	0!	0!	0!	0!	
-INVENTORY!!!ITEM!!!INDEX!!!dagger.33511!!!ATTACKS!!!2!EQUIPPED!!!1!RUNES!!!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.33511!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	
