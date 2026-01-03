@@ -54,6 +54,7 @@ struct UIState {
 
 	int timer = 0;
 	bool blink = true;
+	bool showTerrain = false;
 	//Ambient Audio Settings
 	AmbientSound sounds[3];
 
@@ -100,6 +101,7 @@ struct UIState {
 	std::string tooltip = "";
 
 	Item viewedItem;
+	std::string weaponTooltip = "";
 	std::string viewedEnemy;
 
 	Hazard viewedHazard;

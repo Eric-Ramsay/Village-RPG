@@ -371,7 +371,7 @@ void startBattle(Battle& battle) {
 	}
 
 	lvl /= (float)num;
-	int rating = 45 * num * std::pow(1.22, lvl) + (15 * (lvl - 1) * num);
+	int rating = 35 * num * std::pow(1.22, lvl) + (15 * (lvl - 1) * num);
 	battle.difficulty = rating;
 
 	std::vector<Character> validEnemies = {};

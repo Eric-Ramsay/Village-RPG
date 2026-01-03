@@ -120,6 +120,7 @@ int main()
 	int yScale = UI.H / HEIGHT;
 
 	while (!quit && window.isOpen()) {
+		Sleep(1);
 		sf::Event event;
 		UI.mouseReleased = false;
 		UI.mousePressed = false;
@@ -292,7 +293,6 @@ int main()
 			}
 		}
 		if (UI.inGame) {
-			Sleep(1);
 			if (updateFPS) {
 				FPS = 1.f / clock.getElapsedTime().asSeconds();
 				updateFPS = false;
@@ -303,10 +303,16 @@ int main()
 			if (elapsedTime >= targetTime) {
 				elapsedTime -= targetTime;
 				UI.timer++;
-				if (UI.timer % 15 == 0) {
+				if (UI.timer % 30 == 0) {
 					UI.blink = !UI.blink;
 				}
-				if (UI.timer % 200 == 0) {
+				if (UI.timer == 50) {
+					UI.showTerrain = true;
+				}
+				if (UI.timer == 90) {
+					UI.showTerrain = false;
+				}
+				if (UI.timer % 125 == 0) {
 					UI.timer = 0;
 				}
 				updateFPS = true;
@@ -375,10 +381,12 @@ int main()
 				if (!UI.topLocked) {
 					UI.viewedPlayer = ID;
 				}
+				UI.weaponTooltip = "";
 				UI.tooltip = "";
 				DrawUI();
 
-				Print(to_str((int)FPS), 2, 1);
+				//Print(to_str((int)FPS), 2, 1);
+				//Print(to_str((int)UI.timer), 16, 1);
 			}
 			else {
 				DrawLogs();

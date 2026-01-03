@@ -151,12 +151,18 @@ void initTerrain() {
 
 void initEnemies() {
 	std::vector<Character> enemies = {};
-	enemies.push_back(Character("Crazed Wolf", 30, { WILTED_WOODS }, "animal", 30, 2, 50, "A mangy wolf, foaming at its mouth and snapping viciously."));
-	enemies.push_back(Character("Giant Amoeba", 30, { ACRID_SWAMP, WILTED_WOODS }, "animal", 45, 0, 0, "A dim creature, slow, yet strong. It makes its way cautiously about the world."));
+	enemies.push_back(Character("Crazed Wolf", 30, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "animal", 30, 2, 50, "A mangy wolf, foaming at its mouth and snapping viciously."));
+	enemies.push_back(Character("Giant Amoeba", 30, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "animal", 45, 0, 0, "A dim creature, slow, yet strong. It makes its way cautiously about the world."));
+
+	enemies.push_back(Character("Goblin Archer", 40, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "goblin", 40, 0, 0, ""));
+	enemies.push_back(Character("Goblin Swordsman", 50, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "goblin", 60, 0, 0, ""));
+	enemies.push_back(Character("Goblin Spearman", 40, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "goblin", 50, 0, 0, ""));
+
+	enemies.push_back(Character("Skeletal Archer", 40, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "evil", 20, 6, 60, ""));
+	enemies.push_back(Character("Skeletal Swordsman", 50, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "evil", 35, 6, 70, ""));
+	enemies.push_back(Character("Skeletal Spearman", 40, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "evil", 30, 6, 60, ""));
 	//enemies.push_back(Character("Slugbeast",  40, 2, 40, { 2 }, 3, "animal", ""));
-	//enemies.push_back(Character("Goblin Archer",  40, 2, 40, { 2 }, 3, "animal", ""));
-	//enemies.push_back(Character("Goblin Swordsman",  40, 2, 40, { 2 }, 3, "animal", ""));
-	//enemies.push_back(Character("Goblin Spearman",  40, 2, 40, { 2 }, 3, "animal", ""));
+	
 	//enemies.push_back(Character("Acidic Slime",  40, 2, 40, { 2 }, 3, "animal", ""));
 
 	for (int i = 0; i < enemies.size(); i++) {
@@ -175,8 +181,8 @@ UI_Item TwoH(std::string n, int v, std::string wepType, std::string d, int atks,
 }
 
 void initWeapons() {	//	 Name		G		Type		Description												#	%		Min		Max		Pen		AP		Range
-	ITEMS["dagger"] = OneH("Dagger", 25, "blade", "A simple dagger, lightweight and easy to use.", 3, 100, 200, 400, 0, 1, 1);
-	ITEMS["longbow"] = TwoH("Longbow", 50, "ranged", "A powerful bow thats almost as tall as its user.", 1, 80, 108, 114, 20, 6, 6);
+	ITEMS["dagger"] = OneH("Dagger", 25, "blade", "A simple dagger, lightweight and easy to use.", 3, 80, 2, 4, 0, 1, 1);
+	ITEMS["longbow"] = TwoH("Longbow", 50, "ranged", "A powerful bow thats almost as tall as its user.", 1, 80, 12, 18, 20, 6, 6);
 
 	genericLoot.push_back(ITEMS["longbow"]);
 	genericLoot.push_back(ITEMS["dagger"]);
@@ -207,6 +213,22 @@ void initArmor() {
 	ITEMS["heavy gambeson"] = armor("Heavy Gambeson", 150, 8, 0, 40, "", -20);
 	ITEMS["coat of plates"] = armor("Coat of Plates", 150, 8, 30, 20, "", -30);
 	ITEMS["plate armor"] = armor("Plate Armor", 150, 5, 50, 0, "", -30);
+
+	genericLoot.push_back(ITEMS["stylish shirt"]);
+	genericLoot.push_back(ITEMS["padded coat"]);
+	genericLoot.push_back(ITEMS["crude cuirass"]);
+
+	genericLoot.push_back(ITEMS["studded cloak"]);
+	genericLoot.push_back(ITEMS["quilted armor"]);
+	genericLoot.push_back(ITEMS["lamellar armor"]);
+
+	genericLoot.push_back(ITEMS["silk armor"]);
+	genericLoot.push_back(ITEMS["duelist's doublet"]);
+	genericLoot.push_back(ITEMS["cloak of the caster"]);
+	genericLoot.push_back(ITEMS["mail hauberk"]);
+	genericLoot.push_back(ITEMS["padded coat"]);
+	genericLoot.push_back(ITEMS["heavy gambeson"]);
+	genericLoot.push_back(ITEMS["plate armor"]);
 }
 
 void initPeople() {
@@ -217,7 +239,7 @@ void initPeople() {
 	NPC Minsiki("Minsiki", true, "*GREEN*Minsiki*GREY* is middle-aged, with a thick black beard and kind eyes. No one knows where Minsiki came from before he came to the village years ago and opened his shop; they still think of him as an exotic stranger.\n\nMinsiki prefers it that way, he likes to keep to himself.");
 	NPC Gout("Gout", true, "*GREEN*Gout*GREY* is an older man, short and grey but broad all the same. He hobbles across the pier and his muscles flex beneath his wrinkled skin as he casts his fishing line out into the sea.\n\nHis is a soldier's body, its scars etched immutably as if in marble. It has not forgotten the many campaigns and battles, and though *GREEN*Gout*GREY* never speaks of his past, his eyes would say he has not forgotten either.");
 	NPC Tobin("Tobin", true, "*GREEN*Father Tobin*GREY* is a thin man, taller than most and pale.\n\nFrom time to time one can see sadness in his eyes, as he looks across the graves he tends, but it is only ever there for a moment and then he smiles. In his humility he has found unwavering joy.");
-	NPC Kobos("Kobos", true, "*GREEN*Kobos*GREY* has been swinging hammer for forty years now, nearly as long as he's been alive.\n\nWhen he works his craft the singing of his anvil can be heard as far away as the harbor. Princes have offered to buy out his services, but he has no interest in their gold, only in his iron.");
+	NPC Kobos("Kobos", true, "*GREEN*Kobos*GREY* has been swinging his hammer for forty years now, nearly as long as he's been alive.\n\nWhen he works his craft the singing of his anvil can be heard as far away as the harbor. Princes have offered to buy out his services, but he has no interest in their gold, only in his iron.");
 	NPC Clyde("Clyde", true, "*GREEN*Clyde*GREY* is a *TEAL*huntsman*GREY*. He spends more time far afield than anyone else in the town. When some people hear his frightful tails they roll their eyes.\n\nHe pleads with anyone who will listen to avoid the woods at night.");
 	NPC Terat("Terat", true, "*GREEN*Terat*GREY* is the estranged brother of *GREEN*Sarkana*GREY*. He's quite timid, and perhaps a bit anxious.\n\nHe can be rather friendly and generous, but for the most part focuses on his work.\n\nHe always seems to be engraving new golden runes into their cold steel plates.");
 	NPC Elias("Elias", true, "*GREEN*Elias*GREY* is a young, slender man with dusty brown hair and bespectacled grey eyes.\n\nHe spends most of his time reading by lamplight, or tending to the many old tomes in his care. He tends to only leave the library at night, rendering him somewhat of a mystery among the less scholarly townsfolk.");
@@ -359,7 +381,7 @@ void initPeople() {
 		"quilted armor",
 		"padded coat",
 		"duelist's doublet",
-		"cloak of the caster"
+		"cloak of the caster",
 		"silk armor"
 	};
 

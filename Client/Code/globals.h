@@ -86,5 +86,5 @@ int numMessages = 0;
 int battleX = 224;
 int battleY = 1;
 
-int battleMenuX = 6;
+int battleMenuX = 1;
 int battleMenuY = 4;

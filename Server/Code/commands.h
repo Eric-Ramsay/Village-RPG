@@ -123,15 +123,15 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 		return "*RED*You can't make any more attacks!";
 	}
 
-	std::string wepId = leftItem;
+	std::string wepId = rightItem;
 
 	UI_Item left = getItem(C.INVENTORY[leftItem].id);
 	UI_Item right = getItem(C.INVENTORY[rightItem].id);
-	if (C.LEFT == "" || C.INVENTORY[leftItem].attacks == 0 || left.AP > C.AP) {
-		wepId = rightItem;
+	if (C.RIGHT == "" || C.INVENTORY[leftItem].attacks == 0 || right.AP > C.AP) {
+		wepId = leftItem;
 	}
-	else if (C.INVENTORY[rightItem].attacks > 0 && right.range > left.range) {
-		wepId = rightItem;
+	else if (C.INVENTORY[leftItem].attacks > 0 && left.range > right.range) {
+		wepId = leftItem;
 	}
 
 	UI_Item item = getItem(C.INVENTORY[wepId].id);
@@ -383,16 +383,17 @@ std::string createCharacter(int playerIndex, std::string n, std::string look) {
 
 	newCharacter.GOLD = 30;
 	newCharacter.AP = 6;
+	newCharacter.SP = 4;
 	newCharacter.STAMINA = 20;
 	newCharacter.HP = 30;
+	newCharacter.LOOK = look;
 	newCharacter.ID = id;
 	newCharacter.NAME = name;
-	newCharacter.LOOK = look;
 	newCharacter.USER = players[playerIndex].USERNAME;
 
 	Item dagger("dagger");
 	dagger.equipped = true;
-	newCharacter.LEFT = dagger.index;
+	newCharacter.RIGHT = dagger.index;
 	newCharacter.INVENTORY[dagger.index] = dagger;
 
 	players[playerIndex].ID = id;
@@ -566,14 +567,14 @@ void command(std::string input, int playerIndex) {
 			}
 		}
 	}
-
-	if (players[playerIndex].ID == "") {
+	else if (players[playerIndex].ID == "") {
 		sendText("*RED*You need to make a character!", "", { playerIndex });
 		return;
 	}
-
-	
-	if (keyword == "go" || keyword == "enter" || keyword == "travel") {
+	else if (keyword == "look") {
+		CHARACTERS[id].LOOK = words[0];
+	}
+	else if (keyword == "go" || keyword == "enter" || keyword == "travel") {
 		msg = commandTravel(playerIndex, CHARACTERS[id], words);
 	}
 	else if (keyword == "delve") {
@@ -650,10 +651,11 @@ void command(std::string input, int playerIndex) {
 		msg = "*RED*You've lost the will to go on. . .";
 		std::string loc = CHARACTERS[id].LOCATION;
 		CHARACTERS[id].DEATH = "Suicide";
-		removeCharacter(CHARACTERS[id]);
+		std::string changes = removeCharacter(CHARACTERS[id]);
 		if (BATTLES.count(loc) > 0) {
-			validateBattle(loc);
+			changes += validateBattle(loc);
 		}
+		sendData(changes);
 	}
 	else {
 		sendText("*GREEN*" + CHARACTERS[id].NAME + "*GREY*: " + input, CHARACTERS[id].LOCATION);

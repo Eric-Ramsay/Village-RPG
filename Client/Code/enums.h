@@ -16,6 +16,7 @@ enum ALIGN {
 };
 
 enum SYMBOL {
+	NOTHING,
 	SQUARE,
 	HEART,
 	AP,
@@ -27,3 +28,4 @@ enum SYMBOL {
 	BUFF,
 	DEBUFF
 };
+

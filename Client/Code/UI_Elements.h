@@ -1,5 +1,34 @@
 #pragma once
 
+std::string getSymbol(SYMBOL symbol) {
+	std::string s(1, (char)(symbol));
+	return s;
+}
+
+std::string DrawBar(int val, int max, int size, std::string color, bool drawNum = true, std::string braceColor = "*GREY*", std::string dashColor = "*BLACK*", bool dashes = true) {
+	std::string str = braceColor + "[" + color;
+	int threshold = size;
+	if (max > 0) {
+		threshold = (size * val) / max;
+	}
+	for (int i = 0; i < size; i++) {
+		if (i == threshold) {
+			str += dashColor;
+		}
+		if (i < threshold || !dashes) {
+			str += "\1";
+		}
+		else {
+			str += "-";
+		}
+	}
+	str += braceColor + "]";
+	if (drawNum) {
+		return str + "*BLACK* " + val + "/" + max;
+	}
+	return str;
+}
+
 Box DrawButton(std::string text, int x, int y, std::string color = "*ORANGE*", std::string tColor = "", bool center = false) {
 	int w = measureText(text) + 8;
 	int h = 15;
@@ -141,17 +170,43 @@ void setScrollBar(Scrollbar& scrollbar, int dX, int dY, int numThings, int& star
 }
 
 void initToolTips() {
-	TOOLTIPS["VIT"] = Tooltip("Vitality *RED*\2", "*GREEN*+10*GREY* Max *RED*HP*GREY*\n\n*RED*HP*GREY* is a measure of how much *ORANGE*damage*GREY* you can take before your character *BLACK*dies");
-	TOOLTIPS["END"] = Tooltip("Endurance *GREEN*\5", "*GREEN*+10*GREY* Max Stamina\n*GREEN*+1 *GREY*Stamina Regeneration\n\n*GREEN*Endurance*GREY* is used to refill your *YELLOW*AP*GREY* at the start of each turn");
-	TOOLTIPS["DEX"] = Tooltip("AP *YELLOW*\3", "*GREEN*+3 AP*GREY* per turn\n\n*YELLOW*AP*GREY* is used to perform actions in your turn, like *ORANGE*attacking*GREY*, *BLUE*casting spells*GREY*, or *GREEN*moving");
+	TOOLTIPS["VIT"] = Tooltip("Vitality *RED*\2", "*GREEN*+10*GREY* Max *RED*HP*GREY*\n\n*RED*HP*GREY* is a measure of how much *ORANGE*damage*GREY* you can take before your character dies");
+	TOOLTIPS["END"] = Tooltip("Endurance *GREEN*\5", "*GREEN*+10*GREY* Max Stamina\n*GREEN*+1 *GREY*Stamina Regeneration\n\n*GREEN*Stamina*GREY* is used to refill your *YELLOW*AP*GREY* at the start of each turn");
+	TOOLTIPS["DEX"] = Tooltip("Dexterity *YELLOW*\3", "*GREEN*+3 AP*GREY* per turn\n\n*YELLOW*AP*GREY* is used to perform actions in your turn, like *ORANGE*attacking*GREY*, *BLUE*casting spells*GREY*, or *GREEN*moving");
 	TOOLTIPS["MAG"] = Tooltip("Magic", "*BLUE*+2*GREY* max learned spells\n*BLUE*+1*GREY* spell casts per turn");
 	TOOLTIPS["WEP"] = Tooltip("Weapon Handling", "*RED*+1 *GREY*Max Attack Damage\n*RED*+5%*GREY* total attack damage");
-	TOOLTIPS["DEF"] = Tooltip("Defense *NAVY*\4", "*GREEN*+1*GREY* DEF\n*GREEN*+5*GREY* Armor\n\n*GREY*Enemy damage hits *NAVY*Armor*GREY* before it hits your *RED*HP*GREY*, and *NAVY*DEF*GREY* acts as flat mitigation.");
+	TOOLTIPS["DEF"] = Tooltip("Defense *NAVY*\4", "*GREEN*+2*GREY* Defense\n\n*GREY*Incoming *RED*damage*GREY* is reduced by both your *BLUE*Armor \x8*GREY* and *NAVY*Defense \4*GREY* stats.\n\n*BLUE*Armor *GREY*applies first, and is percent reduction.\n\n*NAVY*Defense*GREY* is then flat reduction off of any remaining *RED*damage.");
 	TOOLTIPS["AVD"] = Tooltip("Avoidance", "*GREEN*+5% *GREY*Dodge Chance\n*GREEN*+5% *GREY*Flee Chance\n*YELLOW*+1 AP*GREY* per turn\n\nAvoidance is *ORANGE*capped*GREY* at *RED*10*GREY* points");
 	TOOLTIPS["BUTTON_END"] = Tooltip("Ending your Turn", "Once you've done everything you want to do, you should end your turn.\n\nOnce everyone on your team has ended their turn, the enemies will take a turn.");
 	TOOLTIPS["BUTTON_BRACE"] = Tooltip("Bracing", "It costs 6 Stamina to Brace. Bracing gives you a 50% chance to dodge the first damage that you would take next turn.");
 	TOOLTIPS["BUTTON_GUARD"] = Tooltip("Guarding", "It costs 6 AP to Guard.");
 	TOOLTIPS["BUTTON_FLEE"] = Tooltip("Fleeing", "It costs 3 AP to attempt to Flee. If you fail, you can't attack/cast for the remainder of the turn.");
+
+	TOOLTIPS["AP"] = Tooltip("AP *YELLOW*\3", "*YELLOW*AP*GREY* is used to perform actions in your turn, like *ORANGE*attacking*GREY*, *BLUE*casting spells*GREY*, or *GREEN*moving");
+	TOOLTIPS["STAMINA"] = Tooltip("Stamina *GREEN*\5", "*GREEN*Stamina*GREY* is the pool from which your *YELLOW*AP*GREY* is refilled each turn.");
+	TOOLTIPS["DEFENSE"] = Tooltip("Defense *NAVY*\4", "Incoming *RED*damage*GREY* is reduced by a flat amount equal to your *NAVY*Defense*GREY* stat.\n\nThis reduction happens AFTER the percent reduction provided by your *BLUE*Armor*GREY* stat.");
+	TOOLTIPS["ARMOR"] = Tooltip("Armor *BLUE*\x8", "Incoming *RED*damage*GREY* is reduced by a percent equal to your *BLUE*Armor*GREY* stat.\n\nThis reduction happens BEFORE the flat reduction provided by your *NAVY*Defense*GREY* stat.");
+	TOOLTIPS["HP"] = Tooltip("HP *RED*\x2", "*RED*HP*GREY* is a measure of how much *ORANGE*damage*GREY* you can take before your character dies");
+
+	//"ATKS", "DMG", "HITCHANCE", "AP", "RANGE", "PEN"
+	TOOLTIPS["ATKS"] = Tooltip("Number of Attacks", "How many times this weapon can attack each turn, if you have enough *YELLOW*AP " + getSymbol(AP));
+	TOOLTIPS["DMG"] = Tooltip("Attack Damage", "How much damage a single attack will deal, before mitigation");
+	TOOLTIPS["HITCHANCE"] = Tooltip("Hit Chance", "The chance to hit an enemy when you make an attack");
+	TOOLTIPS["WEAPON AP"] = Tooltip("Attack Cost", "How much *YELLOW*AP " + getSymbol(AP) + "*GREY* it costs to perform a single attack.");
+	TOOLTIPS["RANGE"] = Tooltip("Weapon Range", "How many tiles away a target can be hit by this weapon");
+	TOOLTIPS["PEN"] = Tooltip("Penetration", "Flat reduction vs enemy *BLUE*Armor " + getSymbol(ARMOR) + "\n\n*GREY*Percent reduction vs enemy *NAVY*Defense " + getSymbol(DEFENSE));
+	TOOLTIPS["HANDS"] = Tooltip("1H vs 2H", "You can either wield two one-handed weapons, or a single two-handed weapon");
+
+	TOOLTIPS["blade"] = Tooltip("Bladed Weapons", "+1 Max Runes");
+	TOOLTIPS["blunt"] = Tooltip("Blunt Weapons", "Each attack deals 2 + 10% damage to enemies within 1 tile of your target");
+	TOOLTIPS["axe"] = Tooltip("Axes", "Axes have a 15% chance to deal double damage");
+	TOOLTIPS["shield"] = Tooltip("Shields", "Shields offer worse damage in exchange for a chance to block damage");
+	TOOLTIPS["polearm"] = Tooltip("Polearms", "Polearms have decent range, and push enemies within 1 tile away.");
+	TOOLTIPS["whip"] = Tooltip("Whips", "Whips have decent range, and a 50% chance to afflict *RED*Whipped*GREY*, which deals 3 damage per turn and stacks.");
+	TOOLTIPS["ranged"] = Tooltip("Ranged Weapons", "These weapons have much higher range than other weapons");
+
+	TOOLTIPS["LEFTRIGHT"] = Tooltip("Attack Order", "If you have two weapons equipped, you'll attack with the weapon in your right hand first");
+
 
 	for (auto person : PEOPLE) {
 		std::string header = person.second.NAME;
@@ -174,7 +229,7 @@ void initColors() {
 	COLORS["silver"] = sf::Color(165, 155, 185);
 	COLORS["coffee"] = sf::Color(80, 60, 10);
 	COLORS["pale"] = sf::Color(200, 200, 195);
-	COLORS["navy"] = sf::Color(40, 60, 115);
+	COLORS["navy"] = sf::Color(50, 70, 125);
 	COLORS["pine"] = sf::Color(40, 110, 75);
 	COLORS["indigo"] = sf::Color(25, 70, 75);
 	COLORS["raindrop"] = sf::Color(70, 130, 125);

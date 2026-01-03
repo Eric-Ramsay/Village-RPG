@@ -202,13 +202,19 @@ std::string enemyAttack(std::string enemyId) {
 		}
 	}
 	else if (eName == "goblin archer") {
-
+		std::string description = "looses an arrow at";
+		Attack attack(6, 12, 0, 80);
+		changes += moveAttack(C->ID, attack, 8, 6, description).changes;
 	}
 	else if (eName == "goblin swordsman") {
-
+		std::string description = "slices at";
+		Attack attack(5, 7, 0, 80);
+		changes += moveAttack(C->ID, attack, 8, 1, description, 2).changes;
 	}
 	else if (eName == "goblin spearman") {
-
+		std::string description = "stabs at";
+		Attack attack(3, 6, 0, 80);
+		changes += moveAttack(C->ID, attack, 8, 2, description, 2).changes;
 	}
 	else if (eName == "slugbeast") {
 
@@ -217,13 +223,19 @@ std::string enemyAttack(std::string enemyId) {
 
 	}
 	else if (eName == "skeletal spearman") {
-
+		std::string description = "stabs at";
+		Attack attack(3, 6, 0, 80);
+		changes += moveAttack(C->ID, attack, 8, 2, description, 2).changes;
 	}
 	else if (eName == "skeletal archer") {
-
+		std::string description = "looses an arrow at";
+		Attack attack(6, 12, 0, 80);
+		changes += moveAttack(C->ID, attack, 8, 6, description).changes;
 	}
-	else if (eName == "skeletal archer") {
-
+	else if (eName == "skeletal swordsman") {
+		std::string description = "slices at";
+		Attack attack(5, 7, 0, 80);
+		changes += moveAttack(C->ID, attack, 8, 1, description, 2).changes;
 	}
 	else if (eName == "ogre") {
 

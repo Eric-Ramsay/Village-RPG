@@ -5,10 +5,10 @@ void charInfo(char c, int& sX, int& sY, int& sW) {
 	sX = 0;
 	sY = 0;
 
-	if (c < 16) {
+	if (c > 0 && c < 16) {
 		sW = 7;
 		sY = 57;
-		sX = 8 * (c - 1);
+		sX = 8 * c;
 	}
 	if (c == '\1') {
 		sW = 5;
@@ -279,36 +279,12 @@ Box Print(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1
 	return box;
 }
 
-void CPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1, int opacity = 255) {
-	Print(text, dX, dY, maxLength, scale, CENTER, opacity);
+Box CPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1, int opacity = 255) {
+	return Print(text, dX, dY, maxLength, scale, CENTER, opacity);
 }
 
-void RPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1, int opacity = 255) {
-	Print(text, dX, dY, maxLength, scale, RIGHT, opacity);
-}
-
-std::string DrawBar(int val, int max, int size, std::string color, bool drawNum = true, std::string braceColor = "*GREY*", std::string dashColor = "*BLACK*", bool dashes = true) {
-	std::string str = braceColor + "[" + color;
-	int threshold = size;
-	if (max > 0) {
-		threshold = (size * val) / max;
-	}
-	for (int i = 0; i < size; i++) {
-		if (i == threshold) {
-			str += dashColor;
-		}
-		if (i < threshold || !dashes) {
-			str += "\1";
-		}
-		else {
-			str += "-";
-		}
-	}
-	str += braceColor + "]";
-	if (drawNum) {
-		return str + "*BLACK* " + val + "/" + max;
-	}
-	return str;
+Box RPrint(std::string text, int dX, int dY, int maxLength = WIDTH, int scale = 1, int opacity = 255) {
+	return Print(text, dX, dY, maxLength, scale, RIGHT, opacity);
 }
 
 std::string Title(std::string text) {

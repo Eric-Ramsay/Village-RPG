@@ -42,13 +42,23 @@ float max(float a, float b) {
 }
 
 int MaxHP(Character C) {
-	return C.MAX_HP + 10 * C.STATS[VIT];
+	int hp = C.MAX_HP + 10 * C.STATS[VIT];
+	for (auto item : C.INVENTORY) {
+		if (item.second.equipped) {
+			UI_Item baseItem = getItem(item.second.id);
+			hp += baseItem.HP;
+		}
+	}
+	return hp;
 }
 
 int Defense(Character C) {
 	int armor = C.DEFENSE;
 	for (auto item : C.INVENTORY) {
-
+		if (item.second.equipped) {
+			UI_Item baseItem = getItem(item.second.id);
+			armor += baseItem.defense;
+		}
 	}
 	return armor;
 }
@@ -56,13 +66,23 @@ int Defense(Character C) {
 int Armor(Character C) {
 	int armor = C.ARMOR;
 	for (auto item : C.INVENTORY) {
-
+		if (item.second.equipped) {
+			UI_Item baseItem = getItem(item.second.id);
+			armor += baseItem.armor;
+		}
 	}
 	return armor;
 }
 
 int MaxStamina(Character C) {
-	return 20 + C.STATS[END] * 10;
+	int stamina = 20 + C.STATS[END] * 10;
+	for (auto item : C.INVENTORY) {
+		if (item.second.equipped) {
+			UI_Item baseItem = getItem(item.second.id);
+			stamina += baseItem.stamina;
+		}
+	}
+	return stamina;
 }
 
 int MaxAP(Character C) {
@@ -110,12 +130,6 @@ Hazard parseHazard(std::string data) {
 	hazard.y = readInt(data);
 	hazard.duration = readInt(data);
 	return hazard;
-}
-
-int w_attacks(Character C, Item item) {
-	UI_Item baseItem = getItem(item.id);
-
-	return baseItem.attacks;
 }
 
 int value(Item item) {
@@ -170,6 +184,19 @@ int w_range(Character C, Item item) {
 	UI_Item baseItem = getItem(item.id);
 
 	return baseItem.range;
+}
+
+
+int w_attacks(Character C, Item item) {
+	UI_Item baseItem = getItem(item.id);
+
+	return baseItem.attacks;
+}
+
+int w_hitchance(Character C, Item item) {
+	UI_Item baseItem = getItem(item.id);
+
+	return baseItem.attack.hitChance;
 }
 
 

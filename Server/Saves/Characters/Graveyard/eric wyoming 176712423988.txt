@@ -1,7 +1,7 @@
 ID!!!eric wyoming 176712423988!!!
-HP!!!25!
-X!!!6!
-Y!!!7!
+HP!!!-1!
+X!!!4!
+Y!!!10!
 SX!!!0!
 SY!!!176!
 ARMOR!!!0!
@@ -9,22 +9,22 @@ DEFENSE!!!0!
 MAX_HP!!!30!
 TYPE!!!player!!!
 NAME!!!Wyoming!!!
-LOCATION!!!Smithy!!!
+LOCATION!!!Wilted Woods.9641!!!
 TEAM!!!0!
 EFFECTS!!!
 USER!!!eric!!!
 LOOK!!!abgjbddoedepbiapaa!!!
-DEATH!!!!!!
-STAMINA!!!20!
+DEATH!!!Crazed Wolf!!!
+STAMINA!!!12!
 DESCRIPTION!!!!!!
-TRADING!!!Kobos!!!
+TRADING!!!!!!
 LEVEL!!!2!
 XP!!!8!
 SP!!!1!
 GOLD!!!29!
-AP!!!6!
+AP!!!0!
 BACKPACK!!!0!
-ENDED!!!0!
+ENDED!!!1!
 ATTACKS!!!0!
 CASTS!!!0!
 X_PREFERENCE!!!0!
@@ -34,4 +34,4 @@ RIGHT!!!!!!
 HITS!!!0!	0!	
 MISSES!!!0!	0!	
 STATS!!!0!	0!	0!	0!	0!	0!	0!	
-INVENTORY!!!ITEM!!!INDEX!!!dagger.43990!!!ATTACKS!!!2!EQUIPPED!!!1!RUNES!!!	ITEM!!!INDEX!!!crude cuirass.14880!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.43990!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	ITEM!!!INDEX!!!crude cuirass.14880!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!	
