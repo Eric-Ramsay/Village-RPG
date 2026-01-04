@@ -98,7 +98,7 @@ int main()
 	auto clock = sf::Clock{};
 	float timeSinceLastClick = 0;
 	float elapsedTime = 0;
-	float targetTime = 1/60;
+	float targetTime = 1.0f/60.0f;
 
 	UI.W = sf::VideoMode::getDesktopMode().width;
 	UI.H = sf::VideoMode::getDesktopMode().height;
@@ -106,12 +106,13 @@ int main()
 
 	window.setMouseCursorVisible(false);
 	window.setKeyRepeatEnabled(false);
-	window.setVerticalSyncEnabled(true);
+	window.setVerticalSyncEnabled(false);
 	srand(time(NULL));
 	//ma_engine_init(NULL, &audio);
 	static sf::Texture sprites = createTexture("./Sprites/sprites.png");
 	texture.create(WIDTH, HEIGHT);
 	vertices.resize(vertSize);
+	lineVertices.resize(lineVertSize);
 
 	sf::Shader shader;
 	shader.loadFromFile("./Code/shader.frag", sf::Shader::Fragment);
@@ -344,27 +345,26 @@ int main()
 					holdingBackspace = 0;
 				}
 
-				for (int i = 0; i < animations.size(); i++) {
-					animations[i].timePassed++;
-					if (animations[i].timePassed >= animations[i].duration) {
-						animations.pop_front();
-					}
-					else {
-						float x = animations[i].position.x;
-						float y = animations[i].position.y;
-						float endX = animations[i].endPos.x;
-						float endY = animations[i].endPos.y;
-						int timeRemaining = (animations[i].duration - animations[i].timePassed);
-						animations[i].position.x += (endX - x) / timeRemaining;
-						animations[i].position.y += (endY - y) / timeRemaining;
 
-						if (animations[i].timePassed >= animations[i].beginFade) {
-							animations[i].opacity += (animations[i].endOpacity - animations[i].opacity) / timeRemaining;
+				for (auto& animation : ANIMATIONS) {
+					for (int l = animation.second.text.size() - 1; l >= 0; l--) {
+						if (++animation.second.text[l].timePassed > animation.second.text[l].duration) {
+							animation.second.text.erase(animation.second.text.begin() + l);
 						}
+					}
+					for (int l = animation.second.lines.size() - 1; l >= 0; l--) {
+						if (++animation.second.lines[l].timePassed > animation.second.lines[l].duration) {
+							animation.second.lines.erase(animation.second.lines.begin() + l);
+						}
+					}
+					if (animation.second.move.timePassed < animation.second.move.duration) {
+						animation.second.move.timePassed++;
+					}
+					if (animation.second.fade.timePassed < animation.second.fade.duration) {
+						animation.second.fade.timePassed++;
 					}
 				}
 			}
-
 
 			processMessages();
 
@@ -385,23 +385,34 @@ int main()
 				UI.tooltip = "";
 				DrawUI();
 
-				//Print(to_str((int)FPS), 2, 1);
+				Print(to_str((int)FPS), 2, 1);
 				//Print(to_str((int)UI.timer), 16, 1);
 			}
 			else {
 				DrawLogs();
 			}
 
+			//DrawLine(Position(WIDTH / 2, HEIGHT / 2), Position(UI.mX, UI.mY), getColor("RED"));
+
 			if (numVertices > vertSize) {
 				vertSize = numVertices + 1000;
 				vertices.resize(vertSize);
 				std::cout << "Resizing to store " << vertSize << " elements. . ." << std::endl;
 			}
+			if (numLineVertices > lineVertSize) {
+				lineVertSize = numLineVertices + 500;
+				lineVertices.resize(lineVertSize);
+			}
 
 			if (numVertices > 0) {
-				texture.draw(&vertices[0], numVertices, sf::Quads, &sprites);
+				texture.draw(&vertices[0], numVertices, sf::Triangles, &sprites);
 				numVertices = 0;
 			}
+			if (numLineVertices > 0) {
+				texture.draw(&lineVertices[0], numLineVertices, sf::Lines);
+				numLineVertices = 0;
+			}
+
 			texture.display();
 			sprite.setTexture(texture.getTexture());
 			float xScale = (float)UI.W / texture.getSize().x;
@@ -422,13 +433,14 @@ int main()
 
 			window.draw(sprite, &shader);
 
-			//Print(to_str((int)FPS), 0, 0, 8);
-
 			if (numVertices > 0) {
-				window.draw(&vertices[0], numVertices, sf::Quads, &sprites);
+				window.draw(&vertices[0], numVertices, sf::Triangles, &sprites);
 				numVertices = 0;
 			}
 			window.display();
+		}
+		else {
+			clock.restart();
 		}
 	}
 	closesocket(sock);

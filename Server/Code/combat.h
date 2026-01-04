@@ -1,6 +1,7 @@
 #pragma once
 
 std::string summon(Battle& battle, std::string n, int x = 0, int y = 0, int team = 1, int hp = -1) {
+	std::string changes = "";
 	std::string name = low(n);
 	if (ENEMIES.count(name) > 0) {
 		Character enemy = ENEMIES[name];
@@ -19,6 +20,7 @@ std::string summon(Battle& battle, std::string n, int x = 0, int y = 0, int team
 		battle.characters.push_back(id);
 		CHARACTERS[id] = enemy;
 		save(enemy);
+		changes += addBundle("CHARACTER", serialize(enemy));
 		return addBundle("CHARACTER", serialize(enemy));
 	}
 	std::cout << "Couldn't summon enemy '" + name + "'!" << std::endl;
@@ -162,6 +164,8 @@ DamageResult dealDamage(std::string attackerId, std::string targetId, Attack att
 	else {
 		msg += "*ORANGE*" + pretty(name(attacker)) + " *RED*misses!\n";
 	}
+
+	result.changes += addBundle("ATTACK", str(attackerId) + str(targetId));
 
 	if (msg != "") {
 		Battle battle = BATTLES[attacker->LOCATION];

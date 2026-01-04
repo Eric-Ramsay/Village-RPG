@@ -37,7 +37,6 @@ void ProcessMessages() {
 						}
 						else if (type == "LOGIN_PASSWORD") {
 							if (ACCOUNTS[players[i].USERNAME].PASSWORD == data) {
-								sendData("ACCEPT_PASSWORD", "", { i });
 								players[i].connected = true;
 								std::string bundle = "";
 								for (auto character : CHARACTERS) {
@@ -52,7 +51,9 @@ void ProcessMessages() {
 								for (auto battle : BATTLES) {
 									bundle += addBundle("BATTLE", serialize(battle.second));
 								}
-								sendData(bundle);
+								bundle += addBundle("ACCEPT_PASSWORD", "");
+								std::vector<int> sendList = { i };
+								sendData(bundle, sendList);
 							}
 							else {
 								sendData("REJECT_PASSWORD", "", { i });

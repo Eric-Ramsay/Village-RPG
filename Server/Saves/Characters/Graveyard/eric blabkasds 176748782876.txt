@@ -1,0 +1,37 @@
+ID!!!eric blabkasds 176748782876!!!
+HP!!!-6!
+X!!!4!
+Y!!!3!
+SX!!!0!
+SY!!!176!
+ARMOR!!!0!
+DEFENSE!!!0!
+MAX_HP!!!30!
+TYPE!!!player!!!
+NAME!!!Blabkasds!!!
+LOCATION!!!Wilted Woods.9284!!!
+TEAM!!!0!
+EFFECTS!!!
+USER!!!eric!!!
+LOOK!!!akbbaociaiadbfbdah!!!
+DEATH!!!Goblin Spearman!!!
+STAMINA!!!11!
+DESCRIPTION!!!!!!
+TRADING!!!!!!
+LEVEL!!!1!
+XP!!!0!
+SP!!!0!
+GOLD!!!30!
+AP!!!3!
+BACKPACK!!!0!
+ENDED!!!1!
+ATTACKS!!!0!
+CASTS!!!0!
+X_PREFERENCE!!!0!
+Y_PREFERENCE!!!0!
+LEFT!!!!!!
+RIGHT!!!dagger.23831!!!
+HITS!!!0!	0!	
+MISSES!!!0!	0!	
+STATS!!!4!	0!	0!	0!	0!	0!	0!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.23831!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!	

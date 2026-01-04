@@ -158,9 +158,9 @@ void initEnemies() {
 	enemies.push_back(Character("Goblin Swordsman", 50, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "goblin", 60, 0, 0, ""));
 	enemies.push_back(Character("Goblin Spearman", 40, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "goblin", 50, 0, 0, ""));
 
-	enemies.push_back(Character("Skeletal Archer", 40, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "evil", 20, 6, 60, ""));
-	enemies.push_back(Character("Skeletal Swordsman", 50, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "evil", 35, 6, 70, ""));
-	enemies.push_back(Character("Skeletal Spearman", 40, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "evil", 30, 6, 60, ""));
+	enemies.push_back(Character("Skeletal Archer", 40, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "evil", 20, 6, 50, ""));
+	enemies.push_back(Character("Skeletal Swordsman", 50, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "evil", 35, 6, 50, ""));
+	enemies.push_back(Character("Skeletal Spearman", 40, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "evil", 30, 6, 50, ""));
 	//enemies.push_back(Character("Slugbeast",  40, 2, 40, { 2 }, 3, "animal", ""));
 	
 	//enemies.push_back(Character("Acidic Slime",  40, 2, 40, { 2 }, 3, "animal", ""));

@@ -400,6 +400,10 @@ void parseChange(Character& character, std::string type, std::string data) {
 	else if (type == "Y") {
 		character.Y = readInt(data);
 	}
+	else if (type == "COORDINATES") {
+		character.X = readInt(data);
+		character.Y = readInt(data);
+	}
 	else if (type == "SX") {
 		character.SX = readInt(data);
 	}
@@ -503,7 +507,8 @@ void parseChange(Battle& battle, std::string type, std::string data) {
 		std::vector<std::string> lines = split(data, '\t');
 		for (std::string line : lines) {
 			if (line != "") {
-				battle.characters.push_back(readStr(line));
+				std::string id = readStr(line);
+				battle.characters.push_back(id);
 			}
 		}
 	}

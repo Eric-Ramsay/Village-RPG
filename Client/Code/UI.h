@@ -910,6 +910,38 @@ void DrawCharSection(Character C, int x, int y, std::string tag) {
 	Print("*PALE*" + to_str(Armor(C)), x + 170, y + 14);
 }
 
+void DrawAnimation(Animation& animation) {
+	int xPos = animation.xPos;
+	int yPos = animation.yPos;
+	for (TextAnimation anim : animation.text) {
+		float startY = yPos + 4;
+		float endY = yPos - 8;
+		float percentage = ((float)anim.timePassed / (float)anim.duration);
+		float yAnimPos = startY + (endY - startY) * (percentage);
+		int opacity = 255;
+		if (percentage > .5) {
+			opacity *= 1 - (2 * (percentage - .5));
+		}
+		CPrint(animation.text[0].text, xPos + 8, yAnimPos, WIDTH, 1, opacity);
+	}
+	float startX = xPos + 8;
+	float startY = yPos + 8;
+	for (LineAnimation anim : animation.lines) {
+		float percentage = ((float)anim.timePassed / (float)anim.duration);
+		int lineY = startY + (anim.endY - startY);
+		int lineX = startX + (anim.endX - startX);
+		int opacity = 255;
+		if (percentage > .5) {
+			opacity *= 1 - (2 * (percentage - .5));
+		}
+		else {
+			lineX = startX + (anim.endX - startX) * percentage * 2;
+			lineY = startY + (anim.endY - startY) * percentage * 2;
+		}
+		DrawLine(startX, startY, lineX, lineY, getColor(anim.color), opacity);
+	}
+}
+
 void DrawBattle(Battle battle) {
 	int x = battleX;
 	int y = battleY;
@@ -1024,8 +1056,9 @@ void DrawBattle(Battle battle) {
 		for (int j = 0; j < 12; j++) {
 			Hazard hazard = hazards[i][j];
 			Terrain terrain = TERRAIN[hazard.index];
-			int xPos = (x + j * 16);
-			int yPos = y + (i * 16);
+			int xPos = x + j * 16;
+			int yPos = y + i * 16;
+			int opacity = 255;
 			if (battle.round > 0 && movementCosts[i][j] <= getCharacter(ID).AP) {
 				Draw(32, 80, 16, 16, xPos, yPos, 1, sf::Color(135, 155, 0));
 			}
@@ -1033,21 +1066,37 @@ void DrawBattle(Battle battle) {
 			if (characters[i][j] == "" || (terrain.sX > 0 && UI.showTerrain)) {
 				Draw(terrain.sX, terrain.sY, 16, 16, xPos, yPos);
 			}
-			else {
+			if (characters[i][j] != "") {
+				Animation* anim = &ANIMATIONS[characters[i][j]];
+				anim->xPos = xPos;
+				anim->yPos = yPos;
+				anim->location = battle.id;
+				DrawAnimation(ANIMATIONS[characters[i][j]]);
+				if (anim->move.startX > -1) {
+					float percentage = ((float)anim->move.timePassed / (float)anim->move.duration);
+					xPos = anim->move.startX + (anim->xPos - anim->move.startX) * percentage;
+					yPos = anim->move.startY + (anim->yPos - anim->move.startY) * percentage;
+				}
+				if (anim->fade.timePassed < anim->fade.duration) {
+					float percentage = ((float)anim->fade.timePassed / (float)anim->fade.duration);
+					opacity *= percentage;
+				}
+			}
+			if (characters[i][j] != "" && (terrain.sX == 0 || !UI.showTerrain)) {
 				Character C = CHARACTERS[characters[i][j]];
 				if (C.LOOK != "") {
-					DrawCharacter(xPos, yPos, C.LOOK);
+					DrawCharacter(xPos, yPos, C.LOOK, 1, opacity);
 				}
 				else {
 					int sX = C.SX;
 					int sY = C.SY;
-					Draw(sX, sY, 16, 16, xPos, yPos);
+					Draw(sX, sY, 16, 16, xPos, yPos, 1, sf::Color(255, 255, 255, opacity));
 				}
 				std::string borderColor = "RED";
 				if (C.TEAM == 0) {
 					borderColor = "BLUE";
 				}
-				Draw(80, 144, 16, 16, xPos, yPos, 1, getColor(borderColor));
+				Draw(80, 144, 16, 16, xPos, yPos, 1, getColor(borderColor, opacity));
 			}
 			if (range(UI.mX, UI.mY, xPos, yPos, 16, 16)) {
 				if (UI.rightPressed) {
@@ -1066,6 +1115,14 @@ void DrawBattle(Battle battle) {
 					UI.viewedHazard = hazard;
 					UI.view = 3;
 				}
+			}
+		}
+	}
+
+	for (auto anim : ANIMATIONS) {
+		if (CHARACTERS.count(anim.first) == 0) {
+			if (anim.second.location == battle.id) {
+				DrawAnimation(anim.second);
 			}
 		}
 	}
@@ -1136,14 +1193,6 @@ void DrawBattle(Battle battle) {
 					UI.viewedItem = item;
 				}
 			}
-		}
-	}
-
-	for (int i = 0; i < animations.size(); i++) {
-		if (animations[i].type == "text") {
-			int xPos = animations[i].position.x;
-			int yPos = animations[i].position.y;
-			CPrint(animations[i].color + animations[i].text, xPos, yPos, WIDTH, 1, animations[i].opacity);
 		}
 	}
 }
@@ -1318,6 +1367,9 @@ void DrawLogs() {
 	int startIndex;
 	int maxIndex;
 	setScrollBar(logBar, x, y, logs.size(), startIndex, maxIndex);
+
+	Print(to_str(logBar.orbPos), 220, 2);
+	Print(to_str(logBar.index), 420, 2);
 
 	for (int i = 1 + startIndex; i <= maxIndex; i++) {
 		Print(logs[logs.size() - i], 5, HEIGHT - (11 + (i - startIndex) * 15), 340);

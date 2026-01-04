@@ -220,12 +220,26 @@ int main() {
 		}
 	}
 
+	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Battles/")) {
+		Battle battle = load<Battle>(entry.path().string());
+		BATTLES[battle.id] = battle;
+	}
+
 	// Load all Enemies
 	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Characters/Enemies/")) {
 		std::string path = entry.path().string();
 		if (!entry.is_directory()) {
 			Character character = load<Character>(path);
-			if (character.ID != "" && character.X >= 0 && character.Y >= 0 && character.X < 12 && character.Y < 12 && BATTLES.count(character.LOCATION) > 0) {
+			bool charFound = character.ID != "" && BATTLES.count(character.LOCATION) > 0;
+			if (charFound) {
+				charFound = false;
+				for (std::string id : BATTLES[character.LOCATION].characters) {
+					if (id == character.ID) {
+						charFound = true;
+					}
+				}
+			}
+			if (charFound && character.X >= 0 && character.Y >= 0 && character.X < 12 && character.Y < 12) {
 				CHARACTERS[character.ID] = character;
 			}
 			else if (character.TYPE != "player") {
@@ -234,10 +248,8 @@ int main() {
 		}
 	}
 
-	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Battles/")) {
-		Battle battle = load<Battle>(entry.path().string());
-		BATTLES[battle.id] = battle;
-		validateBattle(battle.id);
+	for (auto battle : BATTLES) {
+		validateBattle(battle.first);
 	}
 
 	for (const auto& entry : std::filesystem::directory_iterator("./Saves/Accounts/")) {

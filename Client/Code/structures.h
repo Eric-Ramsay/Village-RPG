@@ -183,7 +183,7 @@ struct Position {
 	Position() {}
 };
 
-struct Animation {
+/*struct Animation {
 	std::string type = "";
 	int duration = 25;
 	int timePassed = 0;
@@ -206,6 +206,57 @@ struct Animation {
 	std::string color = "";
 
 	Animation() {}
+};*/
+
+struct TextAnimation {
+	int opacity = 255;
+	int duration = 0;
+	int timePassed = 0;
+	std::string text = "";
+	TextAnimation(std::string t, int d) {
+		text = t;
+		duration = d;
+	}
 };
+
+struct LineAnimation {
+	std::string color;
+	int endX;
+	int endY;
+
+	int duration = 30;
+	int timePassed = 0;
+	int opacity = 255;
+	LineAnimation(int x, int y, std::string c) {
+		endX = x;
+		endY = y;
+		color = c;
+	}
+};
+
+struct FadeAnimation {
+	int duration = 30;
+	int timePassed = 0;
+};
+
+struct MoveAnimation {
+	int startX = -1;
+	int startY = -1;
+	int duration = 30;
+	int timePassed = 0;
+};
+
+struct Animation {
+	std::string location = "";
+	int xPos;
+	int yPos;
+
+	std::deque<TextAnimation> text = {};
+	std::deque<LineAnimation> lines = {};
+
+	FadeAnimation fade;
+	MoveAnimation move;
+};
+
 
 

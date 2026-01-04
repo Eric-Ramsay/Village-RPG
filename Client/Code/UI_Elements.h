@@ -260,12 +260,19 @@ for (auto color : COLORS) {
 }
 
 void updateOrbPos(Scrollbar* bar, int index) {
+	int origIndex = bar->index;
+	int origOrbPos = bar->orbPos;
 	int num = max(0, (bar->numThings - bar->visibleAtOnce));
 	if (num > 0) {
 		int height = (bar->height - 24);
 		bar->orbPos = index * ((float)height / (float)num);
 		if (bar->inverse) {
-			bar->orbPos = (num - index) * ((float)height / (float)num);
+			float numVal = (float)num - (float)index;
+			float mult = (float)height / (float)num;
+			bar->orbPos = std::round(numVal * mult);
+			if (origIndex == index && origOrbPos != bar->orbPos) {
+				std::cout << "wtf" << std::endl;
+			}
 		}
 	}
 }
@@ -351,7 +358,7 @@ Box DrawSymbol(SYMBOL symbol, int x, int y, std::string color) {
 	return Draw(8 * symbol, 58, 7, 7, x, y, 1, getColor(color));
 }
 
-void DrawCharacter(int x, int y, std::vector<int> styles, std::vector<int> colors, int scale = 1) {
+void DrawCharacter(int x, int y, std::vector<int> styles, std::vector<int> colors, int scale = 1, int opacity = 255) {
 	std::vector<std::vector<std::string>> colorOptions = {
 	{ "sand", "orange", "yellow", "amber", "brown", "wood", "pale", "silver", "mint", "green", "raindrop" },
 	{ "sand", "orange", "brown", "wood", "yellow", "amber", "red", "pale", "silver", "steel" },
@@ -365,11 +372,11 @@ void DrawCharacter(int x, int y, std::vector<int> styles, std::vector<int> color
 	};
 
 	for (int i = 0; i < styles.size(); i++) {
-		Draw(16 * i, 224 + styles[i] * 16, 16, 16, x, y, scale, getColor(colorOptions[i][colors[i]]));
+		Draw(16 * i, 224 + styles[i] * 16, 16, 16, x, y, scale, getColor(colorOptions[i][colors[i]], opacity));
 	}
 }
 
-void DrawCharacter(int x, int y, std::string look, int scale = 1) {
+void DrawCharacter(int x, int y, std::string look, int scale = 1, int opacity = 255) {
 	if (look.size() != 18) {
 		return;
 	}
@@ -379,5 +386,5 @@ void DrawCharacter(int x, int y, std::string look, int scale = 1) {
 		styles.push_back((int)(look[i] - 'a'));
 		colors.push_back((int)(look[i + 1] - 'a'));
 	}
-	DrawCharacter(x, y, styles, colors, scale);
+	DrawCharacter(x, y, styles, colors, scale, opacity);
 }

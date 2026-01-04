@@ -210,6 +210,9 @@ std::string getStat(Character C, std::string stat) {
 	if (stat == "INVENTORY") {
 		return serialize(C.INVENTORY);
 	}
+	if (stat == "COORDINATES") {
+		return serialize(C.X) + serialize(C.Y);
+	}
 }
 
 std::string statLine(Character C, std::string stat) {

@@ -81,8 +81,7 @@ std::string moveInRange(std::string id, int movementRange, int attackRange, bool
 	if (C->X != newX || C->Y != newY) {
 		C->X = newX;
 		C->Y = newY;
-		changes += printStat(*C, "X");
-		changes += printStat(*C, "Y");
+		changes += printStat(*C, "COORDINATES");
 	}
 	return changes;
 }
@@ -166,17 +165,17 @@ std::string enemyAttack(std::string enemyId) {
 
 	if (eName == "crazed wolf") {
 		std::string description = "bites at";
-		Attack attack(2, 4, 0, 90);
+		Attack attack(0, 0, 0, 90);
 		if (C->HP < MaxHP(*C) / 2) {
 			attack.min *= 2;
-			attack.max	 *= 2;
+			attack.max	*= 2;
 			description = "bites savagely at";
 		}
 		changes += moveAttack(C->ID, attack, 12, 1, description, 3).changes;
 	}
 	else if (eName == "giant amoeba") {
 		std::string description = "bumps into";
-		Attack attack(1, 2, 0, 90);
+		Attack attack(0, 0, 0, 90);
 		changes += moveAttack(C->ID, attack, 6, 1, description, 2).changes;
 		std::vector<std::vector<int>> movementCosts = moveCosts(*C, *battle);
 
@@ -203,17 +202,17 @@ std::string enemyAttack(std::string enemyId) {
 	}
 	else if (eName == "goblin archer") {
 		std::string description = "looses an arrow at";
-		Attack attack(6, 12, 0, 80);
+		Attack attack(0, 0, 0, 80);
 		changes += moveAttack(C->ID, attack, 8, 6, description).changes;
 	}
 	else if (eName == "goblin swordsman") {
 		std::string description = "slices at";
-		Attack attack(5, 7, 0, 80);
+		Attack attack(0, 0, 0, 80);
 		changes += moveAttack(C->ID, attack, 8, 1, description, 2).changes;
 	}
 	else if (eName == "goblin spearman") {
 		std::string description = "stabs at";
-		Attack attack(3, 6, 0, 80);
+		Attack attack(0, 0, 0, 80);
 		changes += moveAttack(C->ID, attack, 8, 2, description, 2).changes;
 	}
 	else if (eName == "slugbeast") {
@@ -224,17 +223,17 @@ std::string enemyAttack(std::string enemyId) {
 	}
 	else if (eName == "skeletal spearman") {
 		std::string description = "stabs at";
-		Attack attack(3, 6, 0, 80);
+		Attack attack(0, 0, 0, 80);
 		changes += moveAttack(C->ID, attack, 8, 2, description, 2).changes;
 	}
 	else if (eName == "skeletal archer") {
 		std::string description = "looses an arrow at";
-		Attack attack(6, 12, 0, 80);
+		Attack attack(0, 0, 0, 80);
 		changes += moveAttack(C->ID, attack, 8, 6, description).changes;
 	}
 	else if (eName == "skeletal swordsman") {
 		std::string description = "slices at";
-		Attack attack(5, 7, 0, 80);
+		Attack attack(0, 0, 0, 80);
 		changes += moveAttack(C->ID, attack, 8, 1, description, 2).changes;
 	}
 	else if (eName == "ogre") {

@@ -104,27 +104,19 @@ void process(std::string type, std::string data) {
 		std::string id = readStr(data);
 		std::string stat = readStr(data);
 		int HP = CHARACTERS[id].HP;
+		if (stat == "COORDINATES") {
+			ANIMATIONS[id].move.startX = battleX + 16 * CHARACTERS[id].X;
+			ANIMATIONS[id].move.startY = battleY + 16 * CHARACTERS[id].Y + 20;
+			ANIMATIONS[id].move.duration = 30;
+			ANIMATIONS[id].move.timePassed = 0;
+		}
 		parseChange(CHARACTERS[id], stat, data);
 		if (stat == "HP") {
-			Animation anim;
-			anim.type = "text";	
-			anim.position.x = battleX + CHARACTERS[id].X * 16 + 8;
-			anim.position.y = battleY + 20 + CHARACTERS[id].Y * 16 + 4;
-			anim.endPos.x = battleX + CHARACTERS[id].X * 16 + 8;
-			anim.endPos.y = battleY + 20 + CHARACTERS[id].Y * 16 - 8;
-			anim.endOpacity = 0;
-			anim.beginFade = 20;
-			anim.duration = 40;
+			std::string text = "*RED*" + to_str(CHARACTERS[id].HP - HP);
 			if (CHARACTERS[id].HP > HP) {
-				anim.text = "+" + to_str(CHARACTERS[id].HP - HP);
-				anim.color = "*GREEN*";
-				animations.push_back(anim);
+				text = "*GREEN*+" + to_str(CHARACTERS[id].HP - HP);
 			}
-			else if (CHARACTERS[id].HP < HP) {
-				anim.text = to_str(CHARACTERS[id].HP - HP);
-				anim.color = "*RED*";
-				animations.push_back(anim);
-			}
+			ANIMATIONS[id].text.push_back(TextAnimation(text, 40));
 		}
 	}
 	if (type == "STATS") {
@@ -151,6 +143,15 @@ void process(std::string type, std::string data) {
 	}
 	if (type == "REMOVE_BATTLE") {
 		BATTLES.erase(data);
+	}
+	if (type == "ATTACK") {
+		std::string attackerId = readStr(data);
+		std::string targetId = readStr(data);
+		if (CHARACTERS.count(attackerId) > 0 && CHARACTERS.count(targetId) > 0) {
+			int x = battleX + CHARACTERS[targetId].X * 16 + 8;
+			int y = 20 + battleY + CHARACTERS[targetId].Y * 16 + 8;
+			ANIMATIONS[attackerId].lines.push_back(LineAnimation(x, y, "RED"));
+		}
 	}
 	if (!logBar.dragging) {
 		updateOrbPos(&logBar, logBar.index);

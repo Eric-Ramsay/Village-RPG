@@ -519,28 +519,28 @@ std::string commandSleep(int playerIndex, Character& C) {
 }
 
 std::string commandMove(std::string id, std::vector<std::string> words) {
-	if (BATTLES.count(CHARACTERS[id].LOCATION) > 0) {
-		if (numStacks(CHARACTERS[id], "rooted") > -1) {
+	std::string changes = "";
+	Character* C = &CHARACTERS[id];
+	if (BATTLES.count(C->LOCATION) > 0) {
+		if (numStacks(*C, "rooted") > -1) {
 			return "*RED*You're rooted and can't move!";
 		}
-		if (numStacks(CHARACTERS[id], "stunned") > -1) {
+		if (numStacks(*C, "stunned") > -1) {
 			return "*RED*Youre stunned and can't act!";
 		}
 		int x = readInt(words[0]);
 		int y = readInt(words[0]);
 		if (x >= 0 && y >= 0 && x < 12 && y < 12) {
-			std::string changes = str(id);
 			std::vector<std::vector<int>> movementCosts = moveCosts(CHARACTERS[id], BATTLES[CHARACTERS[id].LOCATION]);
-			if (movementCosts[y][x] <= CHARACTERS[id].AP) {
-				if (BATTLES[CHARACTERS[id].LOCATION].round != 0) {
-					CHARACTERS[id].AP -= movementCosts[y][x];
-					changes += addLine("AP", CHARACTERS[id].AP);
+			if (movementCosts[y][x] <= C->AP) {
+				if (BATTLES[C->LOCATION].round != 0) {
+					C->AP -= movementCosts[y][x];
+					changes += printStat(*C, "AP");
 				}
 				CHARACTERS[id].X = x;
 				CHARACTERS[id].Y = y;
-				changes += addLine("X", x);
-				changes += addLine("Y", y);
-				sendData("STATS", changes);
+				changes += printStat(*C, "COORDINATES");
+				sendData(changes);
 			}
 		}
 	}

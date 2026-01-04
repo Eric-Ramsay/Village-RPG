@@ -1,0 +1,37 @@
+ID!!!eric wsad 176750568980!!!
+HP!!!-15!
+X!!!4!
+Y!!!10!
+SX!!!0!
+SY!!!176!
+ARMOR!!!0!
+DEFENSE!!!0!
+MAX_HP!!!30!
+TYPE!!!player!!!
+NAME!!!Wsad!!!
+LOCATION!!!Wilted Woods.4606!!!
+TEAM!!!0!
+EFFECTS!!!
+USER!!!eric!!!
+LOOK!!!akefbndbeeagaaaeah!!!
+DEATH!!!Skeletal Archer!!!
+STAMINA!!!20!
+DESCRIPTION!!!!!!
+TRADING!!!!!!
+LEVEL!!!1!
+XP!!!42!
+SP!!!2!
+GOLD!!!42!
+AP!!!9!
+BACKPACK!!!0!
+ENDED!!!1!
+ATTACKS!!!0!
+CASTS!!!0!
+X_PREFERENCE!!!0!
+Y_PREFERENCE!!!0!
+LEFT!!!!!!
+RIGHT!!!dagger.19264!!!
+HITS!!!0!	0!	
+MISSES!!!0!	0!	
+STATS!!!1!	0!	1!	0!	0!	0!	0!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.19264!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	

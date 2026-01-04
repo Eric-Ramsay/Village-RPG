@@ -1,7 +1,7 @@
 ID!!!eric dale jr 176742251463!!!
-HP!!!50!
-X!!!0!
-Y!!!0!
+HP!!!-15!
+X!!!1!
+Y!!!10!
 SX!!!0!
 SY!!!176!
 ARMOR!!!0!
@@ -9,13 +9,13 @@ DEFENSE!!!0!
 MAX_HP!!!30!
 TYPE!!!player!!!
 NAME!!!Dale Jr!!!
-LOCATION!!!Graveyard!!!
+LOCATION!!!Wilted Woods.5578!!!
 TEAM!!!0!
 EFFECTS!!!
 USER!!!eric!!!
 LOOK!!!aacibadaeqcqaoagaa!!!
-DEATH!!!!!!
-STAMINA!!!30!
+DEATH!!!Giant Amoeba!!!
+STAMINA!!!24!
 DESCRIPTION!!!!!!
 TRADING!!!!!!
 LEVEL!!!1!
@@ -24,7 +24,7 @@ SP!!!0!
 GOLD!!!30!
 AP!!!9!
 BACKPACK!!!0!
-ENDED!!!0!
+ENDED!!!1!
 ATTACKS!!!0!
 CASTS!!!0!
 X_PREFERENCE!!!0!
@@ -34,4 +34,4 @@ RIGHT!!!dagger.17050!!!
 HITS!!!0!	0!	
 MISSES!!!0!	0!	
 STATS!!!2!	1!	1!	0!	0!	0!	0!	
-INVENTORY!!!ITEM!!!INDEX!!!dagger.17050!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.17050!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	

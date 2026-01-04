@@ -21,19 +21,30 @@ void SetVertex(int index, int sX, int sY, int dX, int dY, sf::Color color) {
 	vertex->texCoords.y = sY;
 }
 
+void SetLineVertex(int index, int dX, int dY, sf::Color color) {
+	sf::Vertex* vertex = &lineVertices[index];
+	vertex->position.x = dX;
+	vertex->position.y = dY;
+	vertex->color = color;
+}
+
 Box Draw(int sX, int sY, int w, int h, int dX, int dY, int scaleX, int scaleY, sf::Color color = sf::Color(255, 255, 255), bool flip = false) {
 	if ((numVertices + 4) < vertSize) {
 		if (flip) {
 			SetVertex(numVertices++, sX, sY, dX + w * scaleX, dY, color);
 			SetVertex(numVertices++, sX + w, sY, dX, dY, color);
-			SetVertex(numVertices++, sX + w, sY + h, dX, dY + h * scaleY, color);
 			SetVertex(numVertices++, sX, sY + h, dX + w * scaleX, dY + h * scaleY, color);
+			SetVertex(numVertices++, sX, sY + h, dX + w * scaleX, dY + h * scaleY, color);
+			SetVertex(numVertices++, sX + w, sY, dX, dY, color);
+			SetVertex(numVertices++, sX + w, sY + h, dX, dY + h * scaleY, color);
 		}
 		else {
-			SetVertex(numVertices++, sX, sY, dX, dY, color);
-			SetVertex(numVertices++, sX + w, sY, dX + w * scaleX, dY, color);
-			SetVertex(numVertices++, sX + w, sY + h, dX + w * scaleX, dY + h * scaleY, color);
-			SetVertex(numVertices++, sX, sY + h, dX, dY + h * scaleY, color);
+			SetVertex(numVertices++, sX, sY, dX, dY, color); // 1
+			SetVertex(numVertices++, sX + w, sY, dX + w * scaleX, dY, color); // 2
+			SetVertex(numVertices++, sX, sY + h, dX, dY + h * scaleY, color); // 4
+			SetVertex(numVertices++, sX, sY + h, dX, dY + h * scaleY, color); // 4
+			SetVertex(numVertices++, sX + w, sY, dX + w * scaleX, dY, color); // 2
+			SetVertex(numVertices++, sX + w, sY + h, dX + w * scaleX, dY + h * scaleY, color); //3
 		}
 	}
 	else {
@@ -59,6 +70,15 @@ void DrawSquare(int dX, int dY, int w, int h) {
 	fillRect(dX, dY, 3, h, sf::Color::White);
 	fillRect(dX + w - 3, dY, 3, h, sf::Color::White);
 	fillRect(dX, dY + h - 3, w, 3, sf::Color::White);
+}
+
+void DrawLine(int startX, int startY, int endX, int endY, sf::Color color = sf::Color(255, 255, 255), int opacity = 255) {
+	color.a = opacity;
+	numLineVertices += 2;
+	if (numLineVertices < lineVertSize) {
+		SetLineVertex(numLineVertices++, startX, startY, color);
+		SetLineVertex(numLineVertices++, endX, endY, color);
+	}
 }
 
 

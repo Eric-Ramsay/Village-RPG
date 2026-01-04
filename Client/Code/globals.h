@@ -18,13 +18,16 @@ std::unordered_map<std::string, Location> LOCATIONS = {};
 std::unordered_map<std::string, Character> ENEMIES = {};
 std::unordered_map<std::string, Battle> BATTLES = {};
 
-std::deque<Animation> animations = {};
+std::unordered_map<std::string, Animation> ANIMATIONS = {};
 
 UIState UI;
 
 std::vector<sf::Vertex> vertices;
+std::vector<sf::Vertex> lineVertices;
 int numVertices = 0;
+int numLineVertices = 0;
 int vertSize = 200000;
+int lineVertSize = 8000;
 
 //Battle BATTLE;
 
