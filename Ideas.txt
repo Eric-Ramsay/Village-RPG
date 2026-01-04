@@ -39,52 +39,43 @@ Start with +2 Casts and +4 Spell Slots (base is 1 & 1)
 
 Thief - Rob the fat merchant in the Wilted Woods - When you buy something from the store, you have a 10% chance to keep your gold.
 Backstabber - ? - the first attack of each turn has its damage increased by your AVD stat
-
-
-2. Animation work
-	- Battle/Character used in UI is a copy, updated by animation queue.
-	- Animation queue
-	- Client shows animations when certain things received
-	- Server refactor to send all data sequentially during combat, rather than total state messages
 	
-3. Enemies
-	- Implement new enemies, using effects + hazards
+1. Enemies
+	- Implement new enemies, using effects + hazards	
 	
-4. Armor
-	- Update def function to account for player armor
-	
-5. Weapons
+2. Weapons
 	- Mostly just copy Discord version
 	
-6. Weapon + Armor Runes
+3. Weapon + Armor Runes
 	- Handle in Attack, Mitigation functions
 	- Add enchanting to UI
 	- Show runes in UI
 	
-7. Items in Store
+4. Items in Store
 	- Potions
 	- Weapons
 	- Armor
 	- Runes
 	
-8. Traits
+5. Traits
 	- Show selected traits in Character UI
 	- Achievement Tracking
 	- Achievement UI
 	- Create specific traits, at least 30
 	
-9. Character Creation UI
+6. Character Creation UI
 	- Clean up Char Designer
 	- Trait Selector
 	
-10. Targetter UI Work
+7. Targetter + Combat UI Work
 	- Lines, AoE
-	- Blocked by Hazards (maybe scrap this idea)
+	- Show enemy movement range (on hover) & player weapon range
+	- when enemy is hovered, display info about them
 	
-11. Magic
+8. Magic
 	- Add a bunch of spells & casting
 	
-12. Polishing
+9. Polishing
 	- Animations for combat actions from listener.h (sequential enemy movement, line attacks)
 	- Sound Effects
 	
@@ -131,8 +122,8 @@ T3 - Coat of Plates
 Medium Armor - Flat Mitigation + Higher Armor 
 ------------
 T1 - Padded Coat
- - 15 Armor
- - 2 Damage Reduction
+ + 5 Max HP
+ + 3 Defense
  - -10 Max Stamina
 
 T2 - Quilted Armor
