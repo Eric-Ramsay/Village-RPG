@@ -82,7 +82,7 @@ void process(std::string type, std::string data) {
 			std::cout << "Weird Grave Received" << std::endl;
 		}
 		GRAVEYARD[C.ID] = C;
-		GRAVES.push_back(C);
+		GRAVES.push_back(&C);
 		GRAVES = sortChars(GRAVES);
 	}
 	if (type == "REMOVE_CHARACTER") {
@@ -105,8 +105,8 @@ void process(std::string type, std::string data) {
 		std::string stat = readStr(data);
 		int HP = CHARACTERS[id].HP;
 		if (stat == "COORDINATES") {
-			ANIMATIONS[id].move.startX = battleX + 16 * CHARACTERS[id].X;
-			ANIMATIONS[id].move.startY = battleY + 16 * CHARACTERS[id].Y + 20;
+			ANIMATIONS[id].move.startX = ANIMATIONS[id].xPos;
+			ANIMATIONS[id].move.startY = ANIMATIONS[id].yPos;
 			ANIMATIONS[id].move.duration = 30;
 			ANIMATIONS[id].move.timePassed = 0;
 		}

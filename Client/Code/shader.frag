@@ -26,11 +26,11 @@ void main()
 					vec4 pixel = texture2D(texture, vec2(gl_TexCoord[0].x + (pixel_width * j), gl_TexCoord[0].y + (pixel_height * i)));
 					color += pixel;
 					if (i == 0 && j == 0) {
-						color += pixel * 9;
+						color += pixel * 18;
 					}
 				}
 			}
-			color /= 18;
+			color /= 26;
 			color.a = 1.0;
 		}
 	}

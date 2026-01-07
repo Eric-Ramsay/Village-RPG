@@ -568,11 +568,11 @@ std::vector<int> sort(std::vector<int>& nums) {
 	return merge(sort(first), sort(second));
 }
 
-std::vector<Character> merge(std::vector<Character> arr1, std::vector<Character> arr2) {
+std::vector<Character*> merge(std::vector<Character*> arr1, std::vector<Character*> arr2) {
 	int i = 0; int j = 0;
 	int len1 = arr1.size();
 	int len2 = arr2.size();
-	std::vector<Character> sorted(len1 + len2);
+	std::vector<Character*> sorted(len1 + len2);
 	int k = 0;
 	while (i < len1 || j < len2) {
 		if (i == len1) {
@@ -581,7 +581,7 @@ std::vector<Character> merge(std::vector<Character> arr1, std::vector<Character>
 		else if (j == len2) {
 			sorted[k++] = arr1[i++];
 		}
-		else if (arr1[i].LEVEL > arr2[j].LEVEL) {
+		else if (arr1[i]->LEVEL > arr2[j]->LEVEL) {
 			sorted[k++] = arr1[i++];
 		}
 		else {
@@ -591,12 +591,12 @@ std::vector<Character> merge(std::vector<Character> arr1, std::vector<Character>
 	return sorted;
 }
 
-std::vector<Character> sortChars(std::vector<Character>& chars) {
+std::vector<Character*> sortChars(std::vector<Character*> chars) {
 	if (chars.size() == 1) {
 		return chars;
 	}
-	std::vector<Character> first(chars.begin(), chars.begin() + chars.size() / 2);
-	std::vector<Character> second(chars.begin() + chars.size() / 2, chars.end());
+	std::vector<Character*> first(chars.begin(), chars.begin() + chars.size() / 2);
+	std::vector<Character*> second(chars.begin() + chars.size() / 2, chars.end());
 	return merge(sortChars(first), sortChars(second));
 }
 
@@ -688,12 +688,11 @@ std::string name(std::string id, bool addThe = true) {
 	return name(CHARACTERS[id], addThe);
 }
 
-Character getCharacter(std::string id) {
-	if (CHARACTERS.count(id) > 0) {
-		return CHARACTERS.at(id);
+Character* getCharacter(std::string id) {
+	if (CHARACTERS.count(id) == 0) {
+		std::cout << "Character not found" << std::endl;
 	}
-	std::cout << "Character not found" << std::endl;
-	return Character();
+	return &CHARACTERS[id];
 }
 
 UI_Effect getEffect(std::string id) {
@@ -719,4 +718,43 @@ int nextMessage(std::vector<Message>& msgs) {
 
 int safeC(int a, int b) {
 	return (a % b + b) % b;
+}
+
+std::string getWeapon(Character& C) {
+	if (C.RIGHT != "" && C.INVENTORY.count(C.RIGHT) == 0) {
+		C.RIGHT = "";
+	}
+	if (C.LEFT != "" && C.INVENTORY.count(C.LEFT) == 0) {
+		C.LEFT = "";
+	}
+	if (C.LEFT == "" && C.RIGHT == "") {
+		return "";
+	}
+
+	std::string leftItem = C.LEFT;
+	std::string rightItem = C.RIGHT;
+
+	if (leftItem == "") {
+		leftItem = C.RIGHT;
+	}
+	if (rightItem == "") {
+		rightItem = C.LEFT;
+	}
+
+	if (C.INVENTORY[leftItem].attacks == 0 && C.INVENTORY[rightItem].attacks == 0) {
+		return "";
+	}
+
+	std::string wepId = rightItem;
+
+	UI_Item left = getItem(C.INVENTORY[leftItem].id);
+	UI_Item right = getItem(C.INVENTORY[rightItem].id);
+	if (C.RIGHT == "" || C.INVENTORY[rightItem].attacks == 0 || right.AP > C.AP) {
+		wepId = leftItem;
+	}
+	else if (C.INVENTORY[leftItem].attacks > 0 && left.range > right.range) {
+		wepId = leftItem;
+	}
+
+	return wepId;
 }

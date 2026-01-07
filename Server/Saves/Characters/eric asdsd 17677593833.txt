@@ -1,0 +1,37 @@
+ID!!!eric asdsd 17677593833!!!
+HP!!!370!
+X!!!7!
+Y!!!8!
+SX!!!0!
+SY!!!176!
+ARMOR!!!0!
+DEFENSE!!!0!
+MAX_HP!!!30!
+TYPE!!!player!!!
+NAME!!!Asdsd!!!
+LOCATION!!!Wilted Woods.4675!!!
+TEAM!!!0!
+EFFECTS!!!
+USER!!!eric!!!
+LOOK!!!aiaeanceffeqcabgaj!!!
+DEATH!!!!!!
+STAMINA!!!579!
+DESCRIPTION!!!!!!
+TRADING!!!!!!
+LEVEL!!!3!
+XP!!!120!
+SP!!!9!
+GOLD!!!219!
+AP!!!21!
+BACKPACK!!!0!
+ENDED!!!0!
+ATTACKS!!!0!
+CASTS!!!0!
+X_PREFERENCE!!!0!
+Y_PREFERENCE!!!0!
+LEFT!!!dagger.92220!!!
+RIGHT!!!dagger.83508!!!
+HITS!!!0!	0!	
+MISSES!!!0!	0!	
+STATS!!!34!	58!	5!	0!	0!	0!	0!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.83508!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	ITEM!!!INDEX!!!dagger.92220!!!ATTACKS!!!3!EQUIPPED!!!1!RUNES!!!	ITEM!!!INDEX!!!longbow.14494!!!ATTACKS!!!0!EQUIPPED!!!0!RUNES!!!	

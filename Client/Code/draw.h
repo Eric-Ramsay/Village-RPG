@@ -65,11 +65,11 @@ Box fillRect(int dX, int dY, int w, int h, sf::Color color) {
 	return Box(dX, dY, w, h);
 }
 
-void DrawSquare(int dX, int dY, int w, int h) {
-	fillRect(dX, dY, w, 3, sf::Color::White);
-	fillRect(dX, dY, 3, h, sf::Color::White);
-	fillRect(dX + w - 3, dY, 3, h, sf::Color::White);
-	fillRect(dX, dY + h - 3, w, 3, sf::Color::White);
+void DrawSquare(int dX, int dY, int w, int h, sf::Color color = sf::Color::White) {
+	fillRect(dX, dY, w, 1, color);
+	fillRect(dX, dY, 1, h, color);
+	fillRect(dX + w - 1, dY, 1, h, color);
+	fillRect(dX, dY + h - 1, w, 1, color);
 }
 
 void DrawLine(int startX, int startY, int endX, int endY, sf::Color color = sf::Color(255, 255, 255), int opacity = 255) {

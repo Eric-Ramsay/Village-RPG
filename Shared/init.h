@@ -161,9 +161,6 @@ void initEnemies() {
 	enemies.push_back(Character("Skeletal Archer", 40, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "evil", 20, 6, 50, ""));
 	enemies.push_back(Character("Skeletal Swordsman", 50, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "evil", 35, 6, 50, ""));
 	enemies.push_back(Character("Skeletal Spearman", 40, { WILTED_WOODS, ACRID_SWAMP, HAUNTED_CRYPTS }, "evil", 30, 6, 50, ""));
-	//enemies.push_back(Character("Slugbeast",  40, 2, 40, { 2 }, 3, "animal", ""));
-	
-	//enemies.push_back(Character("Acidic Slime",  40, 2, 40, { 2 }, 3, "animal", ""));
 
 	for (int i = 0; i < enemies.size(); i++) {
 		enemies[i].SX = 16 * (i % 26);
@@ -172,20 +169,77 @@ void initEnemies() {
 	}
 }
 
-UI_Item OneH(std::string n, int v, std::string wepType, std::string d, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
-	return UI_Item(n, v, wepType, d, false, atks, chance, min, max, pen, ap, rng, rare);
+void OneH(int v, int atks, int min, int max, int chance, int pen, int ap, int range, std::string t, std::string n, std::string d, int rare = 0) {
+	ITEMS[low(n)] = UI_Item(n, v, t, d, false, atks, chance, min, max, pen, ap, range, rare);
 }
 
-UI_Item TwoH(std::string n, int v, std::string wepType, std::string d, int atks, int chance, int min, int max, int pen, int ap, int rng, int rare = 0) {
-	return UI_Item(n, v, wepType, d, true, atks, chance, min, max, pen, ap, rng, rare);
+void TwoH(int v, int atks, int min, int max, int chance, int pen, int ap, int range, std::string t, std::string n, std::string d, int rare = 0) {
+	ITEMS[low(n)] = UI_Item(n, v, t, d, true, atks, chance, min, max, pen, ap, range, rare);
 }
 
-void initWeapons() {	//	 Name		G		Type		Description												#	%		Min		Max		Pen		AP		Range
-	ITEMS["dagger"] = OneH("Dagger", 25, "blade", "A simple dagger, lightweight and easy to use.", 3, 80, 2, 4, 0, 1, 1);
-	ITEMS["longbow"] = TwoH("Longbow", 50, "ranged", "A powerful bow thats almost as tall as its user.", 1, 80, 12, 18, 20, 6, 6);
+void initWeapons() {
+	// Cost    # Attacks    Min Dmg    Max Dmg    Hit Chance    Pen    AP Cost    Range
+	OneH(10, 3, 2, 4, 60, 0, 1, 1, "blade", "Knife", "");
 
-	genericLoot.push_back(ITEMS["longbow"]);
-	genericLoot.push_back(ITEMS["dagger"]);
+	OneH(40, 3, 3, 5, 70, 0, 1, 1, "blade", "Dagger", "");
+	OneH(40, 2, 4, 6, 75, 50, 1, 1, "blade", "Rondel Dagger", "");
+	OneH(40, 1, 10, 14, 90, 25, 6, 1, "blade", "Scimitar", "");
+	TwoH(80, 2, 12, 18, 90, 10, 9, 1, "blade", "Longsword", "");
+	TwoH(80, 1, 20, 28, 90, 20, 12, 1, "blade", "Claymore", "");
+	
+	//   G   #  Mn Mx %  Pn  AP Range
+	/*TwoH("Club", 10, "blunt", 1, 10, 20, 60, "", 50, 6, 1);
+
+	OneH("Morningstar", 40, "blunt", 1, 10, 20, 60, "", 50, 6, 1);
+	OneH("War Hammer", 40, "blunt", 1, 10, 20, 60, "", 50, 6, 1);
+	TwoH("Mace", 80, "blunt", 1, 10, 20, 60, "", 50, 6, 1);
+	TwoH("Maul", 80, "blunt", 1, 10, 20, 60, "", 50, 6, 1);
+
+	//   G   #  Mn Mx %  Pn  AP Range
+	TwoH("Whip", 25, "whip", 1, 10, 20, 60, "A long, two-piece wooden tool used for beating grain.", 50, 6, 1);
+
+	OneH("Whip", 40, "whip", 1, 10, 20, 60, "", 50, 6, 1);
+	OneH("Whip", 40, "whip", 1, 10, 20, 60, "", 50, 6, 1);
+	OneH("Whip", 40, "whip", 1, 10, 20, 60, "", 50, 6, 1);
+	OneH("Whip", 40, "whip", 1, 10, 20, 60, "", 50, 6, 1);
+
+	//   G   #  Mn Mx %  Pn  AP Range
+	OneH("Hatchet", 25, "axe", 1, 10, 20, 60, "A short hand axe used mainly for cutting branches", 50, 6, 1);
+
+	OneH("Bearded Axe", 25, "axe", 1, 10, 20, 60, "", 50, 6, 1);
+	OneH("Whip", 25, "axe", 1, 10, 20, 60, "", 50, 6, 1);
+	TwoH("War Axe", 25, "axe", 1, 10, 20, 60, "A long battle axe", 50, 6, 1);
+	TwoH("Great Axe", 25, "axe", 1, 10, 20, 60, "A massive two-headed axe-blade fixed onto a heavy handle", 50, 6, 1);
+
+	//   G   #  Mn Mx %  Pn  AP Range
+	ITEMS["harpoon"] = OneH("polearm", 25, "polearm", 1, 10, 20, 60, "", 50, 6, 1);
+	ITEMS["quarterstaff"] = OneH("polearm", 25, "polearm", 1, 10, 20, 60, "", 50, 6, 1);
+	ITEMS["short spear"] = OneH("polearm", 25, "polearm", 1, 10, 20, 60, "", 50, 6, 1);
+	ITEMS["spear"] = OneH("polearm", 25, "polearm", 1, 10, 20, 60, "", 50, 6, 1);
+	ITEMS["halberd"] = OneH("polearm", 25, "polearm", 1, 10, 20, 60, "", 50, 6, 1);
+
+	//   G   #   Mn  Mx  %   Pn  AP  Range
+	OneH(10, 00, 00, 00, 00, 00, 00, 00, "shield", "Buckler", "");
+	ITEMS["buckler"] = OneH("Buckler", 10, "shield", 0, 0, 0, 0, "A simple wooden shield. Provides 20% Block Chance", 0, 0, 0);
+	ITEMS["spiked shield"] = OneH("Spiked Shield", 25, "shield", 1, 6, 12, 90, "A shield with weighty metal spikes that give it extra puncturing power. Gives 20% Block Chance.", 75, 6, 1);
+	ITEMS["shield"] = OneH("Shield", 25, "shield", 1, 4, 8, 90, "A tall shield that offers greater protection to its user. Gives 30% Block Chance.", 50, 6, 1);
+
+
+	//   G   #  Mn Mx %  Pn  AP Range
+	ITEMS["sling"] = OneH("Sling", 25, "ranged", 1, 10, 20, 60, "", 50, 6, 1);
+	ITEMS["longbow"] = OneH("Longbow", 25, "ranged", 1, 10, 20, 60, "", 50, 6, 1);
+	ITEMS["crossbow"] = OneH("Crossbow", 25, "ranged", 1, 10, 20, 60, "", 50, 6, 1);
+	ITEMS["repeating crossbow"] = OneH("Repeating Crossbow", 25, "ranged", 1, 10, 20, 60, "", 50, 6, 1);
+	ITEMS["hand cannon"] = OneH("shield", 25, "Hand Cannon", 1, 10, 20, 60, "", 50, 6, 1);
+	
+	ITEMS["longbow"] = TwoH("Longbow", 50, "ranged", "A powerful bow thats almost as tall as its user.", 1, 80, 12, 18, 20, 6, 6);*/
+	TwoH(80, 1, 12, 18, 80, 20, 6, 5, "ranged", "Longbow", "");
+
+	for (auto item : ITEMS) {
+		if (item.second.rarity == 0) {
+			genericLoot.push_back(item.second);
+		}
+	}
 }
 
 UI_Item armor(std::string n, int v, int def, int arm, int hp, std::string desc, int stam = 0, int ap = 0) {

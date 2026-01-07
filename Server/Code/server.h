@@ -164,8 +164,8 @@ std::string removeCharacter(Character character) {
 	return bundle;
 }
 
-std::string printStat(Character C, std::string stat) {
-	return str("STAT") + str(C.ID) + str(stat) + getStat(C, stat) + (char)249;
+std::string printStat(Character C, std::string stat, std::string data = "") {
+	return str("STAT") + str(C.ID) + str(stat) + getStat(C, stat, data) + (char)249;
 }
 
 std::string printStat(Battle B, std::string stat) {

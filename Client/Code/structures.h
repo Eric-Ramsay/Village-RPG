@@ -86,6 +86,8 @@ struct UIState {
 
 	bool guarding = false;
 
+
+	bool viewingWeapon = false;
 	int view = 0;
 	bool viewLocked = false;
 	bool topLocked = false;

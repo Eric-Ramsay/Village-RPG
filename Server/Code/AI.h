@@ -179,7 +179,7 @@ std::string enemyAttack(std::string enemyId) {
 		changes += moveAttack(C->ID, attack, 6, 1, description, 2).changes;
 		std::vector<std::vector<int>> movementCosts = moveCosts(*C, *battle);
 
-		if (C->HP > 5) {
+		if (C->HP > 10) {
 			for (int i = -1; i < 2; i++) {
 				for (int j = -1; j < 2; j++) {
 					if (i != 0 || j != 0) {
@@ -189,7 +189,7 @@ std::string enemyAttack(std::string enemyId) {
 							if (x >= 0 && y >= 0 && x < 12 && y < 12) {
 								if (movementCosts[y][x] < 12) {
 									changes += summon(*battle, "giant amoeba", x, y, C->TEAM, C->HP);
-									C->HP -= 5;
+									C->HP -= 10;
 									changes += printStat(*C, "HP");
 									i = 2; j = 2;
 								}

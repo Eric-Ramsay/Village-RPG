@@ -1,0 +1,14 @@
+ID!!!skeletal spearman.Wilted Woods.4675.2942!!!
+HP!!!30!
+X!!!6!
+Y!!!0!
+SX!!!112!
+SY!!!176!
+ARMOR!!!50!
+DEFENSE!!!6!
+MAX_HP!!!30!
+TYPE!!!evil!!!
+NAME!!!Skeletal Spearman!!!
+LOCATION!!!Wilted Woods.4675!!!
+TEAM!!!1!
+EFFECTS!!!

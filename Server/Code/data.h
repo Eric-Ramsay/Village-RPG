@@ -98,7 +98,7 @@ std::string getStat(Battle B, std::string stat) {
 	}
 }
 
-std::string getStat(Character C, std::string stat) {
+std::string getStat(Character C, std::string stat, std::string data = "") {
 	if (stat == "ID") {
 		return serialize(C.ID);
 	}
@@ -209,6 +209,9 @@ std::string getStat(Character C, std::string stat) {
 	}
 	if (stat == "INVENTORY") {
 		return serialize(C.INVENTORY);
+	}
+	if (stat == "ITEM") {
+		return serialize(C.INVENTORY[data]);
 	}
 	if (stat == "COORDINATES") {
 		return serialize(C.X) + serialize(C.Y);

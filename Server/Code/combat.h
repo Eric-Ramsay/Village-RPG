@@ -109,7 +109,7 @@ int mitigate(Character* target, int dmg, int pen) {
 		return dmg;
 	}
 	int armor = Armor(*target);
-	int defense = Defense(*target);
+	int defense = Defense(*target) * (float)(100 - pen)/100.0;
 
 	float percentMitigation = (100.0 - (max(0, armor - pen))) / 100.0;
 

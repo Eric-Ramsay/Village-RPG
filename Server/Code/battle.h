@@ -230,6 +230,7 @@ std::string startTurn(Battle& battle) {
 					UI_Item rawItem = getItem(item.second.id);
 					if (rawItem.type == "weapon") {
 						C->INVENTORY[item.first].attacks = rawItem.attacks;
+						changes += printStat(*C, "ITEM", item.first);
 					}
 				}
 			}

@@ -47,8 +47,8 @@ std::vector<Terrain> TERRAIN = {};
 std::unordered_map<std::string, UI_Effect> EFFECTS = {};
 
 
-std::vector<Character> GRAVES = {};
-std::vector<Character> sortedGraves = {};
+std::vector<Character*> GRAVES = {};
+std::vector<Character*> sortedGraves = {};
 
 std::string USERNAME = "eric";
 std::string PASSWORD = "123";

@@ -1,0 +1,14 @@
+ID!!!goblin spearman.Wilted Woods.4675.1265!!!
+HP!!!50!
+X!!!2!
+Y!!!1!
+SX!!!64!
+SY!!!176!
+ARMOR!!!0!
+DEFENSE!!!0!
+MAX_HP!!!50!
+TYPE!!!goblin!!!
+NAME!!!Goblin Spearman!!!
+LOCATION!!!Wilted Woods.4675!!!
+TEAM!!!1!
+EFFECTS!!!

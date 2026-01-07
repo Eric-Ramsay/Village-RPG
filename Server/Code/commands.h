@@ -99,39 +99,9 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 		return "*RED*You must be in combat to attack.";
 	}
 	// Determine Weapon to Attack with
-	if (C.RIGHT != "" && C.INVENTORY.count(C.RIGHT) == 0) {
-		C.RIGHT = "";
-	}
-	if (C.LEFT != "" && C.INVENTORY.count(C.LEFT) == 0) {
-		C.LEFT = "";
-	}
-	if (C.LEFT == "" && C.RIGHT == "") {
-		return "*RED*You must equip a weapon!";
-	}
-
-	std::string leftItem = C.LEFT;
-	std::string rightItem = C.RIGHT;
-	
-	if (leftItem == "") {
-		leftItem = C.RIGHT;
-	}
-	if (rightItem == "") {
-		rightItem = C.LEFT;
-	}
-
-	if (C.INVENTORY[leftItem].attacks == 0 && C.INVENTORY[rightItem].attacks == 0) {
+	std::string wepId = getWeapon(C);
+	if (wepId == "") {
 		return "*RED*You can't make any more attacks!";
-	}
-
-	std::string wepId = rightItem;
-
-	UI_Item left = getItem(C.INVENTORY[leftItem].id);
-	UI_Item right = getItem(C.INVENTORY[rightItem].id);
-	if (C.RIGHT == "" || C.INVENTORY[leftItem].attacks == 0 || right.AP > C.AP) {
-		wepId = leftItem;
-	}
-	else if (C.INVENTORY[leftItem].attacks > 0 && left.range > right.range) {
-		wepId = leftItem;
 	}
 
 	UI_Item item = getItem(C.INVENTORY[wepId].id);
@@ -171,6 +141,7 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 	DamageResult result = dealDamage(C.ID, target, item.attack);
 
 	result.changes += printStat(C, "AP");
+	result.changes += printStat(C, "ITEM", wepId);
 
 	sendData(result.changes);
 
@@ -570,6 +541,10 @@ void command(std::string input, int playerIndex) {
 	else if (players[playerIndex].ID == "") {
 		sendText("*RED*You need to make a character!", "", { playerIndex });
 		return;
+	}
+	else if (keyword == "cheat") {
+		CHARACTERS[id].SP = 100;
+		sendData(printStat(CHARACTERS[id], "SP"));
 	}
 	else if (keyword == "look") {
 		CHARACTERS[id].LOOK = words[0];

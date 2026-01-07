@@ -123,13 +123,19 @@ int measureText(std::string text, float scale = 1, int textSize = 2) {
 	return ((size - 1) * scale);
 }
 
-sf::Color getColor(std::string input = "", int opacity = 255) {
-	if (COLORS.count(input) > 0) {
-		sf::Color color = COLORS[input];
-		color.a = opacity;
-		return color;
+std::string stackStrings(std::string left, std::string right, int spaces) {
+	std::string msg = left;
+	int num = spaces - left.size();
+	for (int i = 0; i < num; i++) {
+		msg += " ";
 	}
-	return sf::Color(245, 245, 240, opacity);
+	return msg + right;
+}
+
+sf::Color getColor(std::string input = "", int opacity = 255) {
+	sf::Color color = COLORS[input];
+	color.a = opacity;
+	return color;
 }
 
 int measureText(std::string text, int scale) {
@@ -158,6 +164,18 @@ int measureText(std::string text, int scale) {
 }
 
 std::vector<std::string> splitLines(std::string text, int maxLength = WIDTH, int scale = 1) {
+	bool proceed = (text.size() * 6 * scale > maxLength);
+	if (!proceed) {
+		for (char c : text) {
+			if (c == '\n') {
+				proceed = true;
+				break;
+			}
+		}
+	}
+	if (!proceed) {
+		return { text };
+	}
 	std::vector<std::string> lines = split(text, '\n');
 	std::string merged = "";
 	int sX;
