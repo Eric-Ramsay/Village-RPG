@@ -1,0 +1,36 @@
+ID!!!eric asdsd 17677593833!!!
+HP!!!370!
+X!!!8!
+Y!!!5!
+SX!!!0!
+SY!!!176!
+ARMOR!!!0!
+DEFENSE!!!0!
+MAX_HP!!!30!
+TYPE!!!player!!!
+NAME!!!Asdsd!!!
+LOCATION!!!Graveyard!!!
+TEAM!!!0!
+EFFECTS!!!
+USER!!!eric!!!
+LOOK!!!aiaeanceffeqcabgaj!!!
+DEATH!!!Suicide!!!
+STAMINA!!!600!
+DESCRIPTION!!!!!!
+TRADING!!!!!!
+LEVEL!!!4!
+XP!!!128!
+SP!!!10!
+GOLD!!!263!
+AP!!!21!
+BACKPACK!!!0!
+ENDED!!!0!
+ATTACKS!!!0!
+CASTS!!!0!
+X_PREFERENCE!!!0!
+Y_PREFERENCE!!!0!
+LEFT!!!longbow.14494!!!
+RIGHT!!!longbow.14494!!!
+STATS!!!34!	58!	5!	0!	0!	0!	0!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.83508!!!ATTACKS!!!0!EQUIPPED!!!0!HITS!!!0!MISSES!!!0!RUNES!!!	ITEM!!!INDEX!!!dagger.92220!!!ATTACKS!!!0!EQUIPPED!!!0!HITS!!!0!MISSES!!!0!RUNES!!!	ITEM!!!INDEX!!!longbow.14494!!!ATTACKS!!!0!EQUIPPED!!!1!HITS!!!0!MISSES!!!0!RUNES!!!	
+REPORT!!!78!	0!	0!	0!	16!	1!	

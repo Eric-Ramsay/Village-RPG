@@ -183,7 +183,7 @@ std::string enemyAttack(std::string enemyId) {
 			for (int i = -1; i < 2; i++) {
 				for (int j = -1; j < 2; j++) {
 					if (i != 0 || j != 0) {
-						if (random(16) == 0) {
+						if (random(24) == 0) {
 							int x = C->X + j;
 							int y = C->Y + i;
 							if (x >= 0 && y >= 0 && x < 12 && y < 12) {

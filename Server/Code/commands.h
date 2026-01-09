@@ -140,6 +140,13 @@ std::string commandAttack(int playerIndex, Character& C, std::vector<std::string
 
 	DamageResult result = dealDamage(C.ID, target, item.attack);
 
+	if (result.damage > 0) {
+		C.INVENTORY[wepId].hits++;
+	}
+	else {
+		C.INVENTORY[wepId].misses++;
+	}
+
 	result.changes += printStat(C, "AP");
 	result.changes += printStat(C, "ITEM", wepId);
 
@@ -205,6 +212,7 @@ std::string commandSell(int playerIndex, Character& C, std::vector<std::string> 
 		}
 		int gold = value(item)/2;
 		C.GOLD += gold;
+		C.REPORT.goldEarned += gold;
 		C.INVENTORY.erase(id);
 		changes += addLine("GOLD", C.GOLD);
 		changes += addLine("REMOVE_ITEM", item.index);

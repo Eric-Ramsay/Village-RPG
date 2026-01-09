@@ -121,6 +121,8 @@ std::string winBattle(Battle& battle) {
 	for (std::string id : battle.characters) {
 		Character* C = &CHARACTERS[id];
 		if (C->TYPE == "player") {
+			C->REPORT.battlesWon++;
+			C->REPORT.goldEarned += goldReward;
 			C->GOLD += goldReward;
 			C->XP += expReward;
 			while (C->XP > C->LEVEL * 100) {

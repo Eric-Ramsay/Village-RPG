@@ -194,7 +194,7 @@ void initToolTips() {
 	TOOLTIPS["HITCHANCE"] = Tooltip("Hit Chance", "The chance to hit an enemy when you make an attack");
 	TOOLTIPS["WEAPON AP"] = Tooltip("Attack Cost", "How much *YELLOW*AP " + getSymbol(AP) + "*GREY* it costs to perform a single attack.");
 	TOOLTIPS["RANGE"] = Tooltip("Weapon Range", "How many tiles away a target can be hit by this weapon");
-	TOOLTIPS["PEN"] = Tooltip("Penetration", "Flat reduction vs enemy *BLUE*Armor " + getSymbol(ARMOR) + "\n\n*GREY*Percent reduction vs enemy *NAVY*Defense " + getSymbol(DEFENSE));
+	TOOLTIPS["PEN"] = Tooltip("Penetration", "The damage your enemy mitigates is reduced by this percentage");
 	TOOLTIPS["HANDS"] = Tooltip("1H vs 2H", "You can either wield two one-handed weapons, or a single two-handed weapon");
 
 	TOOLTIPS["blade"] = Tooltip("Bladed Weapons", "+1 Max Runes");

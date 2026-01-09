@@ -1,26 +1,26 @@
-ID!!!eric bimpton 176739275575!!!
+ID!!!eric josh hancock 17679435660!!!
 HP!!!30!
-X!!!6!
-Y!!!7!
+X!!!5!
+Y!!!5!
 SX!!!0!
 SY!!!176!
 ARMOR!!!0!
 DEFENSE!!!0!
 MAX_HP!!!30!
 TYPE!!!player!!!
-NAME!!!Bimpton!!!
-LOCATION!!!Barber!!!
+NAME!!!Josh Hancock!!!
+LOCATION!!!Graveyard!!!
 TEAM!!!0!
 EFFECTS!!!
 USER!!!eric!!!
-LOOK!!!acajaeaqfpemanabao!!!
-DEATH!!!Suicide!!!
+LOOK!!!aigibncoaqcpbgapal!!!
+DEATH!!!!!!
 STAMINA!!!20!
 DESCRIPTION!!!!!!
 TRADING!!!!!!
 LEVEL!!!1!
 XP!!!0!
-SP!!!0!
+SP!!!4!
 GOLD!!!30!
 AP!!!6!
 BACKPACK!!!0!
@@ -30,8 +30,7 @@ CASTS!!!0!
 X_PREFERENCE!!!0!
 Y_PREFERENCE!!!0!
 LEFT!!!!!!
-RIGHT!!!dagger.28066!!!
-HITS!!!0!	0!	
-MISSES!!!0!	0!	
+RIGHT!!!dagger.68750!!!
 STATS!!!0!	0!	0!	0!	0!	0!	0!	
-INVENTORY!!!ITEM!!!INDEX!!!dagger.28066!!!ATTACKS!!!0!EQUIPPED!!!1!RUNES!!!	
+INVENTORY!!!ITEM!!!INDEX!!!dagger.68750!!!ATTACKS!!!0!EQUIPPED!!!1!HITS!!!0!MISSES!!!0!RUNES!!!	
+REPORT!!!0!	0!	0!	0!	0!	0!	

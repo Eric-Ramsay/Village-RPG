@@ -125,6 +125,8 @@ struct Item {
 	std::vector<std::string> runes;
 	bool equipped = false;
 	int attacks = 0;
+	int hits = 0;
+	int misses = 0;
 	Item(std::string id1 = "") {
 		id = id1;
 		index = id1 + "." + random(99999);
@@ -220,6 +222,15 @@ enum ZONE {
 	WILTED_WOODS
 };
 
+struct Report {
+	int dmgDealt = 0;
+	int dmgTaken = 0;
+	int dmgMitigated = 0;
+	int healingDone = 0;
+	int goldEarned = 0;
+	int battlesWon = 0;
+};
+
 struct Character {
 	std::string USER = "";
 	std::string ID = "";
@@ -256,9 +267,6 @@ struct Character {
 
 	bool BACKPACK = false;
 
-	std::vector<int> HITS = { 0, 0 };
-	std::vector<int> MISSES = { 0, 0 };
-
 	bool ENDED = false;
 
 	std::vector<int> STATS = { 0, 0, 0, 0, 0, 0, 0 };
@@ -267,6 +275,8 @@ struct Character {
 	int CASTS = 0;
 	int X_PREFERENCE = 0;
 	int Y_PREFERENCE = 0;
+
+	Report REPORT;
 
 	// Enemy Stats
 	int MAX_HP = 30;

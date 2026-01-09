@@ -42,13 +42,13 @@ std::vector<std::string> logs = {"*BLACK*Connecting . . ."};
 std::string ID = "";
 std::unordered_map<std::string, Character> CHARACTERS = {};
 std::unordered_map<std::string, Character> GRAVEYARD = {};
+std::vector<std::string> GRAVES = {};
 
 std::vector<Terrain> TERRAIN = {};
 std::unordered_map<std::string, UI_Effect> EFFECTS = {};
 
 
-std::vector<Character*> GRAVES = {};
-std::vector<Character*> sortedGraves = {};
+
 
 std::string USERNAME = "eric";
 std::string PASSWORD = "123";

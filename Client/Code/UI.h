@@ -13,15 +13,16 @@ void DrawGraves() {
 	int y = 5;
 	Print("*RED*Graveyard", x, y);
 
-	std::vector<Character*> graveList = {};
+	std::vector<std::string> graveList = {};
 	if (UI.graveSearch == "") {
 		graveList = GRAVES;
 	}
 	else {
 		std::string filter = low(UI.graveSearch);
-		for (Character* C : GRAVES) {
-			if (includes(low(C->NAME), filter) || includes(low(C->DEATH), filter)	) {
-				graveList.push_back(C);
+		for (std::string id : GRAVES) {
+			Character* C = &GRAVEYARD[id];
+			if (includes(low(C->NAME), filter) || includes(low(C->DEATH), filter)) {
+				graveList.push_back(id);
 			}
 		}
 	}
@@ -35,7 +36,7 @@ void DrawGraves() {
 
 	for (int i = startIndex; i < maxIndex; i++) {
 		int yPos = y + 34 + (i - startIndex) * 30;
-		Character* C = graveList[i];
+		Character* C = &GRAVEYARD[graveList[i]];
 		Box box = DrawSection(x, yPos, 225, 31);
 		if (mRange(box)) {
 			UI.viewedPlayer = C->ID;
@@ -61,19 +62,22 @@ void DrawGraves() {
 		CPrint("*PURPLE*" + loc, xPos, yPos + 24);
 
 		Print("*PINK*Damage Dealt:", xPos - 55, yPos + 48);
-		Print("0", xPos + 55, yPos + 48);
+		Print(to_str(C->REPORT.dmgDealt), xPos + 55, yPos + 48);
 
-		Print("*ORANGE*Damage Mitigated:", xPos - 55, yPos + 60);
-		Print("0", xPos + 55, yPos + 60);
+		Print("*RED*Damage Taken:", xPos - 55, yPos + 60);
+		Print(to_str(C->REPORT.dmgTaken), xPos + 55, yPos + 60);
 
-		Print("*RED*Healing:", xPos - 55, yPos + 72);
-		Print("0", xPos + 55, yPos + 72);
+		Print("*ORANGE*Damage Mitigated:", xPos - 55, yPos + 72);
+		Print(to_str(C->REPORT.dmgMitigated), xPos + 55, yPos + 72);
 
-		Print("*YELLOW*Gold Earned:", xPos - 55, yPos + 84);
-		Print("0", xPos + 55, yPos + 84);
+		Print("*GREEN*Healing:", xPos - 55, yPos + 84);
+		Print(to_str(C->REPORT.healingDone), xPos + 55, yPos + 84);
 
-		Print("*BLUE*Battles Won:", xPos - 55, yPos + 96);
-		Print("0", xPos + 55, yPos + 96);
+		Print("*YELLOW*Gold Earned:", xPos - 55, yPos + 96);
+		Print(to_str(C->REPORT.goldEarned), xPos + 55, yPos + 96);
+
+		Print("*BLUE*Battles Won:", xPos - 55, yPos + 108);
+		Print(to_str(C->REPORT.battlesWon), xPos + 55, yPos + 108);
 	}
 
 
@@ -363,7 +367,7 @@ void DrawViewUI() {
 				Print(baseItem.description, x, y + 29, w);
 				std::vector<std::string> tooltips = { "ATKS", "DMG", "HITCHANCE", "WEAPON AP", "RANGE", "PEN" };
 				std::vector<std::string> stats = {"*ORANGE*ATKS", "*RED*DMG", "*PINK*HIT %", "*YELLOW*AP " + getSymbol(AP), "*PURPLE*RANGE", "*RED*PEN"};
-				std::string tiles = w_range(*C, item) + " tiles";
+				std::string tiles = to_str(w_range(*C, item)) + " tiles";
 				if (w_range(*C, item) == 1) {
 					tiles = to_str(w_range(*C, item)) + " tile";
 				}
@@ -971,7 +975,6 @@ void DrawBattle(Battle battle) {
 	std::vector<std::vector<bool>> range = {};
 
 	int maxRange = 0;
-	std::cout << UI.view << std::endl;
 	if (UI.viewingWeapon && UI.viewedItem.id != "") {
 		Item item = UI.viewedItem;
 		maxRange = w_range(*player, UI.viewedItem);

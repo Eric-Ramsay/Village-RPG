@@ -89,9 +89,11 @@ void weaponReport() {
 			std::string dmgStr = to_str(dmg);
 			std::string apStr = to_str(apCost);
 			std::string effStr = to_str(std::floor(100.0 * dmg / (float)apCost) / 100);
+			std::string penStr = to_str(item.second.attack.pen);
 			std::string textStr = stackStrings(item.second.name, dmgStr, 20);
 			textStr = stackStrings(textStr, apStr, 35);
 			textStr = stackStrings(textStr, effStr, 50);
+			textStr = stackStrings(textStr, penStr, 65);
 			balanceStr[item.second.range].push_back(textStr);
 		}
 	}
@@ -102,6 +104,7 @@ void weaponReport() {
 		headerStr = stackStrings(headerStr, "Damage", 20);
 		headerStr = stackStrings(headerStr, "AP Cost", 35);
 		headerStr = stackStrings(headerStr, "Efficiency", 50);
+		headerStr = stackStrings(headerStr, "Penetration", 65);
 		totalStr += headerStr + "\n";
 		while (balance[i].size() > 0) {
 			int maxIndex = 0;

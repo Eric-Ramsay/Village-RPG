@@ -181,13 +181,19 @@ void initWeapons() {
 	// Cost    # Attacks    Min Dmg    Max Dmg    Hit Chance    Pen    AP Cost    Range
 	OneH(10, 3, 2, 4, 60, 0, 1, 1, "blade", "Knife", "");
 
-	OneH(40, 3, 3, 5, 70, 0, 1, 1, "blade", "Dagger", "");
+	OneH(40, 3, 300, 500, 70, 0, 1, 1, "blade", "Dagger", "");
 	OneH(40, 2, 4, 6, 75, 50, 1, 1, "blade", "Rondel Dagger", "");
 	OneH(40, 1, 10, 14, 90, 25, 6, 1, "blade", "Scimitar", "");
 	TwoH(80, 2, 12, 18, 90, 10, 9, 1, "blade", "Longsword", "");
 	TwoH(80, 1, 20, 28, 90, 20, 12, 1, "blade", "Claymore", "");
 	
-	//   G   #  Mn Mx %  Pn  AP Range
+	// Cost    # Attacks    Min Dmg    Max Dmg    Hit Chance    Pen    AP Cost    Range
+	TwoH(10, 1, 8, 22, 60, 30, 6, 1, "blunt", "Club", "");
+
+	OneH(40, 2, 6, 8, 80, 30, 4, 1, "blunt", "Morningstar", "");
+	OneH(40, 2, 4, 8, 75, 50, 4, 1, "blunt", "Mace", "");
+	OneH(40, 1, 8, 12, 85, 40, 6, 1, "blunt", "War Hammer", "");
+	TwoH(80, 1, 26, 30, 70, 60, 12, 1, "blunt", "Maul", "");
 	/*TwoH("Club", 10, "blunt", 1, 10, 20, 60, "", 50, 6, 1);
 
 	OneH("Morningstar", 40, "blunt", 1, 10, 20, 60, "", 50, 6, 1);
@@ -250,7 +256,7 @@ void initArmor() {
 	//std::string name, int value, int defense, int armor, int hp = 0, int stam = 0, int ap = 0, std::string desc
 	
 	// Tier 1 Armor
-	ITEMS["stylish shirt"] = armor("Stylish Shirt", 25, 0, 0, 10, "");
+	ITEMS["simple shirt"] = armor("Simple Shirt", 25, 0, 0, 10, "");
 	ITEMS["padded coat"] = armor("Padded Coat", 25, 3, 0, 5, "", -5);
 	ITEMS["crude cuirass"] = armor("Crude Cuirass", 25, 3, 10, 0, "", -10);
 
@@ -275,14 +281,6 @@ void initArmor() {
 	genericLoot.push_back(ITEMS["studded cloak"]);
 	genericLoot.push_back(ITEMS["quilted armor"]);
 	genericLoot.push_back(ITEMS["lamellar armor"]);
-
-	genericLoot.push_back(ITEMS["silk armor"]);
-	genericLoot.push_back(ITEMS["duelist's doublet"]);
-	genericLoot.push_back(ITEMS["cloak of the caster"]);
-	genericLoot.push_back(ITEMS["mail hauberk"]);
-	genericLoot.push_back(ITEMS["padded coat"]);
-	genericLoot.push_back(ITEMS["heavy gambeson"]);
-	genericLoot.push_back(ITEMS["plate armor"]);
 }
 
 void initPeople() {
@@ -430,10 +428,9 @@ void initPeople() {
 	};
 
 	Florence.ITEMS = {
-		"stylish shirt",
-		"studded cloak",
-		"quilted armor",
+		"simple shirt",
 		"padded coat",
+		"quilted armor",
 		"duelist's doublet",
 		"cloak of the caster",
 		"silk armor"
@@ -441,7 +438,6 @@ void initPeople() {
 
 	Kobos.ITEMS = {
 		"dagger",
-		"crude cuirass",
 		"lamellar armor",
 		"mail hauberk",
 		"heavy gambeson",

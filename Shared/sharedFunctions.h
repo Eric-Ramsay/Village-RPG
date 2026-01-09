@@ -378,12 +378,6 @@ void parseChange(Character& character, std::string type, std::string data) {
 	else if (type == "BACKPACK") {
 		character.BACKPACK = (bool)readInt(data);
 	}
-	else if (type == "HITS") {
-		character.HITS = readInts(data);
-	}
-	else if (type == "MISSES") {
-		character.MISSES = readInts(data);
-	}
 	else if (type == "ARMOR") {
 		character.ARMOR = readInt(data);
 	}
@@ -403,6 +397,15 @@ void parseChange(Character& character, std::string type, std::string data) {
 	else if (type == "COORDINATES") {
 		character.X = readInt(data);
 		character.Y = readInt(data);
+	}
+	else if (type == "REPORT") {
+		std::vector<std::string> lines = split(data, '\t');
+		character.REPORT.dmgDealt = readInt(lines[0]);
+		character.REPORT.dmgTaken = readInt(lines[1]);
+		character.REPORT.dmgMitigated = readInt(lines[2]);
+		character.REPORT.healingDone = readInt(lines[3]);
+		character.REPORT.goldEarned = readInt(lines[4]);
+		character.REPORT.battlesWon = readInt(lines[5]);
 	}
 	else if (type == "SX") {
 		character.SX = readInt(data);
@@ -568,11 +571,11 @@ std::vector<int> sort(std::vector<int>& nums) {
 	return merge(sort(first), sort(second));
 }
 
-std::vector<Character*> merge(std::vector<Character*> arr1, std::vector<Character*> arr2) {
+std::vector<Character> merge(std::vector<Character> arr1, std::vector<Character> arr2) {
 	int i = 0; int j = 0;
 	int len1 = arr1.size();
 	int len2 = arr2.size();
-	std::vector<Character*> sorted(len1 + len2);
+	std::vector<Character> sorted(len1 + len2);
 	int k = 0;
 	while (i < len1 || j < len2) {
 		if (i == len1) {
@@ -581,7 +584,7 @@ std::vector<Character*> merge(std::vector<Character*> arr1, std::vector<Characte
 		else if (j == len2) {
 			sorted[k++] = arr1[i++];
 		}
-		else if (arr1[i]->LEVEL > arr2[j]->LEVEL) {
+		else if (arr1[i].LEVEL > arr2[j].LEVEL) {
 			sorted[k++] = arr1[i++];
 		}
 		else {
@@ -591,12 +594,12 @@ std::vector<Character*> merge(std::vector<Character*> arr1, std::vector<Characte
 	return sorted;
 }
 
-std::vector<Character*> sortChars(std::vector<Character*> chars) {
+std::vector<Character> sortChars(std::vector<Character> chars) {
 	if (chars.size() == 1) {
 		return chars;
 	}
-	std::vector<Character*> first(chars.begin(), chars.begin() + chars.size() / 2);
-	std::vector<Character*> second(chars.begin() + chars.size() / 2, chars.end());
+	std::vector<Character> first(chars.begin(), chars.begin() + chars.size() / 2);
+	std::vector<Character> second(chars.begin() + chars.size() / 2, chars.end());
 	return merge(sortChars(first), sortChars(second));
 }
 

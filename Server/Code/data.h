@@ -27,6 +27,8 @@ std::string serialize(Item item) {
 	data += str("INDEX") + str(item.index);
 	data += str("ATTACKS") + str(item.attacks);
 	data += str("EQUIPPED") + str(item.equipped);
+	data += str("HITS") + str(item.hits);
+	data += str("MISSES") + str(item.misses);
 	data += str("RUNES");
 	for (std::string rune : item.runes) {
 		data += str(rune);
@@ -65,6 +67,19 @@ std::string serialize(Account P) {
 	std::string data = "";
 	data += addLine("USERNAME", P.USERNAME);
 	data += addLine("PASSWORD", P.PASSWORD);
+	return data;
+}
+
+std::string serialize(Report r) {
+	std::string data = "";
+
+	data += serialize(r.dmgDealt) + "\t";
+	data += serialize(r.dmgTaken) + "\t";
+	data += serialize(r.dmgMitigated) + "\t";
+	data += serialize(r.healingDone) + "\t";
+	data += serialize(r.goldEarned) + "\t";
+	data += serialize(r.battlesWon) + "\t";
+
 	return data;
 }
 
@@ -198,12 +213,6 @@ std::string getStat(Character C, std::string stat, std::string data = "") {
 	if (stat == "RIGHT") {
 		return serialize(C.RIGHT);
 	}
-	if (stat == "HITS") {
-		return serialize(C.HITS);
-	}
-	if (stat == "MISSES") {
-		return serialize(C.MISSES);
-	}
 	if (stat == "STATS") {
 		return serialize(C.STATS);
 	}
@@ -215,6 +224,9 @@ std::string getStat(Character C, std::string stat, std::string data = "") {
 	}
 	if (stat == "COORDINATES") {
 		return serialize(C.X) + serialize(C.Y);
+	}
+	if (stat == "REPORT") {
+		return serialize(C.REPORT);
 	}
 }
 
@@ -264,10 +276,9 @@ std::string serialize(Character C) {
 	data += statLine(C, "Y_PREFERENCE");
 	data += statLine(C, "LEFT");
 	data += statLine(C, "RIGHT");
-	data += statLine(C, "HITS");
-	data += statLine(C, "MISSES");
 	data += statLine(C, "STATS");
 	data += statLine(C, "INVENTORY");
+	data += statLine(C, "REPORT");
 	return data;
 }
 

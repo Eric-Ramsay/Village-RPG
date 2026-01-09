@@ -82,8 +82,14 @@ void process(std::string type, std::string data) {
 			std::cout << "Weird Grave Received" << std::endl;
 		}
 		GRAVEYARD[C.ID] = C;
-		GRAVES.push_back(&C);
-		GRAVES = sortChars(GRAVES);
+		std::vector<Character> sortedGraves = {};
+		for (auto grave : GRAVEYARD) {
+			sortedGraves.push_back(grave.second);
+		}
+		sortedGraves = sortChars(sortedGraves);
+		for (Character C : sortedGraves) {
+			GRAVES.push_back(C.ID);
+		}
 	}
 	if (type == "REMOVE_CHARACTER") {
 		CHARACTERS.erase(data);

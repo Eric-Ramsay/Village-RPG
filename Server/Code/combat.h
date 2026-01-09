@@ -108,13 +108,17 @@ int mitigate(Character* target, int dmg, int pen) {
 	if (dmg < 1) {
 		return dmg;
 	}
-	int armor = Armor(*target);
-	int defense = Defense(*target) * (float)(100 - pen)/100.0;
+	int originalDamage = dmg;
 
-	float percentMitigation = (100.0 - (max(0, armor - pen))) / 100.0;
+	int armor = Armor(*target);
+	int defense = Defense(*target);
+
+	float percentMitigation = (100.0 - (max(0, armor))) / 100.0;
 
 	dmg *= percentMitigation;
 	dmg -= defense;
+
+	dmg += (originalDamage * (pen / 100.0));
 	
 	if (dmg < 1) {
 		dmg = 1;
@@ -122,7 +126,10 @@ int mitigate(Character* target, int dmg, int pen) {
 
 	int dodgeChance = min(50, target->STATS[AVD] * 5);
 	if (random(100) < dodgeChance) {
-		dmg = 0;
+		dmg = -1;
+	}
+	else {
+		target->REPORT.dmgMitigated = originalDamage - dmg;
 	}
 
 	return dmg;
@@ -149,16 +156,24 @@ DamageResult dealDamage(std::string attackerId, std::string targetId, Attack att
 	}
 	if (hitValue < attack.hitChance) {
 		dmg = mitigate(target, dmg, attack.pen);
-		target->HP -= dmg;
+		if (dmg > 0) {
+			dmg = min(target->HP, dmg);
+			attacker->REPORT.dmgDealt += dmg;
+			target->REPORT.dmgTaken += dmg;
+			target->HP -= dmg;
 
-		result.damage = dmg;
-		result.changes += addBundle("STAT", str(targetId) + str("HP") + str(target->HP));
-		msg += "*RED*" + pretty(name(target)) + " takes *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
+			result.damage = dmg;
+			result.changes += addBundle("STAT", str(targetId) + str("HP") + str(target->HP));
+			msg += "*RED*" + pretty(name(target)) + " takes *ORANGE*" + to_str(dmg) + "*RED* damage!\n";
 
-		if (target->HP <= 0) {
-			target->DEATH = pretty(name(attacker, false));
-			result.changes += printStat(*target, "DEATH");
-			msg += "*RED*" + pretty(name(target)) + " is struck down!\n";
+			if (target->HP <= 0) {
+				target->DEATH = pretty(name(attacker, false));
+				result.changes += printStat(*target, "DEATH");
+				msg += "*RED*" + pretty(name(target)) + " is struck down!\n";
+			}
+		}
+		else if (dmg == -1) {
+			msg += "*ORANGE*" + pretty(name(target)) + " *PURPLE*dodges!\n";
 		}
 	}
 	else {
